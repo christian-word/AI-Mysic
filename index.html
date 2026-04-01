@@ -3,153 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Demo Player</title>
     <style>
-        :root { --accent: #534AB7; --bg: #f8f9fa; --text: #333; }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: var(--bg); font-family: -apple-system, sans-serif; color: var(--text); padding: 16px; }
+        body { font-family: -apple-system, sans-serif; background: #fff; color: #000; padding: 20px; line-height: 1.5; }
+        #app { max-width: 500px; margin: 0 auto; }
         
-        #app { max-width: 400px; margin: 0 auto; }
+        /* Компактный блок управления */
+        #header { position: sticky; top: 0; background: #fff; padding-bottom: 20px; border-bottom: 1px solid #eee; margin-bottom: 10px; }
+        #track-name { font-size: 18px; font-weight: bold; margin-bottom: 10px; display: block; }
+        audio { width: 100%; height: 40px; }
 
-        /* Компактная шапка */
-        #hero { 
-            background: var(--accent); color: #fff; padding: 24px; 
-            border-radius: 20px; margin-bottom: 16px; text-align: center;
-        }
-        #track-name { 
-            font-size: 18px; font-weight: 600; margin-bottom: 4px;
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
-        }
-        #album-label { font-size: 13px; opacity: 0.7; margin-bottom: 16px; }
-
-        /* Прогресс-бар */
-        #pbar-wrap { height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; cursor: pointer; position: relative; }
-        #pbar-fill { height: 100%; background: #fff; width: 0%; border-radius: 2px; }
-        #times { display: flex; justify-content: space-between; font-size: 11px; margin-top: 6px; opacity: 0.8; }
-
-        /* Кнопки управления */
-        #controls { display: flex; align-items: center; justify-content: center; gap: 20px; margin-top: 16px; }
-        .cbtn { background: none; border: none; color: #fff; cursor: pointer; opacity: 0.9; }
-        #play-btn { background: #fff; color: var(--accent); width: 50px; height: 50px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-
-        /* Список без лишних рамок */
-        #playlist { background: #fff; border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); overflow: hidden; }
+        /* Простой список */
         .t-item { 
-            display: flex; align-items: center; padding: 12px 16px; 
-            border-bottom: 1px solid #f1f1f1; cursor: pointer; font-size: 14px;
+            padding: 12px 0; border-bottom: 1px solid #f9f9f9; 
+            cursor: pointer; display: flex; justify-content: space-between; 
         }
-        .t-item:last-child { border-bottom: none; }
-        .t-item.active { background: #f0efff; color: var(--accent); font-weight: 500; }
-        .t-num { width: 24px; opacity: 0.5; font-size: 12px; }
-        .t-title { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 0 8px; }
-        .t-dur { opacity: 0.4; font-size: 12px; }
-
-        #load-msg { text-align: center; padding: 20px; color: #999; }
+        .t-item:hover { color: #534AB7; }
+        .t-item.active { color: #534AB7; font-weight: bold; }
+        .t-title { flex: 1; padding-right: 10px; }
+        .t-num { opacity: 0.3; margin-right: 10px; width: 20px; }
+        
+        #load-msg { color: #888; font-size: 14px; padding: 20px 0; }
     </style>
 </head>
 <body>
 
 <div id="app">
-    <div id="hero">
-        <div id="track-name">Завантаження...</div>
-        <div id="album-label">Святий обмін 2</div>
-        
-        <div id="pbar-wrap"><div id="pbar-fill"></div></div>
-        <div id="times"><span id="t-cur">0:00</span><span id="t-dur">0:00</span></div>
-
-        <div id="controls">
-            <button class="cbtn" id="prev-btn"><svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg></button>
-            <button id="play-btn"><svg id="play-icon" width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
-            <button class="cbtn" id="next-btn"><svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg></button>
-        </div>
+    <div id="header">
+        <span id="track-name">Оберіть трек</span>
+        <audio id="audio" controls autoplay crossorigin="anonymous"></audio>
     </div>
 
     <div id="playlist">
-        <div id="load-msg">Отримання списку...</div>
+        <div id="load-msg">Завантаження...</div>
     </div>
 </div>
-
-<audio id="audio" crossorigin="anonymous"></audio>
 
 <script>
     const FOLDER = 'Святий-обмін-2';
     const API = 'https://api.github.com/repos/christian-word/AI-Mysic/contents/' + encodeURIComponent(FOLDER);
-
-    let tracks = [], idx = 0, playing = false;
+    
+    let tracks = [], idx = 0;
     const audio = document.getElementById('audio');
-    const playIcon = document.getElementById('play-icon');
-    const pbarFill = document.getElementById('pbar-fill');
-    const tCur = document.getElementById('t-cur');
-    const tDur = document.getElementById('t-dur');
     const trackName = document.getElementById('track-name');
     const playlist = document.getElementById('playlist');
 
-    const fmt = s => isFinite(s) && s >= 0 ? `${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}` : '0:00';
-    const clean = n => decodeURIComponent(n).replace(/\.[^.]+$/, '').replace(/^\d+[\.\-_\s]+/, '').trim();
-
-    function setIcon(p) {
-        playIcon.innerHTML = p ? '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>' : '<path d="M8 5v14l11-7z"/>';
-    }
+    const clean = n => {
+        try {
+            return decodeURIComponent(n).replace(/\.[^.]+$/, '').replace(/^\d+[\.\-_\s]+/, '').trim();
+        } catch(e) { return n; }
+    };
 
     function updateUI() {
-        document.querySelectorAll('.t-item').forEach((el, i) => {
-            el.classList.toggle('active', i === idx);
-        });
+        document.querySelectorAll('.t-item').forEach((el, i) => el.classList.toggle('active', i === idx));
         if (tracks[idx]) trackName.textContent = tracks[idx].name;
     }
 
-    function loadTrack() {
-        if (!tracks[idx]) return;
+    function playTrack(i) {
+        idx = i;
         audio.src = tracks[idx].url;
+        audio.play();
         updateUI();
     }
 
-    function doPlay() {
-        audio.play().then(() => { playing = true; setIcon(true); updateUI(); }).catch(console.error);
-    }
-
-    function doPause() {
-        audio.pause(); playing = false; setIcon(false);
-    }
-
-    document.getElementById('play-btn').onclick = () => playing ? doPause() : doPlay();
-    document.getElementById('prev-btn').onclick = () => { idx = (idx - 1 + tracks.length) % tracks.length; loadTrack(); doPlay(); };
-    document.getElementById('next-btn').onclick = () => { idx = (idx + 1) % tracks.length; loadTrack(); doPlay(); };
-
-    audio.ontimeupdate = () => {
-        if (!audio.duration) return;
-        const p = (audio.currentTime / audio.duration) * 100;
-        pbarFill.style.width = p + '%';
-        tCur.textContent = fmt(audio.currentTime);
-        tDur.textContent = fmt(audio.duration);
-    };
-
-    audio.onended = () => document.getElementById('next-btn').click();
-
-    document.getElementById('pbar-wrap').onclick = (e) => {
-        const r = e.currentTarget.getBoundingClientRect();
-        const p = (e.clientX - r.left) / r.width;
-        audio.currentTime = p * audio.duration;
-    };
+    audio.onended = () => { if(idx < tracks.length - 1) playTrack(idx + 1); };
 
     fetch(API)
         .then(r => r.json())
         .then(data => {
             tracks = data
                 .filter(f => /\.(mp3|wav|m4a)$/i.test(f.name))
+                .sort((a,b) => a.name.localeCompare(b.name, 'uk'))
                 .map(f => ({ name: clean(f.name), url: f.download_url }));
             
             playlist.innerHTML = '';
             tracks.forEach((t, i) => {
                 const d = document.createElement('div');
                 d.className = 't-item';
-                d.innerHTML = `<span class="t-num">${i+1}</span><span class="t-title">${t.name}</span><span class="t-dur">-</span>`;
-                d.onclick = () => { idx = i; loadTrack(); doPlay(); };
+                d.innerHTML = `<span class="t-num">${i+1}</span><span class="t-title">${t.name}</span>`;
+                d.onclick = () => playTrack(i);
                 playlist.appendChild(d);
             });
-            loadTrack();
+            if(tracks.length > 0) trackName.textContent = "Готовий до відтворення";
         })
-        .catch(e => { document.getElementById('load-msg').textContent = "Помилка завантаження"; });
+        .catch(() => playlist.innerHTML = 'Помилка завантаження');
 </script>
 
 </body>
