@@ -1,65 +1,301 @@
-﻿<!DOCTYPE html>
-<html lang="uk">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Full Screen Video</title>
-    <meta property="og:image" content="img2.JPG">
-    <style>
-        /* Полная очистка отступов */
-        * { box-sizing: border-box; }
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background-color: #000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
 
-        /* Адаптивный плеер */
-        video {
-            width: 100%;
-            height: 100%;
-            max-width: 100%;
-            max-height: 100%;
-            /* 'contain' оставит черные полосы, но сохранит всё видео. 
-               'cover' растянет видео на весь экран, но обрежет края. */
-            object-fit: contain; 
-        }
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
 
-        /* Скрываем полосу прокрутки на iOS */
-        video::-webkit-media-controls-panel {
-            background-image: linear-gradient(transparent, rgba(0,0,0,0.5));
-        }
-    </style>
-</head>
-<body>
+#app {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 2rem;
+  font-family: var(--font-sans);
+}
 
-    <video 
-        id="bgvideo"
-        controls 
-        playsinline 
-        webkit-playsinline
-        preload="auto"
-        poster="">
-        <source src="https://christian-word.github.io/GospelVoice/Video/%D0%91%D0%B0%D1%87%D1%83_%D0%91%D0%BE%D0%B3%D0%B0_%D0%BA%D0%BE%D0%B6%D0%B5%D0%BD_%D0%B4%D0%B5%D0%BD%D1%8C_(%D1%85%D1%80%D0%B8%D1%81%D1%82%D0%B8%D1%8F%D0%BD%D1%81%D1%8C%D0%BA%D0%B0_%D0%BF%D1%96%D1%81%D0%BD%D1%8F).mp4" type="video/mp4">
-        Ваш браузер не поддерживает видео.
-    </video>
+#hero {
+  background: #534AB7;
+  border-radius: 20px;
+  padding: 1.75rem 1.5rem 1.5rem;
+  margin-bottom: 1rem;
+  position: relative;
+  overflow: hidden;
+}
 
-    <script>
-        // Небольшой скрипт для автоматического разворота (если нужно)
-        const video = document.getElementById('bgvideo');
-        
-        // Попытка автоплея при загрузке (часто требует mute)
-        window.addEventListener('load', () => {
-            video.play().catch(() => {
-                console.log("Автоплей заблокирован браузером. Нажмите Play вручную.");
-            });
-        });
-    </script>
-</body>
-</html>
+#hero::before {
+  content: '';
+  position: absolute;
+  top: -40px; right: -40px;
+  width: 160px; height: 160px;
+  border-radius: 50%;
+  background: #7F77DD;
+  opacity: 0.35;
+}
+#hero::after {
+  content: '';
+  position: absolute;
+  bottom: -30px; left: -20px;
+  width: 110px; height: 110px;
+  border-radius: 50%;
+  background: #3C3489;
+  opacity: 0.5;
+}
+
+#cross-icon {
+  width: 52px; height: 52px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 1rem;
+  position: relative; z-index: 1;
+}
+
+#track-name {
+  font-size: 17px; font-weight: 500;
+  color: #fff;
+  line-height: 1.3;
+  margin-bottom: 3px;
+  position: relative; z-index: 1;
+}
+#album-label {
+  font-size: 12px;
+  color: #AFA9EC;
+  margin-bottom: 1.25rem;
+  position: relative; z-index: 1;
+}
+
+#progress-area { margin-bottom: 1rem; position: relative; z-index: 1; }
+#pbar-wrap {
+  position: relative; height: 4px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 2px; cursor: pointer; margin-bottom: 6px;
+}
+#pbar-fill {
+  height: 100%; border-radius: 2px;
+  background: #fff;
+  width: 0%; pointer-events: none;
+}
+#pbar-thumb {
+  position: absolute; top: 50%;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: #fff;
+  transform: translate(-50%, -50%);
+  left: 0%; pointer-events: none;
+}
+#times { display: flex; justify-content: space-between; font-size: 11px; color: rgba(255,255,255,0.55); }
+
+#controls {
+  display: flex; align-items: center;
+  justify-content: center; gap: 20px;
+  position: relative; z-index: 1;
+}
+.cbtn {
+  background: none; border: none; cursor: pointer;
+  color: rgba(255,255,255,0.7); padding: 8px;
+  border-radius: 50%; transition: color 0.15s, background 0.15s;
+  display: flex; align-items: center; justify-content: center;
+}
+.cbtn:hover { color: #fff; background: rgba(255,255,255,0.1); }
+#play-btn {
+  width: 52px; height: 52px;
+  background: #fff;
+  border: none; border-radius: 50%; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: opacity 0.15s;
+  color: #534AB7;
+}
+#play-btn:hover { opacity: 0.9; }
+
+#vol-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 0.75rem 1.5rem 0;
+  position: relative; z-index: 1;
+}
+#vol-icon { color: rgba(255,255,255,0.55); flex-shrink: 0; }
+#vol-slider {
+  flex: 1; -webkit-appearance: none; appearance: none;
+  height: 3px; border-radius: 2px; outline: none; cursor: pointer;
+  background: rgba(255,255,255,0.25);
+}
+#vol-slider::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 13px; height: 13px;
+  border-radius: 50%; background: #fff; cursor: pointer;
+}
+
+#playlist {
+  border: 0.5px solid var(--color-border-tertiary);
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  background: var(--color-background-primary);
+}
+.t-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 14px; cursor: pointer;
+  border-bottom: 0.5px solid var(--color-border-tertiary);
+  transition: background 0.1s;
+}
+.t-item:last-child { border-bottom: none; }
+.t-item:hover { background: var(--color-background-secondary); }
+.t-item.active { background: #EEEDFE; }
+.t-num {
+  font-size: 12px; color: var(--color-text-secondary);
+  width: 20px; text-align: right; flex-shrink: 0;
+}
+.t-item.active .t-num { color: #534AB7; font-weight: 500; }
+.t-title { font-size: 13px; color: var(--color-text-primary); flex: 1; line-height: 1.3; }
+.t-item.active .t-title { color: #534AB7; font-weight: 500; }
+.t-dur { font-size: 11px; color: var(--color-text-secondary); flex-shrink: 0; }
+
+#load-msg { text-align: center; padding: 2rem; color: var(--color-text-secondary); font-size: 14px; }
+#err-msg { text-align: center; padding: 1rem; color: #A32D2D; font-size: 13px; display: none; }
+</style>
+
+<div id="app">
+  <div id="hero">
+    <div id="cross-icon">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M12 3v7H5v4h7v7h4v-7h7v-4h-7V3h-4z" fill="rgba(255,255,255,0.9)"/>
+      </svg>
+    </div>
+    <div id="track-name">Завантаження...</div>
+    <div id="album-label">Святий обмін 2</div>
+
+    <div id="progress-area">
+      <div id="pbar-wrap">
+        <div id="pbar-fill"></div>
+        <div id="pbar-thumb"></div>
+      </div>
+      <div id="times"><span id="t-cur">0:00</span><span id="t-dur">0:00</span></div>
+    </div>
+
+    <div id="controls">
+      <button class="cbtn" id="prev-btn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
+      </button>
+      <button id="play-btn">
+        <svg id="play-icon" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      </button>
+      <button class="cbtn" id="next-btn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+      </button>
+    </div>
+
+    <div id="vol-row">
+      <svg id="vol-icon" width="14" height="14" viewBox="0 0 24 24" fill="rgba(255,255,255,0.55)"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+      <input type="range" id="vol-slider" min="0" max="1" step="0.01" value="0.8">
+    </div>
+  </div>
+
+  <div id="playlist">
+    <div id="load-msg">Завантаження треків...</div>
+    <div id="err-msg"></div>
+  </div>
+</div>
+
+<audio id="audio"></audio>
+
+<script>
+const REPO = 'christian-word/AI-Mysic';
+const FOLDER = 'Святий-обмін-2';
+const API = `https://api.github.com/repos/${REPO}/contents/${encodeURIComponent(FOLDER)}`;
+const RAW = `https://raw.githubusercontent.com/${REPO}/main/${encodeURIComponent(FOLDER)}/`;
+
+let tracks = [], idx = 0, playing = false;
+
+const audio = document.getElementById('audio');
+const playBtn = document.getElementById('play-btn');
+const playIcon = document.getElementById('play-icon');
+const pbarWrap = document.getElementById('pbar-wrap');
+const pbarFill = document.getElementById('pbar-fill');
+const pbarThumb = document.getElementById('pbar-thumb');
+const tCur = document.getElementById('t-cur');
+const tDur = document.getElementById('t-dur');
+const volSlider = document.getElementById('vol-slider');
+const playlist = document.getElementById('playlist');
+const loadMsg = document.getElementById('load-msg');
+const errMsg = document.getElementById('err-msg');
+const trackName = document.getElementById('track-name');
+
+function fmt(s){
+  if(!isFinite(s)||isNaN(s)) return '0:00';
+  return `${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`;
+}
+function cleanName(n){ return n.replace(/\.[^.]+$/,'').replace(/^\d+[\.\-\s]+/,'').trim(); }
+
+function setPlayIcon(p){
+  playIcon.innerHTML = p
+    ? '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>'
+    : '<path d="M8 5v14l11-7z"/>';
+}
+
+function updateActive(){
+  document.querySelectorAll('.t-item').forEach((el,i)=>{
+    el.classList.toggle('active', i===idx);
+    el.querySelector('.t-num').textContent = (i===idx && playing) ? '▶' : i+1;
+  });
+  if(tracks[idx]) trackName.textContent = tracks[idx].name;
+}
+
+function renderPlaylist(){
+  loadMsg.style.display = 'none';
+  playlist.innerHTML = '';
+  tracks.forEach((t,i)=>{
+    const d = document.createElement('div');
+    d.className = 't-item'+(i===idx?' active':'');
+    d.innerHTML = `<span class="t-num">${i+1}</span><span class="t-title">${t.name}</span><span class="t-dur" id="d${i}">—</span>`;
+    d.addEventListener('click',()=>{ idx=i; loadTrack(); doPlay(); });
+    playlist.appendChild(d);
+  });
+}
+
+function loadTrack(){
+  if(!tracks[idx]) return;
+  audio.src = tracks[idx].url;
+  pbarFill.style.width='0%'; pbarThumb.style.left='0%';
+  tCur.textContent='0:00'; tDur.textContent='0:00';
+  updateActive();
+}
+
+function doPlay(){
+  audio.play().then(()=>{ playing=true; setPlayIcon(true); updateActive(); }).catch(()=>{});
+}
+function doPause(){ audio.pause(); playing=false; setPlayIcon(false); updateActive(); }
+
+playBtn.addEventListener('click',()=> playing ? doPause() : doPlay());
+document.getElementById('prev-btn').addEventListener('click',()=>{ idx=(idx-1+tracks.length)%tracks.length; loadTrack(); if(playing) doPlay(); });
+document.getElementById('next-btn').addEventListener('click',()=>{ idx=(idx+1)%tracks.length; loadTrack(); if(playing) doPlay(); });
+
+audio.addEventListener('ended',()=>{ idx=(idx+1)%tracks.length; loadTrack(); doPlay(); });
+
+audio.addEventListener('timeupdate',()=>{
+  if(!audio.duration) return;
+  const p=(audio.currentTime/audio.duration)*100;
+  pbarFill.style.width=p+'%';
+  pbarThumb.style.left=p+'%';
+  tCur.textContent=fmt(audio.currentTime);
+  tDur.textContent=fmt(audio.duration);
+});
+
+pbarWrap.addEventListener('click',e=>{
+  const r=pbarWrap.getBoundingClientRect();
+  audio.currentTime=((e.clientX-r.left)/r.width)*audio.duration;
+});
+
+volSlider.addEventListener('input',()=>{ audio.volume=+volSlider.value; });
+audio.volume=0.8;
+
+fetch(API)
+  .then(r=>r.json())
+  .then(data=>{
+    if(!Array.isArray(data)) throw new Error(data.message||'Помилка API');
+    tracks=data
+      .filter(f=>/\.(mp3|wav|ogg|flac|m4a)$/i.test(f.name))
+      .sort((a,b)=>a.name.localeCompare(b.name))
+      .map(f=>({name:cleanName(f.name),url:RAW+encodeURIComponent(f.name)}));
+    if(!tracks.length) throw new Error('Треки не знайдено');
+    renderPlaylist();
+    loadTrack();
+  })
+  .catch(e=>{
+    loadMsg.style.display='none';
+    errMsg.style.display='block';
+    errMsg.textContent='Не вдалося завантажити: '+e.message;
+    trackName.textContent='Помилка';
+  });
+</script>
