@@ -136,7 +136,6 @@
             overflow: hidden;
         }
 
-        /* Центрированные кнопки управления */
         .controls {
             display: flex;
             align-items: center;
@@ -171,9 +170,6 @@
             color: var(--accent);
             background: rgba(83, 74, 183, 0.08);
         }
-        .btn-nav:active {
-            transform: scale(0.92);
-        }
 
         .btn-play {
             background: var(--accent);
@@ -193,25 +189,14 @@
         .btn-play:hover {
             background: var(--accent-light);
             transform: scale(1.05);
-            box-shadow: 0 12px 40px rgba(83, 74, 183, 0.45);
-        }
-        .btn-play:active {
-            transform: scale(0.95);
         }
 
-        /* Регулятор громкости справа */
         .volume-container {
             position: absolute;
             right: 0;
             display: flex;
             align-items: center;
             gap: 10px;
-        }
-
-        .volume-icon {
-            font-size: 18px;
-            color: var(--text-secondary);
-            opacity: 0.7;
         }
 
         #volumeSlider {
@@ -221,7 +206,6 @@
             background: rgba(0, 0, 0, 0.08);
             border-radius: 999px;
             outline: none;
-            cursor: pointer;
         }
         #volumeSlider::-webkit-slider-thumb {
             -webkit-appearance: none;
@@ -230,20 +214,6 @@
             background: var(--accent);
             border-radius: 50%;
             cursor: pointer;
-            box-shadow: 0 2px 8px rgba(83, 74, 183, 0.4);
-            transition: transform 0.15s ease;
-        }
-        #volumeSlider::-webkit-slider-thumb:hover {
-            transform: scale(1.2);
-        }
-        #volumeSlider::-moz-range-thumb {
-            width: 14px;
-            height: 14px;
-            background: var(--accent);
-            border-radius: 50%;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 2px 8px rgba(83, 74, 183, 0.4);
         }
 
         #playlist {
@@ -262,91 +232,19 @@
             align-items: center;
             margin-bottom: 3px;
             transition: all 0.2s ease;
-            border: 1px solid transparent;
         }
-        .t-item:hover {
-            background: rgba(83, 74, 183, 0.04);
-            border-color: rgba(83, 74, 183, 0.1);
-        }
-        .t-item.active {
-            background: rgba(83, 74, 183, 0.1);
-            border-color: rgba(83, 74, 183, 0.2);
-        }
-        .t-item.active .t-num {
-            color: var(--accent);
-            font-weight: 600;
-        }
-        .t-item.active .t-title {
-            color: var(--accent);
-            font-weight: 500;
-        }
+        .t-item:hover { background: rgba(83, 74, 183, 0.04); }
+        .t-item.active { background: rgba(83, 74, 183, 0.1); }
+        .t-item.active .t-title { color: var(--accent); font-weight: 500; }
 
-        .t-num {
-            font-family: "SF Mono", monospace;
-            font-size: 12px;
-            color: var(--text-secondary);
-            width: 32px;
-            flex-shrink: 0;
-            font-weight: 500;
-        }
-        .t-title {
-            flex: 1;
-            font-size: 14px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            color: var(--text);
-            font-weight: 400;
-            letter-spacing: -0.2px;
-        }
+        .t-num { font-family: "SF Mono", monospace; font-size: 12px; color: var(--text-secondary); width: 32px; }
+        .t-title { flex: 1; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-        #load-msg {
-            text-align: center;
-            color: var(--text-secondary);
-            padding: 60px 20px;
-            font-size: 14px;
-            font-weight: 400;
-        }
+        #load-msg { text-align: center; color: var(--text-secondary); padding: 60px 20px; font-size: 14px; }
 
-        /* Анимация загрузки */
-        @keyframes pulse {
-            0%, 100% { opacity: 0.6; }
-            50% { opacity: 1; }
-        }
-        .loading {
-            animation: pulse 1.5s ease-in-out infinite;
-        }
-
-        /* Мобильные адаптации */
         @media (max-width: 480px) {
-            #waveform-container {
-                padding: 24px 20px 22px;
-            }
-
-            .controls {
-                gap: 20px;
-            }
-
-            .volume-container {
-                position: static;
-                width: auto;
-            }
-
-            #volumeSlider {
-                width: 70px;
-            }
-
-            .btn-play {
-                width: 56px;
-                height: 56px;
-                font-size: 22px;
-            }
-
-            .btn-nav {
-                width: 40px;
-                height: 40px;
-                font-size: 22px;
-            }
+            .volume-container { position: static; }
+            .controls { flex-direction: column; gap: 15px; }
         }
     </style>
 </head>
@@ -354,38 +252,29 @@
 
 <div id="app">
     <h1>AI Music Lab</h1>
-
     <div id="folder-nav"></div>
-
     <div id="waveform-container">
-        <div id="track-name">Оберіть папку та трек</div>
-        <div id="track-meta">Готовий до відтворення</div>
-
+        <div id="track-name">Оберіть папку</div>
+        <div id="track-meta">Готовий</div>
         <div id="time-info">
             <span id="current-time">00:00</span>
             <span id="duration">00:00</span>
         </div>
-
         <div id="waveform"></div>
-
         <div class="controls">
-            <!-- Центрированные кнопки управления -->
             <div class="playback-controls">
                 <button class="btn-nav" id="prevBtn">⏮</button>
                 <button class="btn-play" id="playBtn">▶</button>
                 <button class="btn-nav" id="nextBtn">⏭</button>
             </div>
-
-            <!-- Регулятор громкости справа -->
             <div class="volume-container">
                 <span class="volume-icon">🔈</span>
                 <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.75">
             </div>
         </div>
     </div>
-
     <div id="playlist">
-        <div id="load-msg" class="loading">Синхронізація з репозиторієм...</div>
+        <div id="load-msg">Завантаження...</div>
     </div>
 </div>
 
@@ -395,6 +284,8 @@
     const FORBIDDEN_FOLDERS = ['Святий-обмін-2', 'temp', 'docs'];
 
     let tracks = [], idx = 0;
+    let isSwitching = false;                    // ← Защита от двойного переключения
+
     const trackName = document.getElementById('track-name');
     const trackMeta = document.getElementById('track-meta');
     const currentTimeEl = document.getElementById('current-time');
@@ -406,55 +297,89 @@
     const nextBtn = document.getElementById('nextBtn');
     const volumeSlider = document.getElementById('volumeSlider');
 
-const ws = WaveSurfer.create({
+    const ws = WaveSurfer.create({
         container: '#waveform',
         waveColor: '#D1D1D6',
         progressColor: '#534AB7',
         cursorColor: '#534AB7',
-        cursorWidth: 1,      // Делает линию курсора максимально тонкой (1 пиксель)
-        barWidth: 1,       // КЛЮЧЕВОЙ ПАРАМЕТР: ширина каждой «палочки» в 1 пиксель
-        barGap: 1,         // Расстояние между палочками (1 пиксель для высокой плотности)
-        barRadius: 0,      // Убираем скругление, чтобы палочки выглядели как четкие линии
-        responsive: true,
+        barWidth: 1,
+        barGap: 1,
         height: 80,
-        normalize: true,
+        responsive: true,
+        normalize: true
     });
 
-    const formatTime = (seconds) => {
-        const min = Math.floor(seconds / 60);
-        const sec = Math.floor(seconds % 60);
+    const formatTime = (s) => {
+        const min = Math.floor(s / 60);
+        const sec = Math.floor(s % 60);
         return `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
     };
 
-    ws.on('decode', (duration) => {
-        durationEl.textContent = formatTime(duration);
-        trackMeta.textContent = `Тривалість: ${formatTime(duration)}`;
-    });
+    // --- ОБРАБОТЧИКИ СОБЫТИЙ ---
+    ws.on('decode', (d) => { durationEl.textContent = formatTime(d); });
+    ws.on('timeupdate', (t) => { currentTimeEl.textContent = formatTime(t); });
+    ws.on('play', () => { playBtn.innerHTML = '❚❚'; });
+    ws.on('pause', () => { playBtn.innerHTML = '▶'; });
 
-    ws.on('timeupdate', (currentTime) => {
-        currentTimeEl.textContent = formatTime(currentTime);
-    });
-
-    ws.on('play', () => {
-        playBtn.innerHTML = '❚❚';
-        trackMeta.textContent = 'Відтворення...';
-    });
-
-    ws.on('pause', () => {
-        playBtn.innerHTML = '▶';
-        trackMeta.textContent = 'Пауза';
-    });
-
+    // Надёжное автопереключение
     ws.on('finish', () => {
+        if (isSwitching) return;
+        isSwitching = true;
+        console.log("Трек завершен → переключаю на следующий");
+        
         changeTrack(1);
+        
+        // Снимаем блокировку через 800 мс
+        setTimeout(() => { isSwitching = false; }, 800);
     });
 
-    ws.setVolume(volumeSlider.value);
     volumeSlider.oninput = (e) => ws.setVolume(e.target.value);
-
     playBtn.onclick = () => ws.playPause();
     prevBtn.onclick = () => changeTrack(-1);
     nextBtn.onclick = () => changeTrack(1);
+
+    // --- ЛОГИКА ПЛЕЕРА ---
+    async function playTrack(i) {
+        if (!tracks[i]) return;
+
+        isSwitching = true;                    // Блокируем автопереключение во время смены трека
+
+        ws.pause();
+        idx = i;
+
+        updateUI();
+        currentTimeEl.textContent = "00:00";
+        trackMeta.textContent = "Завантаження...";
+
+        try {
+            await ws.load(tracks[idx].url);
+            trackMeta.textContent = "Відтворення...";
+            
+            await ws.play();
+        } catch (e) {
+            console.error("Помилка відтворення:", e);
+            trackMeta.textContent = "Помилка завантаження";
+        } finally {
+            // Снимаем блокировку через небольшую задержку
+            setTimeout(() => { isSwitching = false; }, 600);
+        }
+    }
+
+    function changeTrack(direction) {
+        if (tracks.length === 0) return;
+        let newIdx = idx + direction;
+        if (newIdx >= tracks.length) newIdx = 0;
+        if (newIdx < 0) newIdx = tracks.length - 1;
+        playTrack(newIdx);
+    }
+
+    function updateUI() {
+        document.querySelectorAll('.t-item').forEach((el, i) => {
+            el.classList.toggle('active', i === idx);
+            if (i === idx) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
+        if (tracks[idx]) trackName.textContent = tracks[idx].name;
+    }
 
     const clean = n => {
         try {
@@ -466,12 +391,7 @@ const ws = WaveSurfer.create({
         try {
             const response = await fetch(BASE_API);
             const items = await response.json();
-
-            const folders = items.filter(i => 
-                i.type === 'dir' && 
-                !i.name.startsWith('.') && 
-                !FORBIDDEN_FOLDERS.includes(i.name)
-            );
+            const folders = items.filter(i => i.type === 'dir' && !i.name.startsWith('.') && !FORBIDDEN_FOLDERS.includes(i.name));
 
             folderNav.innerHTML = '';
             folders.forEach((f, i) => {
@@ -485,15 +405,14 @@ const ws = WaveSurfer.create({
                 };
                 folderNav.appendChild(btn);
             });
-
             if (folders.length > 0) loadTracks(folders[0].path);
-        } catch (e) {
-            playlist.innerHTML = '<div id="load-msg">Помилка підключення до репозиторію</div>';
+        } catch (e) { 
+            playlist.innerHTML = '<div id="load-msg">Помилка API</div>'; 
         }
     }
 
     async function loadTracks(path) {
-        playlist.innerHTML = '<div id="load-msg" class="loading">Завантаження треків...</div>';
+        playlist.innerHTML = '<div id="load-msg">Завантаження треків...</div>';
         try {
             const response = await fetch(BASE_API + encodeURIComponent(path));
             const data = await response.json();
@@ -501,63 +420,24 @@ const ws = WaveSurfer.create({
                 .filter(f => /\.(mp3|wav|m4a)$/i.test(f.name))
                 .sort((a,b) => a.name.localeCompare(b.name, 'uk'))
                 .map(f => ({ name: clean(f.name), url: f.download_url }));
-            renderPlaylist();
-        } catch (e) {
-            playlist.innerHTML = '<div id="load-msg">Не вдалося завантажити треки</div>';
-        }
-    }
-
-    function renderPlaylist() {
-        playlist.innerHTML = '';
-        if (tracks.length === 0) {
-            playlist.innerHTML = '<div id="load-msg">У папці немає аудіофайлів</div>';
-            trackName.textContent = "Немає треків";
-            trackMeta.textContent = "Оберіть іншу папку";
-            return;
-        }
-        tracks.forEach((t, i) => {
-            const d = document.createElement('div');
-            d.className = 't-item';
-            d.innerHTML = `<span class="t-num">${(i+1).toString().padStart(2, '0')}</span><span class="t-title">${t.name}</span>`;
-            d.onclick = () => playTrack(i);
-            playlist.appendChild(d);
-        });
-        trackName.textContent = "Оберіть трек";
-        trackMeta.textContent = `${tracks.length} треків доступно`;
-    }
-
-    function changeTrack(direction) {
-        if (tracks.length === 0) return;
-        let newIdx = idx + direction;
-        if (newIdx >= tracks.length) newIdx = 0;
-        if (newIdx < 0) newIdx = tracks.length - 1;
-        playTrack(newIdx);
-    }
-
-    function playTrack(i) {
-        if (!tracks[i]) return;
-        idx = i;
-        currentTimeEl.textContent = "00:00";
-        durationEl.textContent = "00:00";
-        ws.load(tracks[idx].url);
-        ws.once('ready', () => {
-            ws.play();
-            updateUI();
-        });
-    }
-
-    function updateUI() {
-        document.querySelectorAll('.t-item').forEach((el, i) => {
-            el.classList.toggle('active', i === idx);
-            if (i === idx) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        });
-        if (tracks[idx]) {
-            trackName.textContent = tracks[idx].name;
+            
+            playlist.innerHTML = '';
+            tracks.forEach((t, i) => {
+                const d = document.createElement('div');
+                d.className = 't-item';
+                d.innerHTML = `<span class="t-num">${(i+1).toString().padStart(2, '0')}</span><span class="t-title">${t.name}</span>`;
+                d.onclick = () => playTrack(i);
+                playlist.appendChild(d);
+            });
+            trackName.textContent = "Оберіть трек";
+            trackMeta.textContent = `${tracks.length} треків`;
+            idx = 0;
+        } catch (e) { 
+            playlist.innerHTML = '<div id="load-msg">Помилка завантаження</div>'; 
         }
     }
 
     init();
 </script>
-
 </body>
 </html>
