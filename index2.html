@@ -2,46 +2,46 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Audio Lab Midnight</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AI Audio Mobile</title>
     <script src="https://unpkg.com/wavesurfer.js@7"></script>
     <style>
         :root {
-            /* Палітра Midnight Blue */
             --accent: #00d2ff;
-            --bg: #0a0e17; /* Глибокий синій */
-            --card-bg: #151b2b; /* Світліший синій для карток */
+            --bg: #0a0e17;
+            --card-bg: #151b2b;
             --text: #e2e8f0;
             --secondary: #64748b;
             --wave-bg: #1e293b;
             --glow: rgba(0, 210, 255, 0.2);
         }
 
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+
         body { 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
             background: radial-gradient(circle at top, #161f33 0%, var(--bg) 100%); 
-            color: var(--text); padding: 20px; 
+            color: var(--text); margin: 0; padding: 0;
             display: flex; justify-content: center; min-height: 100vh;
-            transition: all 0.5s ease;
         }
 
-        #app { width: 100%; max-width: 600px; }
+        #app { width: 100%; max-width: 600px; padding: 15px; display: flex; flex-direction: column; }
 
         h1 {
-            font-size: 11px; text-transform: uppercase; letter-spacing: 3px;
-            color: var(--secondary); margin-bottom: 25px; text-align: center;
+            font-size: 10px; text-transform: uppercase; letter-spacing: 3px;
+            color: var(--secondary); margin: 10px 0 20px; text-align: center;
         }
 
-        /* Навігація папок */
+        /* Навігація папок - адаптована для свайпів */
         #folder-nav {
-            display: flex; gap: 10px; overflow-x: auto; padding: 10px 0;
-            margin-bottom: 20px; scrollbar-width: none;
+            display: flex; gap: 8px; overflow-x: auto; padding-bottom: 15px;
+            scrollbar-width: none; -ms-overflow-style: none;
         }
         #folder-nav::-webkit-scrollbar { display: none; }
 
         .folder-btn {
-            padding: 10px 18px; background: var(--card-bg); border-radius: 12px;
-            font-size: 13px; cursor: pointer; white-space: nowrap;
+            padding: 12px 20px; background: var(--card-bg); border-radius: 14px;
+            font-size: 14px; cursor: pointer; white-space: nowrap;
             transition: 0.3s; color: var(--secondary); border: 1px solid rgba(255,255,255,0.05);
         }
         .folder-btn.active { 
@@ -49,80 +49,76 @@
             box-shadow: 0 4px 15px var(--glow);
         }
 
-        /* Контейнер плеєра */
+        /* Липкий блок управління для мобільних */
         #waveform-container {
-            background: var(--card-bg); padding: 30px; border-radius: 28px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-            margin-bottom: 25px; position: sticky; top: 10px; z-index: 10;
+            background: rgba(21, 27, 43, 0.95); padding: 20px; border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+            margin-bottom: 20px; position: sticky; top: 10px; z-index: 100;
             border: 1px solid rgba(255,255,255,0.08);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(15px);
         }
 
         #theme-switcher {
-            position: absolute; top: 25px; right: 25px;
-            display: flex; gap: 10px;
+            display: flex; gap: 12px; justify-content: center; margin-bottom: 15px;
         }
-        .theme-dot {
-            width: 16px; height: 16px; border-radius: 50%;
-            cursor: pointer; border: 2px solid rgba(255,255,255,0.1);
-            transition: 0.3s;
-        }
-        .theme-dot.active { border-color: #fff; transform: scale(1.2); }
+        .theme-dot { width: 18px; height: 18px; border-radius: 50%; cursor: pointer; border: 2px solid rgba(255,255,255,0.1); }
+        .theme-dot.active { border-color: #fff; transform: scale(1.1); }
 
         #track-name {
-            font-size: 19px; font-weight: 500; margin-bottom: 25px;
-            display: block; text-align: center; height: 28px;
+            font-size: 17px; font-weight: 500; margin-bottom: 15px;
+            display: block; text-align: center; height: 24px;
             overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-            color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            color: #fff;
         }
 
-        #waveform { width: 100%; height: 90px; cursor: pointer; }
+        #waveform { width: 100%; height: 70px; cursor: pointer; }
 
         .controls {
             display: flex; align-items: center; justify-content: space-between; 
-            margin-top: 25px;
+            margin-top: 15px; gap: 15px;
         }
 
         .btn-play {
             background: var(--accent); color: #0a0e17; border: none;
-            width: 56px; height: 56px; border-radius: 50%; cursor: pointer;
-            font-size: 22px; display: flex; align-items: center; justify-content: center;
-            transition: 0.3s; box-shadow: 0 5px 15px var(--glow);
+            width: 60px; height: 60px; border-radius: 50%; cursor: pointer;
+            font-size: 24px; display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; box-shadow: 0 5px 15px var(--glow);
         }
-        .btn-play:hover { transform: scale(1.05); }
 
-        .volume-container { display: flex; align-items: center; gap: 12px; width: 140px; }
-        .volume-container span { font-size: 16px; opacity: 0.5; }
+        .volume-container { display: flex; align-items: center; gap: 8px; flex: 1; }
         
         #volumeSlider {
-            -webkit-appearance: none; width: 100%; height: 3px;
+            -webkit-appearance: none; width: 100%; height: 4px;
             background: #2d3748; border-radius: 2px; outline: none;
         }
         #volumeSlider::-webkit-slider-thumb {
-            -webkit-appearance: none; width: 14px; height: 14px;
+            -webkit-appearance: none; width: 18px; height: 18px;
             background: var(--accent); border-radius: 50%; cursor: pointer;
         }
 
-        /* Плейлист */
+        /* Плейлист - зручний для дотиків */
         #playlist { 
-            background: var(--card-bg); border-radius: 28px; padding: 12px; 
-            border: 1px solid rgba(255,255,255,0.08);
+            background: var(--card-bg); border-radius: 24px; padding: 8px; 
+            border: 1px solid rgba(255,255,255,0.08); margin-bottom: 40px;
         }
 
         .t-item { 
-            padding: 16px 20px; border-radius: 18px; cursor: pointer; 
-            display: flex; align-items: center; margin-bottom: 4px; transition: 0.2s;
+            padding: 18px 15px; border-radius: 16px; cursor: pointer; 
+            display: flex; align-items: center; margin-bottom: 5px; transition: 0.2s;
         }
-        .t-item:hover { background: rgba(255,255,255,0.05); color: var(--accent); }
-        .t-item.active { 
-            background: rgba(0, 210, 255, 0.1); 
-            color: var(--accent); 
-        }
+        .t-item:active { background: rgba(255,255,255,0.08); } /* Ефект натискання */
+        .t-item.active { background: rgba(0, 210, 255, 0.1); color: var(--accent); }
 
-        .t-num { font-family: monospace; font-size: 11px; opacity: 0.3; margin-right: 20px; }
-        .t-title { flex: 1; font-size: 15px; }
+        .t-num { font-family: monospace; font-size: 11px; opacity: 0.3; margin-right: 15px; width: 20px; }
+        .t-title { flex: 1; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         
-        #time-info { font-size: 12px; opacity: 0.4; min-width: 40px; text-align: right; }
+        #time-info { font-size: 12px; opacity: 0.5; font-family: monospace; min-width: 40px; text-align: right; }
+
+        /* Адаптація для дуже малих екранів */
+        @media (max-width: 380px) {
+            .volume-container { display: none; } /* Ховаємо звук на крихітних екранах для місця */
+            .btn-play { width: 50px; height: 50px; }
+        }
     </style>
 </head>
 <body>
@@ -140,12 +136,11 @@
             <div class="theme-dot" style="background: #55efc4;" data-color="#55efc4" data-glow="rgba(85, 239, 196, 0.3)"></div>
         </div>
 
-        <span id="track-name">Оберіть папку</span>
+        <span id="track-name">Оберіть альбом</span>
         <div id="waveform"></div>
         
         <div class="controls">
             <div class="volume-container">
-                <span>🔈</span>
                 <input type="range" id="volumeSlider" min="0" max="1" step="0.05" value="0.7">
             </div>
             
@@ -180,16 +175,15 @@
         barWidth: 3,
         barRadius: 4,
         responsive: true,
-        height: 90,
-        gap: 2
+        height: 70,
+        gap: 2,
+        interact: true
     });
 
-    // Таймер
     const formatTime = (s) => new Date(s * 1000).toISOString().substr(14, 5);
     ws.on('audioprocess', () => timeInfo.textContent = formatTime(ws.getCurrentTime()));
     ws.on('ready', () => timeInfo.textContent = formatTime(ws.getDuration()));
 
-    // Теми
     const dots = document.querySelectorAll('.theme-dot');
     dots.forEach(dot => {
         dot.onclick = () => {
@@ -239,7 +233,7 @@
     }
 
     async function loadTracks(path) {
-        playlist.innerHTML = '<div style="text-align: center; padding: 40px; opacity: 0.5;">Оновлення...</div>';
+        playlist.innerHTML = '<div style="text-align: center; padding: 40px; opacity: 0.5;">...</div>';
         try {
             const response = await fetch(BASE_API + encodeURIComponent(path));
             const data = await response.json();
@@ -259,7 +253,7 @@
             d.onclick = () => playTrack(i);
             playlist.appendChild(d);
         });
-        trackName.textContent = "Виберіть трек";
+        if(tracks.length > 0) trackName.textContent = "Готово до прослуховування";
     }
 
     function playTrack(i) {
