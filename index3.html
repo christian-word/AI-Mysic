@@ -1,0 +1,563 @@
+﻿<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Audio Lab</title>
+    <script src="https://unpkg.com/wavesurfer.js@7"></script>
+    <style>
+        :root {
+            --accent: #534AB7;
+            --accent-light: #7B6FD4;
+            --bg: #f5f5f7;
+            --card: #ffffff;
+            --text: #1d1d1f;
+            --text-secondary: #86868b;
+            --border: rgba(0, 0, 0, 0.06);
+            --shadow-soft: 0 20px 60px rgba(0, 0, 0, 0.08);
+            --shadow-medium: 0 8px 30px rgba(83, 74, 183, 0.12);
+        }
+
+        * { 
+            box-sizing: border-box; 
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 24px 16px;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        #app { 
+            width: 100%; 
+            max-width: 600px; 
+        }
+
+        h1 {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            text-align: center;
+            margin: 0 0 28px 0;
+            opacity: 0.8;
+        }
+
+        #folder-nav {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding: 4px 4px 20px;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+        }
+        #folder-nav::-webkit-scrollbar { display: none; }
+
+        .folder-btn {
+            padding: 10px 22px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 500;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            color: var(--text-secondary);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+        }
+        .folder-btn:hover {
+            border-color: rgba(83, 74, 183, 0.3);
+            color: var(--accent);
+            transform: translateY(-1px);
+        }
+        .folder-btn.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+            box-shadow: var(--shadow-medium);
+        }
+
+        #waveform-container {
+            background: var(--card);
+            border-radius: 24px;
+            padding: 32px 28px 28px;
+            box-shadow: var(--shadow-soft);
+            margin-bottom: 20px;
+            position: sticky;
+            top: 16px;
+            z-index: 100;
+            border: 1px solid var(--border);
+        }
+
+        #track-name {
+            font-size: 18px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 8px;
+            min-height: 28px;
+            color: var(--text);
+            letter-spacing: -0.3px;
+        }
+
+        #track-meta {
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            font-weight: 400;
+        }
+
+        #time-info {
+            display: flex;
+            justify-content: space-between;
+            font-family: "SF Mono", "Monaco", "Inconsolata", monospace;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            padding: 0 2px;
+            letter-spacing: 0.5px;
+        }
+
+        #waveform { 
+            width: 100%; 
+            height: 80px; 
+            cursor: pointer;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        /* Центрированные кнопки управления */
+        .controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 24px;
+            position: relative;
+            gap: 32px;
+        }
+
+        .playback-controls {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .btn-nav {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 8px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+        }
+        .btn-nav:hover {
+            color: var(--accent);
+            background: rgba(83, 74, 183, 0.08);
+        }
+        .btn-nav:active {
+            transform: scale(0.92);
+        }
+
+        .btn-play {
+            background: var(--accent);
+            color: white;
+            border: none;
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 8px 30px rgba(83, 74, 183, 0.35);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn-play:hover {
+            background: var(--accent-light);
+            transform: scale(1.05);
+            box-shadow: 0 12px 40px rgba(83, 74, 183, 0.45);
+        }
+        .btn-play:active {
+            transform: scale(0.95);
+        }
+
+        /* Регулятор громкости справа */
+        .volume-container {
+            position: absolute;
+            right: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .volume-icon {
+            font-size: 18px;
+            color: var(--text-secondary);
+            opacity: 0.7;
+        }
+
+        #volumeSlider {
+            -webkit-appearance: none;
+            width: 90px;
+            height: 4px;
+            background: rgba(0, 0, 0, 0.08);
+            border-radius: 999px;
+            outline: none;
+            cursor: pointer;
+        }
+        #volumeSlider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            background: var(--accent);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(83, 74, 183, 0.4);
+            transition: transform 0.15s ease;
+        }
+        #volumeSlider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+        #volumeSlider::-moz-range-thumb {
+            width: 14px;
+            height: 14px;
+            background: var(--accent);
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(83, 74, 183, 0.4);
+        }
+
+        #playlist {
+            background: var(--card);
+            border-radius: 24px;
+            padding: 12px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid var(--border);
+        }
+
+        .t-item {
+            padding: 14px 18px;
+            border-radius: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            margin-bottom: 3px;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+        .t-item:hover {
+            background: rgba(83, 74, 183, 0.04);
+            border-color: rgba(83, 74, 183, 0.1);
+        }
+        .t-item.active {
+            background: rgba(83, 74, 183, 0.1);
+            border-color: rgba(83, 74, 183, 0.2);
+        }
+        .t-item.active .t-num {
+            color: var(--accent);
+            font-weight: 600;
+        }
+        .t-item.active .t-title {
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        .t-num {
+            font-family: "SF Mono", monospace;
+            font-size: 12px;
+            color: var(--text-secondary);
+            width: 32px;
+            flex-shrink: 0;
+            font-weight: 500;
+        }
+        .t-title {
+            flex: 1;
+            font-size: 14px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: var(--text);
+            font-weight: 400;
+            letter-spacing: -0.2px;
+        }
+
+        #load-msg {
+            text-align: center;
+            color: var(--text-secondary);
+            padding: 60px 20px;
+            font-size: 14px;
+            font-weight: 400;
+        }
+
+        /* Анимация загрузки */
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+        .loading {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        /* Мобильные адаптации */
+        @media (max-width: 480px) {
+            #waveform-container {
+                padding: 24px 20px 22px;
+            }
+
+            .controls {
+                gap: 20px;
+            }
+
+            .volume-container {
+                position: static;
+                width: auto;
+            }
+
+            #volumeSlider {
+                width: 70px;
+            }
+
+            .btn-play {
+                width: 56px;
+                height: 56px;
+                font-size: 22px;
+            }
+
+            .btn-nav {
+                width: 40px;
+                height: 40px;
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <h1>AI Music Lab</h1>
+
+    <div id="folder-nav"></div>
+
+    <div id="waveform-container">
+        <div id="track-name">Оберіть папку та трек</div>
+        <div id="track-meta">Готовий до відтворення</div>
+
+        <div id="time-info">
+            <span id="current-time">00:00</span>
+            <span id="duration">00:00</span>
+        </div>
+
+        <div id="waveform"></div>
+
+        <div class="controls">
+            <!-- Центрированные кнопки управления -->
+            <div class="playback-controls">
+                <button class="btn-nav" id="prevBtn">⏮</button>
+                <button class="btn-play" id="playBtn">▶</button>
+                <button class="btn-nav" id="nextBtn">⏭</button>
+            </div>
+
+            <!-- Регулятор громкости справа -->
+            <div class="volume-container">
+                <span class="volume-icon">🔈</span>
+                <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.75">
+            </div>
+        </div>
+    </div>
+
+    <div id="playlist">
+        <div id="load-msg" class="loading">Синхронізація з репозиторієм...</div>
+    </div>
+</div>
+
+<script>
+    const USER_REPO = 'christian-word/AI-Mysic';
+    const BASE_API = `https://api.github.com/repos/${USER_REPO}/contents/`;
+    const FORBIDDEN_FOLDERS = ['Святий-обмін-2', 'temp', 'docs'];
+
+    let tracks = [], idx = 0;
+    const trackName = document.getElementById('track-name');
+    const trackMeta = document.getElementById('track-meta');
+    const currentTimeEl = document.getElementById('current-time');
+    const durationEl = document.getElementById('duration');
+    const playlist = document.getElementById('playlist');
+    const folderNav = document.getElementById('folder-nav');
+    const playBtn = document.getElementById('playBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const volumeSlider = document.getElementById('volumeSlider');
+
+const ws = WaveSurfer.create({
+        container: '#waveform',
+        waveColor: '#D1D1D6',
+        progressColor: '#534AB7',
+        cursorColor: '#534AB7',
+        cursorWidth: 1,      // Делает линию курсора максимально тонкой (1 пиксель)
+        barWidth: 1,       // КЛЮЧЕВОЙ ПАРАМЕТР: ширина каждой «палочки» в 1 пиксель
+        barGap: 1,         // Расстояние между палочками (1 пиксель для высокой плотности)
+        barRadius: 0,      // Убираем скругление, чтобы палочки выглядели как четкие линии
+        responsive: true,
+        height: 80,
+        normalize: true,
+    });
+
+    const formatTime = (seconds) => {
+        const min = Math.floor(seconds / 60);
+        const sec = Math.floor(seconds % 60);
+        return `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
+    };
+
+    ws.on('decode', (duration) => {
+        durationEl.textContent = formatTime(duration);
+        trackMeta.textContent = `Тривалість: ${formatTime(duration)}`;
+    });
+
+    ws.on('timeupdate', (currentTime) => {
+        currentTimeEl.textContent = formatTime(currentTime);
+    });
+
+    ws.on('play', () => {
+        playBtn.innerHTML = '❚❚';
+        trackMeta.textContent = 'Відтворення...';
+    });
+
+    ws.on('pause', () => {
+        playBtn.innerHTML = '▶';
+        trackMeta.textContent = 'Пауза';
+    });
+
+    ws.on('finish', () => {
+        changeTrack(1);
+    });
+
+    ws.setVolume(volumeSlider.value);
+    volumeSlider.oninput = (e) => ws.setVolume(e.target.value);
+
+    playBtn.onclick = () => ws.playPause();
+    prevBtn.onclick = () => changeTrack(-1);
+    nextBtn.onclick = () => changeTrack(1);
+
+    const clean = n => {
+        try {
+            return decodeURIComponent(n).replace(/\.[^.]+$/, '').replace(/^\d+[\.\-_\s]+/, '').trim();
+        } catch(e) { return n; }
+    };
+
+    async function init() {
+        try {
+            const response = await fetch(BASE_API);
+            const items = await response.json();
+
+            const folders = items.filter(i => 
+                i.type === 'dir' && 
+                !i.name.startsWith('.') && 
+                !FORBIDDEN_FOLDERS.includes(i.name)
+            );
+
+            folderNav.innerHTML = '';
+            folders.forEach((f, i) => {
+                const btn = document.createElement('div');
+                btn.className = 'folder-btn' + (i === 0 ? ' active' : '');
+                btn.textContent = f.name;
+                btn.onclick = () => {
+                    document.querySelectorAll('.folder-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    loadTracks(f.path);
+                };
+                folderNav.appendChild(btn);
+            });
+
+            if (folders.length > 0) loadTracks(folders[0].path);
+        } catch (e) {
+            playlist.innerHTML = '<div id="load-msg">Помилка підключення до репозиторію</div>';
+        }
+    }
+
+    async function loadTracks(path) {
+        playlist.innerHTML = '<div id="load-msg" class="loading">Завантаження треків...</div>';
+        try {
+            const response = await fetch(BASE_API + encodeURIComponent(path));
+            const data = await response.json();
+            tracks = data
+                .filter(f => /\.(mp3|wav|m4a)$/i.test(f.name))
+                .sort((a,b) => a.name.localeCompare(b.name, 'uk'))
+                .map(f => ({ name: clean(f.name), url: f.download_url }));
+            renderPlaylist();
+        } catch (e) {
+            playlist.innerHTML = '<div id="load-msg">Не вдалося завантажити треки</div>';
+        }
+    }
+
+    function renderPlaylist() {
+        playlist.innerHTML = '';
+        if (tracks.length === 0) {
+            playlist.innerHTML = '<div id="load-msg">У папці немає аудіофайлів</div>';
+            trackName.textContent = "Немає треків";
+            trackMeta.textContent = "Оберіть іншу папку";
+            return;
+        }
+        tracks.forEach((t, i) => {
+            const d = document.createElement('div');
+            d.className = 't-item';
+            d.innerHTML = `<span class="t-num">${(i+1).toString().padStart(2, '0')}</span><span class="t-title">${t.name}</span>`;
+            d.onclick = () => playTrack(i);
+            playlist.appendChild(d);
+        });
+        trackName.textContent = "Оберіть трек";
+        trackMeta.textContent = `${tracks.length} треків доступно`;
+    }
+
+    function changeTrack(direction) {
+        if (tracks.length === 0) return;
+        let newIdx = idx + direction;
+        if (newIdx >= tracks.length) newIdx = 0;
+        if (newIdx < 0) newIdx = tracks.length - 1;
+        playTrack(newIdx);
+    }
+
+    function playTrack(i) {
+        if (!tracks[i]) return;
+        idx = i;
+        currentTimeEl.textContent = "00:00";
+        durationEl.textContent = "00:00";
+        ws.load(tracks[idx].url);
+        ws.once('ready', () => {
+            ws.play();
+            updateUI();
+        });
+    }
+
+    function updateUI() {
+        document.querySelectorAll('.t-item').forEach((el, i) => {
+            el.classList.toggle('active', i === idx);
+            if (i === idx) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
+        if (tracks[idx]) {
+            trackName.textContent = tracks[idx].name;
+        }
+    }
+
+    init();
+</script>
+
+</body>
+</html>
