@@ -83,7 +83,7 @@
                 d.onclick = () => playTrack(i);
                 playlist.appendChild(d);
             });
-            if(tracks.length > 0) trackName.textContent = "Готовий до відтворення";
+            if(tracks.length > 0) trackName.textContent = "Виберіть трек для відтворення";
         })
         .catch(() => playlist.innerHTML = 'Помилка завантаження');
 </script>
