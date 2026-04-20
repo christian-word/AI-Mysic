@@ -1,0 +1,825 @@
+﻿<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Wave Player</title>
+    <script src="https://unpkg.com/wavesurfer.js@7"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg:          #07101f;
+            --bg2:         #0c1a2e;
+            --surface:     #0f2040;
+            --surface2:    #162b52;
+            --surface3:    #1e3868;
+            --blue:        #2b7fff;
+            --blue2:       #5299ff;
+            --blue3:       #1a5fe0;
+            --blue-dim:    rgba(43,127,255,0.18);
+            --blue-pale:   rgba(43,127,255,0.10);
+            --blue-glow:   rgba(43,127,255,0.35);
+            --cyan:        #00d4ff;
+            --cyan-dim:    rgba(0,212,255,0.15);
+            --text:        #e8f0ff;
+            --text2:       #8ba8d4;
+            --text3:       #4a6a9a;
+            --border:      rgba(43,127,255,0.12);
+            --border2:     rgba(43,127,255,0.28);
+            --shadow:      rgba(0,10,30,0.5);
+            --radius:      20px;
+        }
+
+        * { 
+            box-sizing: border-box; 
+            -webkit-tap-highlight-color: transparent; 
+            margin: 0; 
+            padding: 0; 
+        }
+
+        body {
+            font-family: 'Syne', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            padding: 20px 14px 52px;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            background-image:
+                radial-gradient(ellipse 60% 40% at 50% -5%, rgba(43,127,255,0.18) 0%, transparent 65%),
+                radial-gradient(ellipse 35% 25% at 85% 90%, rgba(0,212,255,0.08) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 50% at 10% 80%, rgba(43,127,255,0.06) 0%, transparent 70%);
+        }
+
+        #app { 
+            width: 100%; 
+            max-width: 430px; 
+            position: relative; 
+            z-index: 1; 
+        }
+
+        /* Grid noise overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(43,127,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(43,127,255,0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 0 2px;
+        }
+
+        .logo-wrap { display: flex; align-items: center; gap: 11px; }
+
+        .logo-icon {
+            width: 38px; height: 38px;
+            background: linear-gradient(135deg, var(--blue3), var(--blue));
+            border-radius: 12px;
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 0 20px var(--blue-glow), 0 4px 12px rgba(0,0,0,0.4);
+            position: relative;
+            overflow: hidden;
+        }
+        .logo-icon::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 50%;
+            background: rgba(255,255,255,0.12);
+            border-radius: 12px 12px 0 0;
+        }
+        .logo-icon svg { 
+            width: 20px; height: 20px; 
+            fill: none; 
+            stroke: #fff; 
+            stroke-width: 2; 
+            stroke-linecap: round; 
+            position: relative; 
+            z-index: 1; 
+        }
+
+        .logo-text { line-height: 1.2; }
+        .logo-title {
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--text);
+            letter-spacing: 0.5px;
+        }
+        .logo-sub {
+            font-size: 10px;
+            font-weight: 400;
+            color: var(--text3);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .status-pill {
+            font-size: 9px;
+            font-weight: 700;
+            color: var(--blue2);
+            background: var(--blue-pale);
+            border: 1px solid var(--border2);
+            border-radius: 100px;
+            padding: 5px 12px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-family: 'Space Mono', monospace;
+            transition: all 0.25s;
+        }
+        .status-pill.live {
+            color: var(--cyan);
+            border-color: rgba(0,212,255,0.3);
+            background: rgba(0,212,255,0.08);
+            box-shadow: 0 0 12px rgba(0,212,255,0.15);
+        }
+
+        /* Folder nav */
+        #folder-nav {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding: 0 2px 16px;
+            scrollbar-width: none;
+        }
+        #folder-nav::-webkit-scrollbar { display: none; }
+
+        .folder-btn {
+            padding: 8px 16px;
+            background: var(--surface);
+            border: 1px solid var(--border2);
+            border-radius: 100px;
+            font-family: 'Syne', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text2);
+            letter-spacing: 0.3px;
+        }
+        .folder-btn:hover {
+            border-color: var(--blue2);
+            color: var(--blue2);
+            background: var(--blue-pale);
+        }
+        .folder-btn.active {
+            background: var(--blue);
+            color: #fff;
+            border-color: var(--blue);
+            box-shadow: 0 4px 18px var(--blue-glow), 0 0 0 1px rgba(43,127,255,0.3);
+        }
+
+        /* Player card */
+        #player-card {
+            background: var(--surface);
+            border: 1px solid var(--border2);
+            border-radius: var(--radius);
+            padding: 22px 18px 18px;
+            margin-bottom: 12px;
+            position: sticky;
+            top: 10px;
+            z-index: 100;
+            box-shadow: 0 4px 40px var(--shadow), 0 0 0 1px var(--border);
+            overflow: hidden;
+        }
+
+        #player-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--blue3), var(--blue), var(--cyan));
+        }
+
+        #player-card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(43,127,255,0.08) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        /* Art zone */
+        .art-zone {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            margin-bottom: 18px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .art-thumb {
+            width: 62px; height: 62px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, var(--surface2), var(--surface3));
+            border: 1px solid var(--border2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06);
+        }
+
+        .art-icon {
+            position: absolute;
+            inset: 0;
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            transition: opacity 0.2s;
+        }
+        .art-icon svg { 
+            width: 24px; height: 24px; 
+            fill: none; 
+            stroke: var(--blue2); 
+            stroke-width: 1.8; 
+            stroke-linecap: round; 
+            opacity: 0.8; 
+        }
+
+        .art-bars {
+            display: flex;
+            gap: 3px;
+            align-items: flex-end;
+            height: 24px;
+            position: absolute;
+            z-index: 2;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .art-bars.playing { opacity: 1; }
+        .art-bars.playing ~ .art-icon { opacity: 0; }
+        .art-bars span {
+            display: block;
+            width: 3px;
+            background: linear-gradient(180deg, var(--cyan), var(--blue));
+            border-radius: 2px;
+            height: 6px;
+        }
+        .art-bars.playing span:nth-child(1) { animation: b1 0.85s ease infinite; }
+        .art-bars.playing span:nth-child(2) { animation: b2 0.65s ease infinite; }
+        .art-bars.playing span:nth-child(3) { animation: b3 0.95s ease infinite; }
+        .art-bars.playing span:nth-child(4) { animation: b4 0.75s ease infinite; }
+
+        @keyframes b1 { 0%,100%{height:5px} 50%{height:22px} }
+        @keyframes b2 { 0%,100%{height:16px} 50%{height:4px} }
+        @keyframes b3 { 0%,100%{height:8px} 50%{height:20px} }
+        @keyframes b4 { 0%,100%{height:18px} 50%{height:5px} }
+
+        .track-info { flex: 1; min-width: 0; }
+        #track-name {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 4px;
+            letter-spacing: 0.2px;
+        }
+        #track-meta {
+            font-size: 10px;
+            font-weight: 400;
+            color: var(--text3);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            font-family: 'Space Mono', monospace;
+        }
+
+        /* Waveform */
+        #waveform {
+            width: 100%;
+            height: 44px;
+            cursor: pointer;
+            margin-bottom: 5px;
+            position: relative;
+            z-index: 1;
+        }
+
+        #time-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            font-weight: 400;
+            color: var(--text3);
+            margin-bottom: 18px;
+            letter-spacing: 0.8px;
+            font-family: 'Space Mono', monospace;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            z-index: 1;
+        }
+
+        .playback-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-nav {
+            background: var(--surface2);
+            border: 1px solid var(--border2);
+            color: var(--text2);
+            width: 42px; height: 42px;
+            border-radius: 50%;
+            font-size: 14px;
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.18s;
+        }
+        .btn-nav:hover {
+            border-color: var(--blue2);
+            color: var(--blue2);
+            background: var(--blue-pale);
+            transform: scale(1.07);
+            box-shadow: 0 0 16px var(--blue-dim);
+        }
+        .btn-nav:active { transform: scale(0.93); }
+
+        .btn-play {
+            background: var(--blue);
+            color: #fff;
+            border: none;
+            width: 60px; height: 60px;
+            border-radius: 50%;
+            font-size: 20px;
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 24px var(--blue-glow), 0 0 0 1px rgba(43,127,255,0.2);
+            transition: all 0.2s;
+            position: relative;
+        }
+        .btn-play::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.18), transparent 60%);
+        }
+        .btn-play::after {
+            content: '';
+            position: absolute;
+            inset: -6px;
+            border-radius: 50%;
+            border: 1.5px solid var(--blue);
+            opacity: 0;
+            animation: ring 2.2s ease infinite;
+        }
+        .btn-play.playing::after { opacity: 1; }
+        @keyframes ring {
+            0% { transform: scale(1); opacity: 0.5; }
+            100% { transform: scale(1.55); opacity: 0; }
+        }
+        .btn-play:hover {
+            background: var(--blue2);
+            transform: scale(1.06);
+            box-shadow: 0 6px 32px rgba(43,127,255,0.55);
+        }
+        .btn-play:active { transform: scale(0.95); }
+
+        /* Volume */
+        .volume-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .vol-icon { font-size: 13px; color: var(--text3); }
+
+        #volumeSlider {
+            -webkit-appearance: none;
+            width: 72px; height: 3px;
+            background: var(--surface2);
+            border-radius: 10px;
+            outline: none;
+            cursor: pointer;
+        }
+        #volumeSlider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px; height: 14px;
+            background: var(--blue);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 8px var(--blue-glow);
+            border: 2px solid rgba(255,255,255,0.2);
+            transition: transform 0.15s;
+        }
+        #volumeSlider::-webkit-slider-thumb:hover { transform: scale(1.2); }
+
+        /* Playlist */
+        #playlist {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 8px;
+            border: 1px solid var(--border2);
+            box-shadow: 0 4px 30px var(--shadow);
+            overflow: hidden;
+        }
+
+        .t-item {
+            padding: 11px 14px;
+            border-radius: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 2px;
+            transition: all 0.18s;
+            border: 1px solid transparent;
+            position: relative;
+        }
+        .t-item:hover { background: var(--blue-pale); }
+        .t-item.active {
+            background: var(--blue-dim);
+            border-color: var(--border2);
+        }
+        .t-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 8px; bottom: 8px;
+            width: 2px;
+            background: linear-gradient(180deg, var(--blue), var(--cyan));
+            border-radius: 2px;
+        }
+        .t-item.active .t-title { color: var(--blue2); font-weight: 700; }
+        .t-item.active .t-num { color: var(--blue); }
+
+        .t-dot {
+            width: 5px; height: 5px;
+            border-radius: 50%;
+            background: var(--cyan);
+            flex-shrink: 0;
+            opacity: 0;
+            transition: opacity 0.2s;
+            box-shadow: 0 0 6px var(--cyan);
+        }
+        .t-item.active .t-dot { opacity: 1; }
+
+        .t-num {
+            font-size: 10px;
+            font-weight: 400;
+            color: var(--text3);
+            width: 22px;
+            flex-shrink: 0;
+            letter-spacing: 0.5px;
+            font-family: 'Space Mono', monospace;
+        }
+        .t-title {
+            flex: 1;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text2);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            transition: color 0.18s;
+        }
+        .t-item:hover .t-title { color: var(--text); }
+
+        #load-msg {
+            text-align: center;
+            color: var(--text3);
+            padding: 42px 0;
+            font-size: 12px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-family: 'Space Mono', monospace;
+        }
+
+        #playlist::-webkit-scrollbar { width: 4px; }
+        #playlist::-webkit-scrollbar-track { background: transparent; }
+        #playlist::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            opacity: 0.5;
+        }
+        .footer-dot {
+            width: 3px; height: 3px;
+            border-radius: 50%;
+            background: var(--blue2);
+        }
+        .footer-text {
+            font-size: 10px;
+            color: var(--text3);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-family: 'Space Mono', monospace;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+
+    <!-- Header -->
+    <div class="header">
+        <div class="logo-wrap">
+            <div class="logo-icon">
+                <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 6l6 4-6 4V6z" fill="white" stroke="none"/>
+                    <path d="M12 5v10M15.5 7v6M17 8.5v3" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <div class="logo-text">
+                <div class="logo-title">Sumy 2026</div>
+                <div class="logo-sub">Музичний плеєр</div>
+            </div>
+        </div>
+        <div class="status-pill" id="statusPill">Готовий</div>
+    </div>
+
+    <!-- Folder nav -->
+    <div id="folder-nav"></div>
+
+    <!-- Player card -->
+    <div id="player-card">
+        <div class="art-zone">
+            <div class="art-thumb">
+                <div class="art-bars" id="artBars">
+                    <span></span><span></span><span></span><span></span>
+                </div>
+                <div class="art-icon">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9 18V5l12-2v13" stroke-linejoin="round"/>
+                        <circle cx="6" cy="18" r="3"/>
+                        <circle cx="18" cy="16" r="3"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="track-info">
+                <div id="track-name">Оберіть папку</div>
+                <div id="track-meta">готовий</div>
+            </div>
+        </div>
+
+        <div id="waveform"></div>
+
+        <div id="time-info">
+            <span id="current-time">00:00</span>
+            <span id="duration">00:00</span>
+        </div>
+
+        <div class="controls">
+            <div class="playback-controls">
+                <button class="btn-nav" id="prevBtn">⏮</button>
+                <button class="btn-play" id="playBtn">▶</button>
+                <button class="btn-nav" id="nextBtn">⏭</button>
+            </div>
+            <div class="volume-container">
+                <span class="vol-icon">🔈</span>
+                <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.75">
+            </div>
+        </div>
+    </div>
+
+    <!-- Playlist -->
+    <div id="playlist">
+        <div id="load-msg">завантаження...</div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <div class="footer-dot"></div>
+        <div class="footer-text">Wave Player</div>
+        <div class="footer-dot"></div>
+    </div>
+
+</div>
+
+<script>
+    const USER_REPO = 'christian-word/AI-Mysic';
+    const BASE_API = `https://api.github.com/repos/${USER_REPO}/contents/`;
+    const FORBIDDEN_FOLDERS = ['Святий-обмін-2', 'temp', 'docs'];
+
+    let tracks = [], idx = 0, isSwitching = false;
+
+    const trackName = document.getElementById('track-name');
+    const trackMeta = document.getElementById('track-meta');
+    const currentTimeEl = document.getElementById('current-time');
+    const durationEl = document.getElementById('duration');
+    const playlist = document.getElementById('playlist');
+    const folderNav = document.getElementById('folder-nav');
+    const playBtn = document.getElementById('playBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const volumeSlider = document.getElementById('volumeSlider');
+    const artBars = document.getElementById('artBars');
+    const statusPill = document.getElementById('statusPill');
+
+    // === ВИПРАВЛЕНИЙ WAVESURFER ===
+    const ws = WaveSurfer.create({
+        container: '#waveform',
+        waveColor: '#162b52',        // Темний непрозорий колір (виправляє проблему)
+        progressColor: '#2b7fff',    // Яскравий синій прогрес
+        cursorColor: 'rgba(0,212,255,0.9)',
+        cursorWidth: 2,
+        barWidth: 2,
+        barGap: 1,
+        barRadius: 3,
+        height: 44,
+        normalize: true,
+        interact: true,
+        fillParent: true,
+        partialRender: true
+    });
+
+    const fmt = s => {
+        if (!s || s < 0) return "00:00";
+        return `${Math.floor(s/60).toString().padStart(2,'0')}:${Math.floor(s%60).toString().padStart(2,'0')}`;
+    };
+
+    function updateMediaSession() {
+        if ('mediaSession' in navigator && tracks[idx]) {
+            navigator.mediaSession.metadata = new MediaMetadata({
+                title: tracks[idx].name,
+                artist: 'Wave Player',
+                album: document.querySelector('.folder-btn.active')?.textContent || '',
+            });
+            navigator.mediaSession.setActionHandler('previoustrack', () => changeTrack(-1));
+            navigator.mediaSession.setActionHandler('nexttrack', () => changeTrack(1));
+            navigator.mediaSession.setActionHandler('play', () => ws.play());
+            navigator.mediaSession.setActionHandler('pause', () => ws.pause());
+        }
+    }
+
+    ws.on('decode', d => { durationEl.textContent = fmt(d); });
+    ws.on('timeupdate', t => { currentTimeEl.textContent = fmt(t); });
+    ws.on('play', () => {
+        playBtn.innerHTML = '⏸';
+        playBtn.classList.add('playing');
+        artBars.classList.add('playing');
+        statusPill.textContent = '▶ Відтворення';
+        statusPill.classList.add('live');
+    });
+    ws.on('pause', () => {
+        playBtn.innerHTML = '▶';
+        playBtn.classList.remove('playing');
+        artBars.classList.remove('playing');
+        statusPill.textContent = 'Пауза';
+        statusPill.classList.remove('live');
+    });
+    ws.on('finish', () => {
+        if (isSwitching) return;
+        try { 
+            if (ws.backend?.getAudioContext()?.state === 'suspended') 
+                ws.backend.getAudioContext().resume(); 
+        } catch(e){}
+        changeTrack(1);
+    });
+
+    volumeSlider.oninput = e => ws.setVolume(+e.target.value);
+    playBtn.onclick = () => ws.playPause();
+    prevBtn.onclick = () => changeTrack(-1);
+    nextBtn.onclick = () => changeTrack(1);
+
+    async function playTrack(i) {
+        if (!tracks[i]) return;
+        isSwitching = true;
+        ws.pause();
+        idx = i;
+        updateUI();
+        currentTimeEl.textContent = "00:00";
+        durationEl.textContent = "00:00";
+        trackMeta.textContent = "завантаження...";
+        statusPill.textContent = "…";
+        statusPill.classList.remove('live');
+
+        try {
+            await ws.load(tracks[idx].url);
+            trackMeta.textContent = "відтворення";
+            await ws.play();
+            updateMediaSession();
+        } catch(e) {
+            console.error(e);
+            trackMeta.textContent = "помилка";
+            statusPill.textContent = "Помилка";
+        } finally {
+            setTimeout(() => { isSwitching = false; }, 600);
+        }
+    }
+
+    function changeTrack(dir) {
+        if (!tracks.length) return;
+        let n = idx + dir;
+        if (n >= tracks.length) n = 0;
+        if (n < 0) n = tracks.length - 1;
+        playTrack(n);
+    }
+
+    function updateUI() {
+        document.querySelectorAll('.t-item').forEach((el, i) => el.classList.toggle('active', i === idx));
+        const el = document.querySelector('.t-item.active');
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        if (tracks[idx]) trackName.textContent = tracks[idx].name;
+    }
+
+    const clean = n => {
+        try { 
+            return decodeURIComponent(n).replace(/\.[^.]+$/, '').replace(/^\d+[\.\-_\s]+/, '').trim(); 
+        }
+        catch(e) { return n; }
+    };
+
+    async function init() {
+        try {
+            const res = await fetch(BASE_API);
+            const items = await res.json();
+            const folders = items.filter(i => i.type === 'dir' && !i.name.startsWith('.') && !FORBIDDEN_FOLDERS.includes(i.name));
+            
+            folderNav.innerHTML = '';
+            folders.forEach((f, i) => {
+                const btn = document.createElement('div');
+                btn.className = 'folder-btn' + (i === 0 ? ' active' : '');
+                btn.textContent = f.name;
+                btn.onclick = () => {
+                    document.querySelectorAll('.folder-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    loadTracks(f.path);
+                };
+                folderNav.appendChild(btn);
+            });
+
+            if (folders.length > 0) loadTracks(folders[0].path);
+        } catch(e) {
+            playlist.innerHTML = '<div id="load-msg">помилка з\'єднання</div>';
+        }
+    }
+
+    async function loadTracks(path) {
+        playlist.innerHTML = '<div id="load-msg">завантаження...</div>';
+        try {
+            const res = await fetch(BASE_API + encodeURIComponent(path));
+            const data = await res.json();
+            
+            tracks = data
+                .filter(f => /\.(mp3|wav|m4a)$/i.test(f.name))
+                .sort((a,b) => a.name.localeCompare(b.name, 'uk'))
+                .map(f => ({ 
+                    name: clean(f.name), 
+                    url: f.download_url 
+                }));
+
+            playlist.innerHTML = '';
+            tracks.forEach((t, i) => {
+                const d = document.createElement('div');
+                d.className = 't-item';
+                d.innerHTML = `
+                    <div class="t-dot"></div>
+                    <span class="t-num">${(i+1).toString().padStart(2,'0')}</span>
+                    <span class="t-title">${t.name}</span>
+                `;
+                d.onclick = () => playTrack(i);
+                playlist.appendChild(d);
+            });
+
+            trackName.textContent = "оберіть трек";
+            trackMeta.textContent = `${tracks.length} треків`;
+            statusPill.textContent = `${tracks.length} треків`;
+        } catch(e) {
+            playlist.innerHTML = '<div id="load-msg">помилка завантаження</div>';
+        }
+    }
+
+    // Запуск
+    init();
+</script>
+</body>
+</html>
