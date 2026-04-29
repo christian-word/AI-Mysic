@@ -1,0 +1,251 @@
+﻿<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Боже мого серця — Energetic Chorus</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f0f4f9;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    margin: 0;
+    padding: 30px 16px;
+  }
+  .page-wrap { width: 100%; max-width: 860px; }
+
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #5a7aaa;
+    font-size: 13px;
+    text-decoration: none;
+    margin-bottom: 20px;
+    padding: 6px 14px;
+    background: #fff;
+    border: 1px solid #e4ecf7;
+    border-radius: 8px;
+    transition: 0.18s;
+  }
+  .back-btn:hover { background: #3a7bd5; color: white; border-color: #3a7bd5; }
+
+  .page-header { margin-bottom: 20px; }
+  .page-header h1 {
+    color: #e07800;
+    font-weight: 300;
+    font-size: 2rem;
+    margin: 0 0 4px;
+    letter-spacing: -0.5px;
+  }
+  .page-header span { color: #aaa; font-size: 0.9rem; }
+
+  .video-card {
+    background: #fff;
+    border: 1px solid #e4ecf7;
+    border-radius: 14px;
+    padding: 22px 24px;
+    margin-bottom: 16px;
+  }
+
+  .video-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 18px;
+  }
+  .video-cover {
+    width: 52px; height: 52px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #f7971e, #e74c3c);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-size: 22px;
+  }
+  .video-info { flex: 1; }
+  .video-title { font-size: 1rem; font-weight: 600; color: #333; margin: 0 0 2px; }
+  .video-sub { font-size: 0.82rem; color: #aaa; }
+  .badge-v3 {
+    display: inline-block;
+    background: #fff3e6; color: #e07800;
+    border-radius: 4px; padding: 1px 7px;
+    font-size: 11px; font-weight: 600;
+    margin-right: 6px; vertical-align: middle;
+  }
+
+  .video-wrapper {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%; /* 16:9 */
+    background: #000;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .video-wrapper video {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    border-radius: 10px;
+  }
+
+  /* Placeholder shown when no video src is set */
+  .video-placeholder {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    border-radius: 10px;
+  }
+  .video-placeholder .play-circle {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    background: rgba(247,151,30,0.9);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; color: white;
+  }
+  .video-placeholder p {
+    color: rgba(255,255,255,0.6);
+    font-size: 13px;
+    margin: 0;
+  }
+
+  .video-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+  .action-btn {
+    background: #f5f8ff;
+    border: 1px solid #dde8f9;
+    padding: 7px 16px; border-radius: 8px;
+    font-size: 13px; color: #5a7aaa;
+    cursor: pointer; transition: 0.18s;
+    display: flex; align-items: center; gap: 7px;
+    text-decoration: none;
+  }
+  .action-btn:hover { background: #e07800; color: white; border-color: #e07800; }
+  .action-btn.primary {
+    background: #fff3e6; border-color: #f7b26a; color: #e07800; font-weight: 600;
+  }
+  .action-btn.primary:hover { background: #e07800; color: white; border-color: #e07800; }
+
+  .page-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+    padding: 12px 4px 0;
+    border-top: 1px solid #e8eef7;
+  }
+  .brand-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+  .brand-icon {
+    width: 28px; height: 28px; border-radius: 7px;
+    background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .brand-icon svg { width: 14px; height: 14px; fill: white; }
+  .brand-text { font-size: 13px; font-weight: 700; color: #3a7bd5; letter-spacing: 0.4px; }
+  .brand-sub { font-size: 10px; color: #bbb; display: block; line-height: 1; }
+
+  .toast {
+    position: fixed; top: 20px; left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    background: #333; color: white;
+    padding: 9px 18px; border-radius: 30px;
+    font-size: 13px; opacity: 0; transition: 0.3s; z-index: 1000;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<div id="toast" class="toast">🔗 Посилання скопійовано!</div>
+
+<div class="page-wrap">
+
+  <a class="back-btn" href="player.html">
+    <i class="fas fa-arrow-left"></i> Назад до пісень
+  </a>
+
+  <div class="page-header">
+    <h1>Energetic Chorus</h1>
+    <span>Боже мого серця · Відео</span>
+  </div>
+
+  <div class="video-card">
+    <div class="video-meta">
+      <div class="video-cover">🎬</div>
+      <div class="video-info">
+        <div class="video-title">Боже мого серця</div>
+        <div class="video-sub"><span class="badge-v3">Відео</span> Energetic Chorus · Кліп</div>
+      </div>
+    </div>
+
+    <div class="video-wrapper">
+      <!--
+        Замініть src на шлях до вашого відео-файлу.
+        Приклад: <video controls src="Боже_мого_серця_(Energetic_Chorus).mp4"></video>
+        Підтримуються формати: .mp4, .webm, .mov
+      -->
+      <video controls id="main-video"
+        src="https://github.com/christian-word/AI-Mysic/releases/download/v1.0.0/bible.reading.mp4"
+        preload="metadata"
+        poster="">
+        Ваш браузер не підтримує відтворення відео.
+      </video>
+    </div>
+
+    <div class="video-actions">
+      <button class="action-btn primary" onclick="document.getElementById('main-video').play()">
+        <i class="fas fa-play"></i> Відтворити
+      </button>
+      <button class="action-btn" onclick="shareTG()">
+        <i class="fab fa-telegram-plane"></i> Telegram
+      </button>
+      <button class="action-btn" onclick="copyLink()">
+        <i class="fas fa-link"></i> Посилання
+      </button>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <div></div>
+    <div class="brand-logo">
+      <div class="brand-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z"/></svg>
+      </div>
+      <div>
+        <span class="brand-text">МЕЛОДІЯ</span>
+        <span class="brand-sub">christian music</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function shareTG() {
+    const text = encodeURIComponent('🎬 Боже мого серця — Energetic Chorus\n\n' + window.location.href);
+    window.open('https://t.me/share/url?url=' + encodeURIComponent(window.location.href) + '&text=' + text, '_blank');
+  }
+
+  function copyLink() {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      const t = document.getElementById('toast');
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2000);
+    });
+  }
+</script>
+</body>
+</html>
