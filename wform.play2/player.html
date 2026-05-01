@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Боже мого серця</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f0f4f9;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    margin: 0;
+    padding: 30px 16px;
+  }
+  .page-wrap { width: 100%; max-width: 860px; }
+  .page-header { margin-bottom: 20px; }
+  .page-header h1 {
+    color: #3a7bd5;
+    font-weight: 300;
+    font-size: 2rem;
+    margin: 0 0 4px;
+    letter-spacing: -0.5px;
+  }
+  .page-header span { color: #aaa; font-size: 0.9rem; }
+
+  .track-card {
+    background: #fff;
+    border: 1px solid #e4ecf7;
+    border-radius: 14px;
+    padding: 22px 24px;
+    margin-bottom: 16px;
+  }
+  .track-card.playing {
+    border-color: #3a7bd5;
+    box-shadow: 0 0 0 3px rgba(58,123,213,0.08);
+  }
+  .track-top {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 14px;
+  }
+  .track-cover {
+    width: 52px; height: 52px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-size: 22px;
+  }
+  .track-cover.v2 { background: linear-gradient(135deg, #667eea, #764ba2); }
+  .track-cover.v3 { background: linear-gradient(135deg, #f7971e, #e74c3c); }
+  .track-cover.v4 { background: linear-gradient(135deg, #11998e, #38ef7d); }
+  .track-info { flex: 1; }
+  .track-title { font-size: 1rem; font-weight: 600; color: #333; margin: 0 0 2px; }
+  .track-sub { font-size: 0.82rem; color: #aaa; }
+  .badge {
+    display: inline-block;
+    background: #eef3fd; color: #3a7bd5;
+    border-radius: 4px; padding: 1px 7px;
+    font-size: 11px; font-weight: 600;
+    margin-right: 6px; vertical-align: middle;
+  }
+  .badge.v2 { background: #f3eeff; color: #764ba2; }
+  .badge.v3 { background: #fff3e6; color: #e07800; }
+  .badge.v4 { background: #e6faf3; color: #11998e; }
+  .play-btn {
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    border: 2px solid #3a7bd5;
+    background: #fff; color: #3a7bd5;
+    font-size: 16px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: 0.18s;
+    flex-shrink: 0; outline: none;
+  }
+  .play-btn:hover, .track-card.playing .play-btn { background: #3a7bd5; color: white; }
+
+  /* Video card styles */
+  .video-card {
+    background: #fff;
+    border: 1px solid #e4ecf7;
+    border-radius: 14px;
+    padding: 22px 24px;
+    margin-bottom: 16px;
+    text-decoration: none;
+    display: block;
+    transition: 0.2s;
+    cursor: pointer;
+  }
+  .video-card:hover {
+    border-color: #e07800;
+    box-shadow: 0 0 0 3px rgba(224,120,0,0.08);
+  }
+  .video-preview {
+    position: relative;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    border-radius: 10px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .video-preview-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 48px;
+  }
+  .video-preview-bars span {
+    display: block;
+    width: 3px;
+    border-radius: 2px;
+    background: rgba(247,151,30,0.5);
+    animation: barPulse 1.2s ease-in-out infinite;
+  }
+  .video-preview-bars span:nth-child(odd) { background: rgba(231,76,60,0.5); }
+  @keyframes barPulse {
+    0%, 100% { transform: scaleY(0.4); }
+    50% { transform: scaleY(1); }
+  }
+  .video-preview-bars span:nth-child(1)  { height: 28px; animation-delay: 0s; }
+  .video-preview-bars span:nth-child(2)  { height: 44px; animation-delay: 0.1s; }
+  .video-preview-bars span:nth-child(3)  { height: 36px; animation-delay: 0.2s; }
+  .video-preview-bars span:nth-child(4)  { height: 52px; animation-delay: 0.05s; }
+  .video-preview-bars span:nth-child(5)  { height: 32px; animation-delay: 0.15s; }
+  .video-preview-bars span:nth-child(6)  { height: 48px; animation-delay: 0.25s; }
+  .video-preview-bars span:nth-child(7)  { height: 40px; animation-delay: 0.08s; }
+  .video-preview-bars span:nth-child(8)  { height: 56px; animation-delay: 0.18s; }
+  .video-preview-bars span:nth-child(9)  { height: 36px; animation-delay: 0.3s; }
+  .video-preview-bars span:nth-child(10) { height: 44px; animation-delay: 0.12s; }
+  .video-preview-bars span:nth-child(11) { height: 30px; animation-delay: 0.22s; }
+  .video-preview-bars span:nth-child(12) { height: 50px; animation-delay: 0.07s; }
+  .video-preview-bars span:nth-child(13) { height: 38px; animation-delay: 0.17s; }
+  .video-preview-bars span:nth-child(14) { height: 46px; animation-delay: 0.27s; }
+  .video-preview-bars span:nth-child(15) { height: 34px; animation-delay: 0.03s; }
+  .video-preview-bars span:nth-child(16) { height: 52px; animation-delay: 0.13s; }
+  .video-preview-bars span:nth-child(17) { height: 28px; animation-delay: 0.23s; }
+  .video-preview-bars span:nth-child(18) { height: 42px; animation-delay: 0.09s; }
+  .video-preview-bars span:nth-child(19) { height: 58px; animation-delay: 0.19s; }
+  .video-preview-bars span:nth-child(20) { height: 36px; animation-delay: 0.29s; }
+
+  .video-play-overlay {
+    position: absolute;
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: rgba(247,151,30,0.92);
+    display: flex; align-items: center; justify-content: center;
+    color: white;
+    font-size: 17px;
+    box-shadow: 0 2px 12px rgba(247,151,30,0.4);
+    transition: 0.18s;
+  }
+  .video-card:hover .video-play-overlay {
+    background: #e07800;
+    transform: translate(-50%, -50%) scale(1.08);
+  }
+  .video-time-badge {
+    position: absolute;
+    bottom: 8px; right: 10px;
+    background: rgba(0,0,0,0.55);
+    color: #fff;
+    font-size: 11px;
+    font-family: monospace;
+    padding: 2px 7px;
+    border-radius: 4px;
+  }
+  .open-video-hint {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    font-size: 12px;
+    color: #e07800;
+    font-weight: 600;
+  }
+  .open-video-hint i { font-size: 11px; }
+
+  .wave-wrap {
+    position: relative;
+    background: #f5f8fd;
+    border-radius: 8px;
+    height: 80px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .wave-inner { height: 80px; }
+  .time-label {
+    position: absolute; bottom: 5px; right: 8px;
+    font-size: 11px; font-family: monospace; color: #aab;
+    pointer-events: none; z-index: 10;
+  }
+  .cur-label {
+    position: absolute; bottom: 5px; left: 8px;
+    font-size: 11px; font-family: monospace; color: #3a7bd5;
+    pointer-events: none; z-index: 10;
+  }
+
+  .page-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+    padding: 12px 4px 0;
+    border-top: 1px solid #e8eef7;
+  }
+  .footer-actions { display: flex; gap: 8px; }
+  .action-btn {
+    background: #f5f8ff;
+    border: 1px solid #dde8f9;
+    padding: 6px 14px; border-radius: 8px;
+    font-size: 13px; color: #5a7aaa;
+    cursor: pointer; transition: 0.18s;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .action-btn:hover { background: #3a7bd5; color: white; border-color: #3a7bd5; }
+
+  .brand-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+  .brand-icon {
+    width: 28px; height: 28px; border-radius: 7px;
+    background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .brand-icon svg { width: 14px; height: 14px; fill: white; }
+  .brand-text { font-size: 13px; font-weight: 700; color: #3a7bd5; letter-spacing: 0.4px; }
+  .brand-sub { font-size: 10px; color: #bbb; display: block; line-height: 1; }
+
+  @media (max-height: 820px), (max-width: 480px) {
+    body { padding: 14px 12px; }
+    .page-header { margin-bottom: 10px; }
+    .page-header h1 { font-size: 1.5rem; margin-bottom: 2px; }
+    .track-card, .video-card { padding: 12px 14px; margin-bottom: 8px; }
+    .track-top { margin-bottom: 8px; gap: 10px; }
+    .track-cover { width: 40px; height: 40px; font-size: 17px; border-radius: 8px; }
+    .play-btn { width: 36px; height: 36px; font-size: 13px; }
+    .wave-wrap, .wave-inner { height: 56px; }
+    .video-preview { height: 54px; }
+    .video-preview-bars { height: 34px; }
+    .video-preview-bars span { width: 2px; }
+    .video-play-overlay { width: 36px; height: 36px; font-size: 14px; }
+    .open-video-hint { margin-top: 7px; }
+    .page-footer { padding: 8px 4px 0; margin-top: 4px; }
+    .action-btn { padding: 5px 10px; font-size: 12px; }
+    .track-title { font-size: 0.92rem; }
+  }
+
+  .toast {
+    position: fixed; top: 20px; left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    background: #333; color: white;
+    padding: 9px 18px; border-radius: 30px;
+    font-size: 13px; opacity: 0; visibility: hidden;
+    pointer-events: none; transition: 0.3s; z-index: 1000;
+  }
+  .toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<div id="toast" class="toast">🔗 Посилання скопійовано!</div>
+
+<div class="page-wrap">
+  <div class="page-header">
+    <h1>Я дивлюсь на хрест</h1>
+    <span>Три варіанти пісні</span>
+  </div>
+
+  <!-- Track 1 -->
+  <div class="track-card" id="card-0">
+    <div class="track-top">
+      <div class="track-cover">🎵</div>
+      <div class="track-info">
+        <div class="track-title">Я дивлюсь на хрест</div>
+        <div class="track-sub"><span class="badge">Версія 1</span> Пісня 1</div>
+      </div>
+      <button class="play-btn" id="btn-0" onclick="togglePlay(0)">▶</button>
+    </div>
+    <div class="wave-wrap">
+      <div id="wave-0" class="wave-inner"></div>
+      <span class="cur-label" id="cur-0">00:00</span>
+      <span class="time-label" id="dur-0">--:--</span>
+    </div>
+  </div>
+
+  <!-- Track 2 -->
+  <div class="track-card" id="card-1">
+    <div class="track-top">
+      <div class="track-cover v3">🎵</div>
+      <div class="track-info">
+        <div class="track-title">Я дивлюсь на хрест (Дует)</div>
+        <div class="track-sub"><span class="badge v3">Дует</span> Пісня 2</div>
+      </div>
+      <button class="play-btn" id="btn-1" onclick="togglePlay(1)">▶</button>
+    </div>
+    <div class="wave-wrap">
+      <div id="wave-1" class="wave-inner"></div>
+      <span class="cur-label" id="cur-1">00:00</span>
+      <span class="time-label" id="dur-1">--:--</span>
+    </div>
+  </div>
+
+  <!-- Track 3 -->
+  <div class="track-card" id="card-2">
+    <div class="track-top">
+      <div class="track-cover v4">🎶</div>
+      <div class="track-info">
+        <div class="track-title">Я дивлюсь на хрест (Дует) (Remix)</div>
+        <div class="track-sub"><span class="badge v4">Дует · Remix</span> Пісня 3</div>
+      </div>
+      <button class="play-btn" id="btn-2" onclick="togglePlay(2)">▶</button>
+    </div>
+    <div class="wave-wrap">
+      <div id="wave-2" class="wave-inner"></div>
+      <span class="cur-label" id="cur-2">00:00</span>
+      <span class="time-label" id="dur-2">--:--</span>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <div class="footer-actions">
+      <button class="action-btn" onclick="shareTG()"><i class="fab fa-telegram-plane"></i> Telegram</button>
+      <button class="action-btn" onclick="copyLink()"><i class="fas fa-link"></i> Посилання</button>
+    </div>
+    <div class="brand-logo">
+      <div class="brand-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z"/></svg>
+      </div>
+      <div>
+        <span class="brand-text">МЕЛОДІЯ</span>
+        <span class="brand-sub">christian music</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import WaveSurfer from 'https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.esm.js';
+
+  const tracks = [
+    { src: 'Я дивлюсь на хрест.m4a',               title: 'Я дивлюсь на хрест' },
+    { src: 'Я дивлюсь на хрест (Дует).m4a',         title: 'Я дивлюсь на хрест (Дует)' },
+    { src: 'Я дивлюсь на хрест (Дует) (Remix).m4a', title: 'Я дивлюсь на хрест (Дует) (Remix)' }
+  ];
+
+  const colors = [
+    { wave: '#c7dcf7', progress: '#3a7bd5' },
+    { wave: '#ffd9c0', progress: '#e07800' },
+    { wave: '#c8f0dc', progress: '#11998e' }
+  ];
+
+  const fmt = s => new Date(s * 1000).toISOString().substr(14, 5);
+
+  const players = tracks.map((track, i) => {
+    const ws = WaveSurfer.create({
+      container: `#wave-${i}`,
+      waveColor: colors[i].wave,
+      progressColor: colors[i].progress,
+      barWidth: 2,
+      barGap: 1,
+      barRadius: 2,
+      height: 80,
+      normalize: true,
+      url: track.src,
+      interact: true,
+      dragToSeek: true,
+      autoScroll: true,
+      autoCenter: true,
+      minPxPerSec: 60,
+    });
+
+    ws.on('ready', (dur) => {
+      document.getElementById(`dur-${i}`).textContent = fmt(dur);
+    });
+
+    ws.on('timeupdate', (cur) => {
+      document.getElementById(`cur-${i}`).textContent = fmt(cur);
+    });
+
+    ws.on('play', () => {
+      document.getElementById(`btn-${i}`).innerHTML = '&#9612;&#9612;';
+      document.getElementById(`card-${i}`).classList.add('playing');
+      players.forEach((p, j) => {
+        if (j !== i && p.isPlaying()) {
+          p.pause();
+          document.getElementById(`card-${j}`).classList.remove('playing');
+          document.getElementById(`btn-${j}`).innerHTML = '&#9654;';
+        }
+      });
+    });
+
+    ws.on('pause', () => {
+      document.getElementById(`btn-${i}`).innerHTML = '&#9654;';
+      document.getElementById(`card-${i}`).classList.remove('playing');
+    });
+
+    ws.on('finish', () => {
+      document.getElementById(`btn-${i}`).innerHTML = '&#9654;';
+      document.getElementById(`card-${i}`).classList.remove('playing');
+    });
+
+    return ws;
+  });
+
+  window.togglePlay = (i) => {
+    players[i].playPause();
+  };
+
+  window.shareTG = () => {
+    const text = encodeURIComponent(`🎵 Я дивлюсь на хрест\n\n${window.location.href}`);
+    window.open(`https://t.me/share/url?url=${encodeURIComponent(window.location.href)}&text=${text}`, '_blank');
+  };
+
+  window.copyLink = () => {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      const t = document.getElementById('toast');
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2000);
+    });
+  };
+</script>
+</body>
+</html>
