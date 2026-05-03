@@ -269,7 +269,7 @@
 <div class="page-wrap">
   <div class="page-header">
     <h1>Боже мого серця</h1>
-    <span>Три інструментальні варіанти</span>
+    <span>Два інструментальні варіанти</span>
   </div>
 
   <!-- Track 1 -->
@@ -289,13 +289,13 @@
     </div>
   </div>
 
-  <!-- Track 2 -->
+  <!-- Track 3 -->
   <div class="track-card" id="card-1">
     <div class="track-top">
-      <div class="track-cover v2">🎶</div>
+      <div class="track-cover v3">🎼</div>
       <div class="track-info">
-        <div class="track-title">Боже мого серця (0_Majestic Instrumental)</div>
-        <div class="track-sub"><span class="badge v2">Majestic · 0</span> Пісня 2</div>
+        <div class="track-title">Боже мого серця (1_Majestic Instrumental)</div>
+        <div class="track-sub"><span class="badge v3">Majestic · 1</span> Пісня 2</div>
       </div>
       <button class="play-btn" id="btn-1" onclick="togglePlay(1)">▶</button>
     </div>
@@ -303,23 +303,6 @@
       <div id="wave-1" class="wave-inner"></div>
       <span class="cur-label" id="cur-1">00:00</span>
       <span class="time-label" id="dur-1">--:--</span>
-    </div>
-  </div>
-
-  <!-- Track 3 -->
-  <div class="track-card" id="card-2">
-    <div class="track-top">
-      <div class="track-cover v3">🎼</div>
-      <div class="track-info">
-        <div class="track-title">Боже мого серця (1_Majestic Instrumental)</div>
-        <div class="track-sub"><span class="badge v3">Majestic · 1</span> Пісня 3</div>
-      </div>
-      <button class="play-btn" id="btn-2" onclick="togglePlay(2)">▶</button>
-    </div>
-    <div class="wave-wrap">
-      <div id="wave-2" class="wave-inner"></div>
-      <span class="cur-label" id="cur-2">00:00</span>
-      <span class="time-label" id="dur-2">--:--</span>
     </div>
   </div>
 
@@ -345,13 +328,11 @@
 
   const tracks = [
     { src: 'Боже мого серця (Majestic Instrumental).m4a',   title: 'Боже мого серця (Majestic Instrumental)' },
-    { src: 'Боже мого серця (0_Majestic Instrumental).m4a', title: 'Боже мого серця (0_Majestic Instrumental)' },
     { src: 'Боже мого серця (1_Majestic Instrumental).m4a', title: 'Боже мого серця (1_Majestic Instrumental)' }
   ];
 
   const colors = [
     { wave: '#d8b8f0', progress: '#6b3fa0' },
-    { wave: '#f5b8d8', progress: '#be185d' },
     { wave: '#c0c8f8', progress: '#3730a3' }
   ];
 
