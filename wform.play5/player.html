@@ -1,0 +1,320 @@
+﻿<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Worship Player - Turquoise Classic</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #e0f2f1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    margin: 0;
+    padding: 30px 16px;
+  }
+  .page-wrap { width: 100%; max-width: 860px; }
+  .page-header { margin-bottom: 20px; }
+  .page-header h1 {
+    color: #006d77;
+    font-weight: 300;
+    font-size: 2.1rem;
+    margin: 0 0 4px;
+    letter-spacing: -0.6px;
+  }
+  .page-header span { color: #477f7f; font-size: 0.92rem; }
+
+  .track-card {
+    background: #ffffff;
+    border: 1px solid #b2e0dd;
+    border-radius: 16px;
+    padding: 22px 24px;
+    margin-bottom: 16px;
+    transition: all 0.25s ease;
+  }
+  .track-card.playing {
+    border-color: #006d77;
+    box-shadow: 0 0 0 4px rgba(0, 109, 119, 0.12);
+  }
+
+  .track-top {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 14px;
+  }
+  .track-cover {
+    width: 54px; height: 54px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #006d77, #00b4a2);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-size: 21px; color: white;
+    box-shadow: 0 4px 10px rgba(0, 109, 119, 0.2);
+  }
+  .track-cover.v2 { background: linear-gradient(135deg, #00a5b8, #00d4e0); }
+  .track-cover.v3 { background: linear-gradient(135deg, #00b48c, #00e0b0); }
+  
+  .track-info { flex: 1; }
+  .track-title { 
+    font-size: 1.02rem; 
+    font-weight: 600; 
+    color: #1a3c3f; 
+    margin: 0 0 3px; 
+  }
+  .track-sub { font-size: 0.83rem; color: #5a8a88; }
+
+  .badge {
+    display: inline-block;
+    background: #d6f0ed; 
+    color: #006d77;
+    border-radius: 5px; 
+    padding: 1px 8px;
+    font-size: 11.5px; 
+    font-weight: 600;
+    margin-right: 6px;
+  }
+  .badge.v2 { background: #d0f0f7; color: #007f92; }
+  .badge.v3 { background: #d6f2e8; color: #008c6e; }
+
+  .play-btn {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    border: 2.5px solid #006d77;
+    background: #fff; 
+    color: #006d77;
+    font-size: 15px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; 
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+  }
+  .play-btn .fa-play { margin-left: 2px; }
+  .play-btn:hover, .track-card.playing .play-btn { 
+    background: #006d77; 
+    color: white;
+    transform: scale(1.05);
+  }
+
+  .wave-wrap {
+    position: relative;
+    background: #f0f9f7;
+    border-radius: 10px;
+    height: 80px;
+    cursor: pointer;
+    overflow: hidden;
+  }
+  .wave-inner { height: 80px; }
+  .time-label {
+    position: absolute; bottom: 6px; right: 10px;
+    font-size: 11.5px; font-family: monospace; color: #6b9a95;
+    pointer-events: none; z-index: 10;
+  }
+  .cur-label {
+    position: absolute; bottom: 6px; left: 10px;
+    font-size: 11.5px; font-family: monospace; color: #006d77;
+    pointer-events: none; z-index: 10;
+  }
+
+  .page-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    padding: 14px 4px 0;
+    border-top: 1px solid #b2e0dd;
+  }
+  .action-btn {
+    background: #ffffff;
+    border: 1px solid #b2e0dd;
+    padding: 7px 16px; 
+    border-radius: 10px;
+    font-size: 13.5px; 
+    color: #006d77;
+    cursor: pointer; 
+    transition: 0.2s;
+    display: flex; 
+    align-items: center; 
+    gap: 6px;
+  }
+  .action-btn:hover { 
+    background: #006d77; 
+    color: white; 
+    border-color: #006d77; 
+  }
+
+  .brand-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+  .brand-icon {
+    width: 30px; height: 30px; border-radius: 8px;
+    background: linear-gradient(135deg, #006d77, #00b4a2);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 3px 8px rgba(0, 109, 119, 0.25);
+  }
+  .brand-icon i { font-size: 15px; color: white; }
+  .brand-text { 
+    font-size: 13.5px; 
+    font-weight: 700; 
+    color: #006d77; 
+    letter-spacing: 0.5px; 
+  }
+  .brand-sub { font-size: 10px; color: #5a8a88; display: block; line-height: 1; }
+
+  .toast {
+    position: fixed; top: 20px; left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    background: #006d77; color: white;
+    padding: 10px 20px; border-radius: 30px;
+    font-size: 13.5px; opacity: 0; visibility: hidden;
+    transition: 0.3s; z-index: 1000;
+  }
+  .toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<div id="toast" class="toast">🔗 Посилання скопійовано!</div>
+
+<div class="page-wrap">
+  <div class="page-header">
+    <h1>Worship Collection</h1>
+    <span>Хто достойний слави</span>
+  </div>
+
+  <!-- Track 1 -->
+  <div class="track-card" id="card-0">
+    <div class="track-top">
+      <div class="track-cover"><i class="fas fa-headphones"></i></div>
+      <div class="track-info">
+        <div class="track-title">Хто достойний слави</div>
+        <div class="track-sub"><span class="badge">Hi-Fi</span> High Fidelity Worship</div>
+      </div>
+      <button class="play-btn" id="btn-0" onclick="togglePlay(0)">
+        <i class="fas fa-play"></i>
+      </button>
+    </div>
+    <div class="wave-wrap">
+      <div id="wave-0" class="wave-inner"></div>
+      <span class="cur-label" id="cur-0">00:00</span>
+      <span class="time-label" id="dur-0">--:--</span>
+    </div>
+  </div>
+
+  <!-- Track 2 -->
+  <div class="track-card" id="card-1">
+    <div class="track-top">
+      <div class="track-cover v2"><i class="fas fa-microphone-lines"></i></div>
+      <div class="track-info">
+        <div class="track-title">1v. Хто достойний слави</div>
+        <div class="track-sub"><span class="badge v2">Worship</span> Version 1</div>
+      </div>
+      <button class="play-btn" id="btn-1" onclick="togglePlay(1)">
+        <i class="fas fa-play"></i>
+      </button>
+    </div>
+    <div class="wave-wrap">
+      <div id="wave-1" class="wave-inner"></div>
+      <span class="cur-label" id="cur-1">00:00</span>
+      <span class="time-label" id="dur-1">--:--</span>
+    </div>
+  </div>
+
+  <!-- Track 3 -->
+  <div class="track-card" id="card-2">
+    <div class="track-top">
+      <div class="track-cover v3"><i class="fas fa-guitar"></i></div>
+      <div class="track-info">
+        <div class="track-title">2v. Хто достойний слави</div>
+        <div class="track-sub"><span class="badge v3">Worship</span> Version 2</div>
+      </div>
+      <button class="play-btn" id="btn-2" onclick="togglePlay(2)">
+        <i class="fas fa-play"></i>
+      </button>
+    </div>
+    <div class="wave-wrap">
+      <div id="wave-2" class="wave-inner"></div>
+      <span class="cur-label" id="cur-2">00:00</span>
+      <span class="time-label" id="dur-2">--:--</span>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <div class="footer-actions">
+      <button class="action-btn" onclick="shareTG()"><i class="fab fa-telegram-plane"></i> Telegram</button>
+      <button class="action-btn" onclick="copyLink()"><i class="fas fa-link"></i> Посилання</button>
+    </div>
+    <div class="brand-logo">
+      <div class="brand-icon">
+        <i class="fas fa-music"></i>
+      </div>
+      <div>
+        <span class="brand-text">МЕЛОДІЯ</span>
+        <span class="brand-sub">christian music</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import WaveSurfer from 'https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.esm.js';
+
+  const tracks = [
+    { src: 'Хто достойний слави_ (High Fidelity Worship).m4a' },
+    { src: '1v.Хто достойний слави (Worship).m4a' },
+    { src: '2v.Хто достойний слави (Worship).m4a' }
+  ];
+
+  const colors = [
+    { wave: '#80e0d8', progress: '#006d77' },
+    { wave: '#8be8f0', progress: '#007f92' },
+    { wave: '#80e8c8', progress: '#008c6e' }
+  ];
+
+  const fmt = s => new Date(s * 1000).toISOString().substr(14, 5);
+
+  const players = tracks.map((track, i) => {
+    const ws = WaveSurfer.create({
+      container: `#wave-${i}`,
+      waveColor: colors[i].wave,
+      progressColor: colors[i].progress,
+      barWidth: 2.5,
+      barGap: 1,
+      height: 80,
+      url: track.src,
+    });
+
+    const btn = document.getElementById(`btn-${i}`);
+
+    ws.on('ready', (dur) => document.getElementById(`dur-${i}`).textContent = fmt(dur));
+    ws.on('timeupdate', (cur) => document.getElementById(`cur-${i}`).textContent = fmt(cur));
+    
+    ws.on('play', () => {
+      btn.innerHTML = '<i class="fas fa-pause"></i>';
+      document.getElementById(`card-${i}`).classList.add('playing');
+      players.forEach((p, j) => { if (j !== i && p.isPlaying()) p.pause(); });
+    });
+    
+    ws.on('pause', () => {
+      btn.innerHTML = '<i class="fas fa-play"></i>';
+      document.getElementById(`card-${i}`).classList.remove('playing');
+    });
+
+    return ws;
+  });
+
+  window.togglePlay = (i) => players[i].playPause();
+  window.shareTG = () => {
+    window.open(`https://t.me/share/url?url=${encodeURIComponent(window.location.href)}`, '_blank');
+  };
+  window.copyLink = () => {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      const t = document.getElementById('toast');
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2000);
+    });
+  };
+</script>
+</body>
+</html>
