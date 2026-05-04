@@ -15,10 +15,10 @@
     align-items: flex-start;
     min-height: 100vh;
     margin: 0;
-    padding: 30px 16px;
+    padding: 40px 16px;
   }
   .page-wrap { width: 100%; max-width: 860px; }
-  .page-header { margin-bottom: 20px; }
+  .page-header { margin-bottom: 28px; }
   .page-header h1 {
     color: #b8860b;
     font-weight: 300;
@@ -31,9 +31,9 @@
   .track-card {
     background: #fff;
     border: 1px solid #e8dfc8;
-    border-radius: 14px;
-    padding: 22px 24px;
-    margin-bottom: 16px;
+    border-radius: 16px;
+    padding: 28px 28px 24px;
+    margin-bottom: 20px;
   }
   .track-card.playing {
     border-color: #b8860b;
@@ -42,22 +42,22 @@
   .track-top {
     display: flex;
     align-items: center;
-    gap: 16px;
-    margin-bottom: 14px;
+    gap: 18px;
+    margin-bottom: 18px;
   }
   .track-cover {
-    width: 52px; height: 52px;
-    border-radius: 10px;
+    width: 60px; height: 60px;
+    border-radius: 12px;
     background: linear-gradient(135deg, #b8860b, #f5d060);
     display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0; font-size: 22px;
+    flex-shrink: 0; font-size: 26px;
   }
   .track-cover.v2 { background: linear-gradient(135deg, #4a1a6e, #9b59b6); }
   .track-cover.v3 { background: linear-gradient(135deg, #1a3a6e, #2e86c1); }
   .track-cover.v4 { background: linear-gradient(135deg, #11998e, #38ef7d); }
   .track-info { flex: 1; }
-  .track-title { font-size: 1rem; font-weight: 600; color: #333; margin: 0 0 2px; }
-  .track-sub { font-size: 0.82rem; color: #aaa; }
+  .track-title { font-size: 1.05rem; font-weight: 600; color: #333; margin: 0 0 5px; }
+  .track-sub { font-size: 0.82rem; color: #aaa; display: flex; align-items: center; gap: 8px; }
   .badge {
     display: inline-block;
     background: #fdf3d7; color: #b8860b;
@@ -67,13 +67,13 @@
   }
   .badge.v2 { background: #f0e6fa; color: #6c3483; }
   .badge.v3 { background: #d6eaf8; color: #1a5276; }
-  .badge.v4 { background: #e6faf3; color: #11998e; }
+  .track-dur { font-size: 12px; font-family: monospace; color: #b8860b; font-weight: 500; }
   .play-btn {
-    width: 42px; height: 42px;
+    width: 46px; height: 46px;
     border-radius: 50%;
     border: 2px solid #b8860b;
     background: #fff; color: #b8860b;
-    font-size: 16px;
+    font-size: 17px;
     display: flex; align-items: center; justify-content: center;
     cursor: pointer; transition: 0.18s;
     flex-shrink: 0; outline: none;
@@ -186,12 +186,12 @@
   .wave-wrap {
     position: relative;
     background: #faf6ee;
-    border-radius: 8px;
-    height: 80px;
+    border-radius: 10px;
+    height: 100px;
     cursor: pointer;
     user-select: none;
   }
-  .wave-inner { height: 80px; }
+  .wave-inner { height: 100px; }
   .time-label {
     position: absolute; bottom: 5px; right: 8px;
     font-size: 11px; font-family: monospace; color: #aab;
@@ -233,14 +233,14 @@
   .brand-sub { font-size: 10px; color: #bbb; display: block; line-height: 1; }
 
   @media (max-height: 820px), (max-width: 480px) {
-    body { padding: 14px 12px; }
-    .page-header { margin-bottom: 10px; }
+    body { padding: 20px 12px; }
+    .page-header { margin-bottom: 14px; }
     .page-header h1 { font-size: 1.5rem; margin-bottom: 2px; }
-    .track-card, .video-card { padding: 12px 14px; margin-bottom: 8px; }
-    .track-top { margin-bottom: 8px; gap: 10px; }
-    .track-cover { width: 40px; height: 40px; font-size: 17px; border-radius: 8px; }
-    .play-btn { width: 36px; height: 36px; font-size: 13px; }
-    .wave-wrap, .wave-inner { height: 56px; }
+    .track-card, .video-card { padding: 16px 16px; margin-bottom: 12px; }
+    .track-top { margin-bottom: 12px; gap: 12px; }
+    .track-cover { width: 48px; height: 48px; font-size: 20px; border-radius: 10px; }
+    .play-btn { width: 38px; height: 38px; font-size: 14px; }
+    .wave-wrap, .wave-inner { height: 70px; }
     .video-preview { height: 54px; }
     .video-preview-bars { height: 34px; }
     .video-preview-bars span { width: 2px; }
@@ -272,13 +272,13 @@
     <span>Три інструментальні треки</span>
   </div>
 
-  <!-- Track 1 -->
+  <!-- Track 2 -->
   <div class="track-card" id="card-0">
     <div class="track-top">
-      <div class="track-cover">🎹</div>
+      <div class="track-cover v2">🎼</div>
       <div class="track-info">
-        <div class="track-title">Majestic Instrumental with Pipe Organ</div>
-        <div class="track-sub"><span class="badge">Pipe Organ</span> Пісня 1</div>
+        <div class="track-title">Majestic Instrumental with Ethereal Choir</div>
+        <div class="track-sub"><span class="badge v2">Ethereal Choir</span><span class="track-dur" id="dur-badge-0">--:--</span></div>
       </div>
       <button class="play-btn" id="btn-0" onclick="togglePlay(0)">▶</button>
     </div>
@@ -289,13 +289,13 @@
     </div>
   </div>
 
-  <!-- Track 2 -->
+  <!-- Track 3 -->
   <div class="track-card" id="card-1">
     <div class="track-top">
-      <div class="track-cover v2">🎼</div>
+      <div class="track-cover v3">🎬</div>
       <div class="track-info">
-        <div class="track-title">Majestic Instrumental with Ethereal Choir</div>
-        <div class="track-sub"><span class="badge v2">Ethereal Choir</span> Пісня 2</div>
+        <div class="track-title">Majestic Instrumental - Immersive Cinematic Edit</div>
+        <div class="track-sub"><span class="badge v3">Cinematic Edit</span><span class="track-dur" id="dur-badge-1">--:--</span></div>
       </div>
       <button class="play-btn" id="btn-1" onclick="togglePlay(1)">▶</button>
     </div>
@@ -306,13 +306,13 @@
     </div>
   </div>
 
-  <!-- Track 3 -->
+  <!-- Track 1 (moved to bottom) -->
   <div class="track-card" id="card-2">
     <div class="track-top">
-      <div class="track-cover v3">🎬</div>
+      <div class="track-cover">🎹</div>
       <div class="track-info">
-        <div class="track-title">Majestic Instrumental - Immersive Cinematic Edit</div>
-        <div class="track-sub"><span class="badge v3">Cinematic Edit</span> Пісня 3</div>
+        <div class="track-title">Majestic Instrumental with Pipe Organ</div>
+        <div class="track-sub"><span class="badge">Pipe Organ</span><span class="track-dur" id="dur-badge-2">--:--</span></div>
       </div>
       <button class="play-btn" id="btn-2" onclick="togglePlay(2)">▶</button>
     </div>
@@ -344,15 +344,15 @@
   import WaveSurfer from 'https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.esm.js';
 
   const tracks = [
-    { src: 'Majestic Instrumental with Pipe Organ.m4a',            title: 'Majestic Instrumental with Pipe Organ' },
     { src: 'Majestic Instrumental with Ethereal Choir.m4a',        title: 'Majestic Instrumental with Ethereal Choir' },
-    { src: 'Majestic Instrumental - Immersive Cinematic Edit.m4a', title: 'Majestic Instrumental - Immersive Cinematic Edit' }
+    { src: 'Majestic Instrumental - Immersive Cinematic Edit.m4a', title: 'Majestic Instrumental - Immersive Cinematic Edit' },
+    { src: 'Majestic Instrumental with Pipe Organ.m4a',            title: 'Majestic Instrumental with Pipe Organ' }
   ];
 
   const colors = [
-    { wave: '#f0dfa0', progress: '#b8860b' },
     { wave: '#d8c0ee', progress: '#6c3483' },
-    { wave: '#b8d4ec', progress: '#1a5276' }
+    { wave: '#b8d4ec', progress: '#1a5276' },
+    { wave: '#f0dfa0', progress: '#b8860b' }
   ];
 
   const fmt = s => new Date(s * 1000).toISOString().substr(14, 5);
@@ -365,7 +365,7 @@
       barWidth: 2,
       barGap: 1,
       barRadius: 2,
-      height: 80,
+      height: 100,
       normalize: true,
       url: track.src,
       interact: true,
@@ -377,6 +377,7 @@
 
     ws.on('ready', (dur) => {
       document.getElementById(`dur-${i}`).textContent = fmt(dur);
+      document.getElementById(`dur-badge-${i}`).textContent = fmt(dur);
     });
 
     ws.on('timeupdate', (cur) => {
