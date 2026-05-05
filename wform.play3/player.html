@@ -1,0 +1,453 @@
+﻿<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Majestic Instrumental</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f5f0e8;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    margin: 0;
+    padding: 40px 16px;
+  }
+  .page-wrap { width: 100%; max-width: 860px; }
+  .page-header { margin-bottom: 28px; }
+  .page-header h1 {
+    color: #b8860b;
+    font-weight: 300;
+    font-size: 2rem;
+    margin: 0 0 4px;
+    letter-spacing: -0.5px;
+  }
+  .page-header span { color: #aaa; font-size: 0.9rem; }
+
+  .track-card {
+    background: #fff;
+    border: 1px solid #e8dfc8;
+    border-radius: 16px;
+    padding: 28px 28px 24px;
+    margin-bottom: 20px;
+  }
+  .track-card.playing {
+    border-color: #b8860b;
+    box-shadow: 0 0 0 3px rgba(184,134,11,0.08);
+  }
+  .track-top {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 18px;
+  }
+  .track-cover {
+    width: 60px; height: 60px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #b8860b, #f5d060);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-size: 26px;
+  }
+  .track-cover.v2 { background: linear-gradient(135deg, #4a1a6e, #9b59b6); }
+  .track-cover.v3 { background: linear-gradient(135deg, #1a3a6e, #2e86c1); }
+  .track-cover.v4 { background: linear-gradient(135deg, #11998e, #38ef7d); }
+  .track-info { flex: 1; }
+  .track-title { font-size: 1.05rem; font-weight: 600; color: #333; margin: 0 0 5px; }
+  .track-sub { font-size: 0.82rem; color: #aaa; display: flex; align-items: center; gap: 8px; }
+  .badge {
+    display: inline-block;
+    background: #fdf3d7; color: #b8860b;
+    border-radius: 4px; padding: 1px 7px;
+    font-size: 11px; font-weight: 600;
+    margin-right: 6px; vertical-align: middle;
+  }
+  .badge.v2 { background: #f0e6fa; color: #6c3483; }
+  .badge.v3 { background: #d6eaf8; color: #1a5276; }
+  .track-dur { font-size: 12px; font-family: monospace; color: #b8860b; font-weight: 500; }
+  .play-btn {
+    width: 46px; height: 46px;
+    border-radius: 50%;
+    border: 2px solid #b8860b;
+    background: #fff; color: #b8860b;
+    font-size: 17px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: 0.18s;
+    flex-shrink: 0; outline: none;
+  }
+  .play-btn:hover, .track-card.playing .play-btn { background: #b8860b; color: white; }
+
+  /* Video card styles */
+  .video-card {
+    background: #fff;
+    border: 1px solid #e4ecf7;
+    border-radius: 14px;
+    padding: 22px 24px;
+    margin-bottom: 16px;
+    text-decoration: none;
+    display: block;
+    transition: 0.2s;
+    cursor: pointer;
+  }
+  .video-card:hover {
+    border-color: #e07800;
+    box-shadow: 0 0 0 3px rgba(224,120,0,0.08);
+  }
+  .video-preview {
+    position: relative;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    border-radius: 10px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .video-preview-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 48px;
+  }
+  .video-preview-bars span {
+    display: block;
+    width: 3px;
+    border-radius: 2px;
+    background: rgba(247,151,30,0.5);
+    animation: barPulse 1.2s ease-in-out infinite;
+  }
+  .video-preview-bars span:nth-child(odd) { background: rgba(231,76,60,0.5); }
+  @keyframes barPulse {
+    0%, 100% { transform: scaleY(0.4); }
+    50% { transform: scaleY(1); }
+  }
+  .video-preview-bars span:nth-child(1)  { height: 28px; animation-delay: 0s; }
+  .video-preview-bars span:nth-child(2)  { height: 44px; animation-delay: 0.1s; }
+  .video-preview-bars span:nth-child(3)  { height: 36px; animation-delay: 0.2s; }
+  .video-preview-bars span:nth-child(4)  { height: 52px; animation-delay: 0.05s; }
+  .video-preview-bars span:nth-child(5)  { height: 32px; animation-delay: 0.15s; }
+  .video-preview-bars span:nth-child(6)  { height: 48px; animation-delay: 0.25s; }
+  .video-preview-bars span:nth-child(7)  { height: 40px; animation-delay: 0.08s; }
+  .video-preview-bars span:nth-child(8)  { height: 56px; animation-delay: 0.18s; }
+  .video-preview-bars span:nth-child(9)  { height: 36px; animation-delay: 0.3s; }
+  .video-preview-bars span:nth-child(10) { height: 44px; animation-delay: 0.12s; }
+  .video-preview-bars span:nth-child(11) { height: 30px; animation-delay: 0.22s; }
+  .video-preview-bars span:nth-child(12) { height: 50px; animation-delay: 0.07s; }
+  .video-preview-bars span:nth-child(13) { height: 38px; animation-delay: 0.17s; }
+  .video-preview-bars span:nth-child(14) { height: 46px; animation-delay: 0.27s; }
+  .video-preview-bars span:nth-child(15) { height: 34px; animation-delay: 0.03s; }
+  .video-preview-bars span:nth-child(16) { height: 52px; animation-delay: 0.13s; }
+  .video-preview-bars span:nth-child(17) { height: 28px; animation-delay: 0.23s; }
+  .video-preview-bars span:nth-child(18) { height: 42px; animation-delay: 0.09s; }
+  .video-preview-bars span:nth-child(19) { height: 58px; animation-delay: 0.19s; }
+  .video-preview-bars span:nth-child(20) { height: 36px; animation-delay: 0.29s; }
+
+  .video-play-overlay {
+    position: absolute;
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: rgba(247,151,30,0.92);
+    display: flex; align-items: center; justify-content: center;
+    color: white;
+    font-size: 17px;
+    box-shadow: 0 2px 12px rgba(247,151,30,0.4);
+    transition: 0.18s;
+  }
+  .video-card:hover .video-play-overlay {
+    background: #e07800;
+    transform: translate(-50%, -50%) scale(1.08);
+  }
+  .video-time-badge {
+    position: absolute;
+    bottom: 8px; right: 10px;
+    background: rgba(0,0,0,0.55);
+    color: #fff;
+    font-size: 11px;
+    font-family: monospace;
+    padding: 2px 7px;
+    border-radius: 4px;
+  }
+  .open-video-hint {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    font-size: 12px;
+    color: #e07800;
+    font-weight: 600;
+  }
+  .open-video-hint i { font-size: 11px; }
+
+  .wave-wrap {
+    position: relative;
+    background: #faf6ee;
+    border-radius: 10px;
+    height: 100px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .wave-inner { height: 100px; }
+  .time-label {
+    position: absolute; bottom: 5px; right: 8px;
+    font-size: 11px; font-family: monospace; color: #aab;
+    pointer-events: none; z-index: 10;
+  }
+  .cur-label {
+    position: absolute; bottom: 5px; left: 8px;
+    font-size: 11px; font-family: monospace; color: #b8860b;
+    pointer-events: none; z-index: 10;
+  }
+
+  .page-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+    padding: 12px 4px 0;
+    border-top: 1px solid #e8dfc8;
+  }
+  .footer-actions { display: flex; gap: 8px; }
+  .action-btn {
+    background: #fdf8ee;
+    border: 1px solid #e8dfc8;
+    padding: 6px 14px; border-radius: 8px;
+    font-size: 13px; color: #8a6a1a;
+    cursor: pointer; transition: 0.18s;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .action-btn:hover { background: #b8860b; color: white; border-color: #b8860b; }
+
+  .brand-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+  .brand-icon {
+    width: 28px; height: 28px; border-radius: 7px;
+    background: linear-gradient(135deg, #b8860b, #f5d060);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .brand-icon svg { width: 14px; height: 14px; fill: white; }
+  .brand-text { font-size: 13px; font-weight: 700; color: #b8860b; letter-spacing: 0.4px; }
+  .brand-sub { font-size: 10px; color: #bbb; display: block; line-height: 1; }
+
+  @media (max-height: 820px), (max-width: 480px) {
+    body { padding: 20px 12px; }
+    .page-header { margin-bottom: 14px; }
+    .page-header h1 { font-size: 1.5rem; margin-bottom: 2px; }
+    .track-card, .video-card { padding: 16px 16px; margin-bottom: 12px; }
+    .track-top { margin-bottom: 12px; gap: 12px; }
+    .track-cover { width: 48px; height: 48px; font-size: 20px; border-radius: 10px; }
+    .play-btn { width: 38px; height: 38px; font-size: 14px; }
+    .wave-wrap, .wave-inner { height: 70px; }
+    .video-preview { height: 54px; }
+    .video-preview-bars { height: 34px; }
+    .video-preview-bars span { width: 2px; }
+    .video-play-overlay { width: 36px; height: 36px; font-size: 14px; }
+    .open-video-hint { margin-top: 7px; }
+    .page-footer { padding: 8px 4px 0; margin-top: 4px; }
+    .action-btn { padding: 5px 10px; font-size: 12px; }
+    .track-title { font-size: 0.92rem; }
+  }
+
+  .toast {
+    position: fixed; top: 20px; left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    background: #333; color: white;
+    padding: 9px 18px; border-radius: 30px;
+    font-size: 13px; opacity: 0; visibility: hidden;
+    pointer-events: none; transition: 0.3s; z-index: 1000;
+  }
+  .toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<div id="toast" class="toast">🔗 Посилання скопійовано!</div>
+
+<div class="page-wrap">
+  <div class="page-header">
+    <h1>Majestic Instrumental AI [EPIC]</h1>
+    <span>Три інструментальні треки</span>
+  </div>
+
+  <!-- Track 1 (Ethereal Choir) -->
+  <div class="track-card" id="card-0">
+    <div class="track-top">
+      <div class="track-cover v2">🎼</div>
+      <div class="track-info">
+        <div class="track-title">Majestic Instrumental with Ethereal Choir</div>
+        <div class="track-sub"><span class="badge v2">Ethereal Choir</span><span class="track-dur" id="dur-badge-0">--:--</span></div>
+      </div>
+      <button class="play-btn" id="btn-0" onclick="togglePlay(0)">▶</button>
+    </div>
+    <div class="wave-wrap">
+      <div id="wave-0" class="wave-inner"></div>
+      <span class="cur-label" id="cur-0">00:00</span>
+      <span class="time-label" id="dur-0">--:--</span>
+    </div>
+  </div>
+
+  <!-- Track 2 (Cinematic Edit) -->
+  <div class="track-card" id="card-1">
+    <div class="track-top">
+      <div class="track-cover v3">🎬</div>
+      <div class="track-info">
+        <div class="track-title">Majestic Instrumental - Immersive Cinematic Edit</div>
+        <div class="track-sub"><span class="badge v3">Cinematic Edit</span><span class="track-dur" id="dur-badge-1">--:--</span></div>
+      </div>
+      <button class="play-btn" id="btn-1" onclick="togglePlay(1)">▶</button>
+    </div>
+    <div class="wave-wrap">
+      <div id="wave-1" class="wave-inner"></div>
+      <span class="cur-label" id="cur-1">00:00</span>
+      <span class="time-label" id="dur-1">--:--</span>
+    </div>
+  </div>
+
+  <!-- Track 3 (Pipe Organ) -->
+  <div class="track-card" id="card-2">
+    <div class="track-top">
+      <div class="track-cover">🎹</div>
+      <div class="track-info">
+        <div class="track-title">Majestic Instrumental with Pipe Organ</div>
+        <div class="track-sub"><span class="badge">Pipe Organ</span><span class="track-dur" id="dur-badge-2">--:--</span></div>
+      </div>
+      <button class="play-btn" id="btn-2" onclick="togglePlay(2)">▶</button>
+    </div>
+    <div class="wave-wrap">
+      <div id="wave-2" class="wave-inner"></div>
+      <span class="cur-label" id="cur-2">00:00</span>
+      <span class="time-label" id="dur-2">--:--</span>
+    </div>
+  </div>
+
+  <!-- Новый трек 4 -->
+  <div class="track-card" id="card-3">
+    <div class="track-top">
+      <div class="track-cover v4">✨</div>
+      <div class="track-info">
+        <div class="track-title">Angelic Epic_ Ether Flow 1</div>
+        <div class="track-sub"><span class="badge v4">Ether Flow</span><span class="track-dur" id="dur-badge-3">--:--</span></div>
+      </div>
+      <button class="play-btn" id="btn-3" onclick="togglePlay(3)">▶</button>
+    </div>
+    <div class="wave-wrap">
+      <div id="wave-3" class="wave-inner"></div>
+      <span class="cur-label" id="cur-3">00:00</span>
+      <span class="time-label" id="dur-3">--:--</span>
+    </div>
+  </div>
+
+  <!-- Новый трек 5 -->
+  <div class="track-card" id="card-4">
+    <div class="track-top">
+      <div class="track-cover v2">🌊</div>
+      <div class="track-info">
+        <div class="track-title">Aetherial Uplift (Remix)</div>
+        <div class="track-sub"><span class="badge v2">Aetherial Remix</span><span class="track-dur" id="dur-badge-4">--:--</span></div>
+      </div>
+      <button class="play-btn" id="btn-4" onclick="togglePlay(4)">▶</button>
+    </div>
+    <div class="wave-wrap">
+      <div id="wave-4" class="wave-inner"></div>
+      <span class="cur-label" id="cur-4">00:00</span>
+      <span class="time-label" id="dur-4">--:--</span>
+    </div>
+  </div>
+  </div>
+</div>
+
+<script type="module">
+  import WaveSurfer from 'https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.esm.js';
+
+  const tracks = [
+    { src: 'Majestic Instrumental with Ethereal Choir.m4a',        title: 'Majestic Instrumental with Ethereal Choir' },
+    { src: 'Majestic Instrumental - Immersive Cinematic Edit.m4a', title: 'Majestic Instrumental - Immersive Cinematic Edit' },
+    { src: 'Majestic Instrumental with Pipe Organ.m4a',            title: 'Majestic Instrumental with Pipe Organ' },
+    { src: 'Angelic Epic_ Ether Flow 1.m4a',                      title: 'Angelic Epic_ Ether Flow 1' },
+    { src: 'Aetherial Uplift (Remix).m4a',                        title: 'Aetherial Uplift (Remix)' }
+  ];
+
+  const colors = [
+    { wave: '#d8c0ee', progress: '#6c3483' },   // v2
+    { wave: '#b8d4ec', progress: '#1a5276' },   // v3
+    { wave: '#f0dfa0', progress: '#b8860b' },   // default
+    { wave: '#a8e6cf', progress: '#11998e' },   // v4
+    { wave: '#d8c0ee', progress: '#6c3483' }    // повтор v2
+  ];
+
+  const fmt = s => new Date(s * 1000).toISOString().substr(14, 5);
+
+  const players = tracks.map((track, i) => {
+    const ws = WaveSurfer.create({
+      container: `#wave-${i}`,
+      waveColor: colors[i].wave,
+      progressColor: colors[i].progress,
+      barWidth: 2,
+      barGap: 1,
+      barRadius: 2,
+      height: 100,
+      normalize: true,
+      url: track.src,
+      interact: true,
+      dragToSeek: true,
+      autoScroll: true,
+      autoCenter: true,
+      minPxPerSec: 60,
+    });
+
+    ws.on('ready', (dur) => {
+      document.getElementById(`dur-${i}`).textContent = fmt(dur);
+      document.getElementById(`dur-badge-${i}`).textContent = fmt(dur);
+    });
+
+    ws.on('timeupdate', (cur) => {
+      document.getElementById(`cur-${i}`).textContent = fmt(cur);
+    });
+
+    ws.on('play', () => {
+      document.getElementById(`btn-${i}`).innerHTML = '&#9612;&#9612;';
+      document.getElementById(`card-${i}`).classList.add('playing');
+      players.forEach((p, j) => {
+        if (j !== i && p.isPlaying()) {
+          p.pause();
+          document.getElementById(`card-${j}`).classList.remove('playing');
+          document.getElementById(`btn-${j}`).innerHTML = '&#9654;';
+        }
+      });
+    });
+
+    ws.on('pause', () => {
+      document.getElementById(`btn-${i}`).innerHTML = '&#9654;';
+      document.getElementById(`card-${i}`).classList.remove('playing');
+    });
+
+    ws.on('finish', () => {
+      document.getElementById(`btn-${i}`).innerHTML = '&#9654;';
+      document.getElementById(`card-${i}`).classList.remove('playing');
+    });
+
+    return ws;
+  });
+
+  window.togglePlay = (i) => {
+    players[i].playPause();
+  };
+
+  window.shareTG = () => {
+    const text = encodeURIComponent(`🎹 Majestic Instrumental\n\n${window.location.href}`);
+    window.open(`https://t.me/share/url?url=${encodeURIComponent(window.location.href)}&text=${text}`, '_blank');
+  };
+
+  window.copyLink = () => {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      const t = document.getElementById('toast');
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2000);
+    });
+  };
+</script>
+</body>
+</html>
