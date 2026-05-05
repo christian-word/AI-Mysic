@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Worship Player — В Твоїй тиші</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream:   #fdf6ec;
+    --ink:     #2b1d0e;
+    --amber:   #3a6ea8;
+    --amber-soft: #6b9fd4;
+    --amber-pale: #d0e4f5;
+    --rose:    #2a8a7a;
+    --rose-soft: #5ab8a8;
+    --rose-pale: #c8ede8;
+    --sage:    #5a7a3a;
+    --sage-soft: #8aaa60;
+    --sage-pale: #d8ecc4;
+    --violet:  #4a6a7a;
+    --violet-soft: #7aa0b0;
+    --violet-pale: #ccdde5;
+    --border:  rgba(43,29,14,0.10);
+    --shadow:  0 4px 24px rgba(43,29,14,0.08);
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    min-height: 100vh;
+    padding: 32px 16px 48px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Subtle background texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 80% 10%, rgba(201,125,46,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 50% at 10% 80%, rgba(107,78,140,0.06) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .page-wrap { width: 100%; max-width: 780px; position: relative; }
+
+  /* ── Header ── */
+  .page-header {
+    margin-bottom: 28px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .header-eyebrow {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 8px;
+  }
+  .page-header h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: 2.6rem;
+    color: var(--ink);
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+    margin-bottom: 4px;
+  }
+  .page-header p {
+    font-size: 13px;
+    color: rgba(43,29,14,0.45);
+    font-weight: 300;
+  }
+
+  /* ── Track Card ── */
+  .track-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 18px 20px;
+    margin-bottom: 14px;
+    box-shadow: var(--shadow);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+  .track-card:hover { transform: translateY(-1px); box-shadow: 0 8px 32px rgba(43,29,14,0.12); }
+  .track-card.playing { border-color: var(--card-accent, var(--amber)); box-shadow: 0 0 0 3px var(--card-glow, rgba(201,125,46,0.15)), var(--shadow); }
+
+  /* Per-card accent colours */
+  .track-card.c0 { --card-accent: var(--amber);  --card-glow: rgba(201,125,46,0.15); }
+  .track-card.c1 { --card-accent: var(--rose);   --card-glow: rgba(201,95,74,0.15); }
+  .track-card.c2 { --card-accent: var(--sage);   --card-glow: rgba(74,124,89,0.15); }
+  .track-card.c3 { --card-accent: var(--violet); --card-glow: rgba(107,78,140,0.15); }
+
+  .track-top {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 14px;
+  }
+
+  /* Cover icons */
+  .track-cover {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-size: 20px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+  .track-cover::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent);
+    border-radius: inherit;
+  }
+  .c0 .track-cover { background: linear-gradient(145deg, #3a6ea8, #6b9fd4); box-shadow: 0 4px 14px rgba(58,110,168,0.35); }
+  .c1 .track-cover { background: linear-gradient(145deg, #2a8a7a, #5ab8a8); box-shadow: 0 4px 14px rgba(42,138,122,0.35); }
+  .c2 .track-cover { background: linear-gradient(145deg, #5a7a3a, #8aaa60); box-shadow: 0 4px 14px rgba(90,122,58,0.35); }
+  .c3 .track-cover { background: linear-gradient(145deg, #4a6a7a, #7aa0b0); box-shadow: 0 4px 14px rgba(74,106,122,0.35); }
+
+  .track-info { flex: 1; min-width: 0; }
+  .track-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.08rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .track-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 9px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .c0 .badge { background: var(--amber-pale); color: var(--amber); }
+  .c1 .badge { background: var(--rose-pale);  color: var(--rose); }
+  .c2 .badge { background: var(--sage-pale);  color: var(--sage); }
+  .c3 .badge { background: var(--violet-pale); color: var(--violet); }
+
+  .track-label { font-size: 12px; color: rgba(43,29,14,0.40); font-weight: 300; }
+
+  /* Play button */
+  .play-btn {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    border: 2px solid;
+    background: #fff;
+    font-size: 13px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+  }
+  .play-btn .fa-play { margin-left: 2px; }
+  .c0 .play-btn { border-color: var(--amber); color: var(--amber); }
+  .c1 .play-btn { border-color: var(--rose);  color: var(--rose); }
+  .c2 .play-btn { border-color: var(--sage);  color: var(--sage); }
+  .c3 .play-btn { border-color: var(--violet); color: var(--violet); }
+  .c0 .play-btn:hover, .c0.playing .play-btn { background: var(--amber);  color: #fff; transform: scale(1.08); }
+  .c1 .play-btn:hover, .c1.playing .play-btn { background: var(--rose);   color: #fff; transform: scale(1.08); }
+  .c2 .play-btn:hover, .c2.playing .play-btn { background: var(--sage);   color: #fff; transform: scale(1.08); }
+  .c3 .play-btn:hover, .c3.playing .play-btn { background: var(--violet); color: #fff; transform: scale(1.08); }
+
+  /* Waveform */
+  .wave-wrap {
+    position: relative;
+    background: rgba(43,29,14,0.025);
+    border-radius: 10px;
+    height: 64px;
+    cursor: pointer;
+    overflow: hidden;
+  }
+  .wave-inner { height: 64px; }
+  .time-label {
+    position: absolute; bottom: 6px; right: 10px;
+    font-size: 10.5px; font-family: 'DM Mono', monospace, monospace;
+    color: rgba(43,29,14,0.35);
+    pointer-events: none; z-index: 10;
+    letter-spacing: 0.5px;
+  }
+  .cur-label {
+    position: absolute; bottom: 6px; left: 10px;
+    font-size: 10.5px; font-family: 'DM Mono', monospace, monospace;
+    pointer-events: none; z-index: 10;
+    letter-spacing: 0.5px;
+  }
+  .c0 .cur-label { color: var(--amber); }
+  .c1 .cur-label { color: var(--rose); }
+  .c2 .cur-label { color: var(--sage); }
+  .c3 .cur-label { color: var(--violet); }
+
+  /* Footer */
+  .page-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 10px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+  .footer-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .action-btn {
+    background: #fff;
+    border: 1px solid var(--border);
+    padding: 7px 16px;
+    border-radius: 10px;
+    font-size: 12.5px;
+    color: var(--ink);
+    cursor: pointer;
+    transition: 0.2s;
+    display: flex; align-items: center; gap: 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+  }
+  .action-btn:hover { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+
+  .brand-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .brand-icon {
+    width: 32px; height: 32px; border-radius: 9px;
+    background: linear-gradient(135deg, var(--amber), var(--amber-soft));
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 3px 10px rgba(201,125,46,0.3);
+  }
+  .brand-icon i { font-size: 14px; color: white; }
+  .brand-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: 1px;
+  }
+  .brand-sub { font-size: 9px; color: rgba(43,29,14,0.40); display: block; line-height: 1; letter-spacing: 1px; text-transform: uppercase; }
+
+  /* Toast */
+  .toast {
+    position: fixed; top: 20px; left: 50%;
+    transform: translateX(-50%) translateY(-12px);
+    background: var(--ink); color: var(--cream);
+    padding: 10px 22px; border-radius: 30px;
+    font-size: 13px; opacity: 0; visibility: hidden;
+    transition: 0.3s; z-index: 1000;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+
+  /* Playing pulse animation on cover */
+  @keyframes pulse-ring {
+    0%   { box-shadow: 0 0 0 0px var(--card-accent, var(--amber)); }
+    70%  { box-shadow: 0 0 0 8px transparent; }
+    100% { box-shadow: 0 0 0 0px transparent; }
+  }
+  .track-card.playing .track-cover { animation: pulse-ring 1.8s ease infinite; }
+</style>
+</head>
+<body>
+
+<div id="toast" class="toast">🔗 Посилання скопійовано!</div>
+
+<div class="page-wrap">
+  <div class="page-header">
+    <div class="header-eyebrow">Worship Collection</div>
+    <h1>В Твоїй тиші</h1>
+    <p>Чотири версії однієї пісні — різні аранжування</p>
+  </div>
+
+  <!-- Track 1 — amber -->
+  <div class="track-card c0" id="card-0">
+    <div class="track-top">
+      <div class="track-cover"><i class="fas fa-dove"></i></div>
+      <div class="track-info">
+        <div class="track-title">В Твоїй тиші</div>
+        <div class="track-meta">
+          <span class="badge"><i class="fas fa-star-and-crescent" style="font-size:8px"></i> Worship</span>
+          <span class="track-label">Основна версія</span>
+        </div>
+      </div>
+      <button class="play-btn" id="btn-0" onclick="togglePlay(0)">
+        <i class="fas fa-play"></i>
+      </button>
+    </div>
+    <div class="wave-wrap">
+      <div id="wave-0" class="wave-inner"></div>
+      <span class="cur-label" id="cur-0">00:00</span>
+      <span class="time-label" id="dur-0">--:--</span>
+    </div>
+  </div>
+
+  <!-- Track 2 — rose -->
+  <div class="track-card c1" id="card-1">
+    <div class="track-top">
+      <div class="track-cover"><i class="fas fa-heart"></i></div>
+      <div class="track-info">
+        <div class="track-title">Ти зі мною</div>
+        <div class="track-meta">
+          <span class="badge"><i class="fas fa-fire-flame-curved" style="font-size:8px"></i> Intimate</span>
+          <span class="track-label">Ліричне аранжування</span>
+        </div>
+      </div>
+      <button class="play-btn" id="btn-1" onclick="togglePlay(1)">
+        <i class="fas fa-play"></i>
+      </button>
+    </div>
+    <div class="wave-wrap">
+      <div id="wave-1" class="wave-inner"></div>
+      <span class="cur-label" id="cur-1">00:00</span>
+      <span class="time-label" id="dur-1">--:--</span>
+    </div>
+  </div>
+
+  <!-- Track 3 — sage -->
+  <div class="track-card c2" id="card-2">
+    <div class="track-top">
+      <div class="track-cover"><i class="fas fa-people-group"></i></div>
+      <div class="track-info">
+        <div class="track-title">Ти — мій Господь</div>
+        <div class="track-meta">
+          <span class="badge"><i class="fas fa-microphone" style="font-size:8px"></i> Дует</span>
+          <span class="track-label">Дуетне виконання</span>
+        </div>
+      </div>
+      <button class="play-btn" id="btn-2" onclick="togglePlay(2)">
+        <i class="fas fa-play"></i>
+      </button>
+    </div>
+    <div class="wave-wrap">
+      <div id="wave-2" class="wave-inner"></div>
+      <span class="cur-label" id="cur-2">00:00</span>
+      <span class="time-label" id="dur-2">--:--</span>
+    </div>
+  </div>
+
+  <!-- Track 4 — violet -->
+  <div class="track-card c3" id="card-3">
+    <div class="track-top">
+      <div class="track-cover"><i class="fas fa-wand-sparkles"></i></div>
+      <div class="track-info">
+        <div class="track-title">Ти — мій Господь (Take 2)</div>
+        <div class="track-meta">
+          <span class="badge"><i class="fas fa-rotate" style="font-size:8px"></i> Take 2</span>
+          <span class="track-label">Альтернативна версія</span>
+        </div>
+      </div>
+      <button class="play-btn" id="btn-3" onclick="togglePlay(3)">
+        <i class="fas fa-play"></i>
+      </button>
+    </div>
+    <div class="wave-wrap">
+      <div id="wave-3" class="wave-inner"></div>
+      <span class="cur-label" id="cur-3">00:00</span>
+      <span class="time-label" id="dur-3">--:--</span>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <div class="footer-actions">
+      <button class="action-btn" onclick="shareTG()"><i class="fab fa-telegram-plane"></i> Telegram</button>
+      <button class="action-btn" onclick="copyLink()"><i class="fas fa-link"></i> Посилання</button>
+    </div>
+    <div class="brand-logo">
+      <div class="brand-icon"><i class="fas fa-music"></i></div>
+      <div>
+        <span class="brand-text">МЕЛОДІЯ</span>
+        <span class="brand-sub">christian music</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import WaveSurfer from 'https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.esm.js';
+
+  const tracks = [
+    { src: 'В Твоїй тиші (Worship).m4a' },
+    { src: 'Ти зі мною.m4a' },
+    { src: '2_Ти - мій Господь (Дует).m4a' },
+    { src: 'Ти - мій Господь (Take 2).m4a' }
+  ];
+
+  const colors = [
+    { wave: '#d0e4f5', progress: '#3a6ea8' },
+    { wave: '#c8ede8', progress: '#2a8a7a' },
+    { wave: '#d8ecc4', progress: '#5a7a3a' },
+    { wave: '#ccdde5', progress: '#4a6a7a' }
+  ];
+
+  const fmt = s => new Date(s * 1000).toISOString().substr(14, 5);
+
+  const players = tracks.map((track, i) => {
+    const ws = WaveSurfer.create({
+      container: `#wave-${i}`,
+      waveColor: colors[i].wave,
+      progressColor: colors[i].progress,
+      barWidth: 1,
+      barGap: 0.5,
+      barRadius: 1,
+      height: 64,
+      url: track.src,
+    });
+
+    const btn = document.getElementById(`btn-${i}`);
+
+    ws.on('ready', (dur) => document.getElementById(`dur-${i}`).textContent = fmt(dur));
+    ws.on('timeupdate', (cur) => document.getElementById(`cur-${i}`).textContent = fmt(cur));
+
+    ws.on('play', () => {
+      btn.innerHTML = '<i class="fas fa-pause"></i>';
+      document.getElementById(`card-${i}`).classList.add('playing');
+      players.forEach((p, j) => { if (j !== i && p.isPlaying()) p.pause(); });
+    });
+
+    ws.on('pause', () => {
+      btn.innerHTML = '<i class="fas fa-play"></i>';
+      document.getElementById(`card-${i}`).classList.remove('playing');
+    });
+
+    return ws;
+  });
+
+  window.togglePlay = (i) => players[i].playPause();
+
+  window.shareTG = () => {
+    window.open(`https://t.me/share/url?url=${encodeURIComponent(window.location.href)}`, '_blank');
+  };
+
+  window.copyLink = () => {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      const t = document.getElementById('toast');
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2000);
+    });
+  };
+</script>
+</body>
+</html>
