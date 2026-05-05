@@ -33,7 +33,7 @@
     font-family: 'DM Sans', sans-serif;
     background: var(--cream);
     min-height: 100vh;
-    padding: 32px 16px 48px;
+    padding: 14px 10px 24px;
     display: flex;
     justify-content: center;
     align-items: flex-start;
@@ -56,8 +56,8 @@
 
   /* ── Header ── */
   .page-header {
-    margin-bottom: 28px;
-    padding-bottom: 20px;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
     border-bottom: 1px solid var(--border);
   }
   .header-eyebrow {
@@ -72,14 +72,14 @@
   .page-header h1 {
     font-family: 'Cormorant Garamond', serif;
     font-weight: 300;
-    font-size: 2.6rem;
+    font-size: 1.7rem;
     color: var(--ink);
     letter-spacing: -0.5px;
     line-height: 1.1;
     margin-bottom: 4px;
   }
   .page-header p {
-    font-size: 13px;
+    font-size: 11px;
     color: rgba(43,29,14,0.45);
     font-weight: 300;
   }
@@ -88,9 +88,9 @@
   .track-card {
     background: #fff;
     border: 1px solid var(--border);
-    border-radius: 18px;
-    padding: 18px 20px;
-    margin-bottom: 14px;
+    border-radius: 13px;
+    padding: 11px 13px;
+    margin-bottom: 9px;
     box-shadow: var(--shadow);
     transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
   }
@@ -106,17 +106,17 @@
   .track-top {
     display: flex;
     align-items: center;
-    gap: 16px;
-    margin-bottom: 14px;
+    gap: 10px;
+    margin-bottom: 9px;
   }
 
   /* Cover icons */
   .track-cover {
-    width: 52px; height: 52px;
-    border-radius: 14px;
+    width: 40px; height: 40px;
+    border-radius: 10px;
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
-    font-size: 20px;
+    font-size: 16px;
     color: white;
     position: relative;
     overflow: hidden;
@@ -136,7 +136,7 @@
   .track-info { flex: 1; min-width: 0; }
   .track-title {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 1.08rem;
+    font-size: 0.92rem;
     font-weight: 600;
     color: var(--ink);
     margin-bottom: 4px;
@@ -147,9 +147,9 @@
   .track-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
   .badge {
     display: inline-flex; align-items: center; gap: 4px;
-    padding: 2px 9px;
+    padding: 1px 7px;
     border-radius: 20px;
-    font-size: 10px;
+    font-size: 9px;
     font-weight: 500;
     letter-spacing: 0.5px;
     text-transform: uppercase;
@@ -159,15 +159,15 @@
   .c2 .badge { background: var(--sage-pale);  color: var(--sage); }
   .c3 .badge { background: var(--violet-pale); color: var(--violet); }
 
-  .track-label { font-size: 12px; color: rgba(43,29,14,0.40); font-weight: 300; }
+  .track-label { font-size: 10.5px; color: rgba(43,29,14,0.40); font-weight: 300; }
 
   /* Play button */
   .play-btn {
-    width: 44px; height: 44px;
+    width: 36px; height: 36px;
     border-radius: 50%;
     border: 2px solid;
     background: #fff;
-    font-size: 13px;
+    font-size: 11px;
     display: flex; align-items: center; justify-content: center;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -187,25 +187,25 @@
   .wave-wrap {
     position: relative;
     background: rgba(43,29,14,0.025);
-    border-radius: 10px;
-    height: 64px;
+    border-radius: 8px;
+    height: 44px;
     cursor: pointer;
   }
   .wave-inner { 
-    height: 64px;
+    height: 44px;
     display: block;
   }
   .wave-inner > div { border-radius: 0 !important; }
   .time-label {
-    position: absolute; bottom: 6px; right: 10px;
-    font-size: 10.5px; font-family: 'DM Mono', monospace, monospace;
+    position: absolute; bottom: 4px; right: 7px;
+    font-size: 9.5px; font-family: 'DM Mono', monospace, monospace;
     color: rgba(43,29,14,0.35);
     pointer-events: none; z-index: 10;
     letter-spacing: 0.5px;
   }
   .cur-label {
-    position: absolute; bottom: 6px; left: 10px;
-    font-size: 10.5px; font-family: 'DM Mono', monospace, monospace;
+    position: absolute; bottom: 4px; left: 7px;
+    font-size: 9.5px; font-family: 'DM Mono', monospace, monospace;
     pointer-events: none; z-index: 10;
     letter-spacing: 0.5px;
   }
@@ -221,17 +221,17 @@
     align-items: center;
     flex-wrap: wrap;
     gap: 12px;
-    margin-top: 10px;
-    padding-top: 20px;
+    margin-top: 6px;
+    padding-top: 12px;
     border-top: 1px solid var(--border);
   }
   .footer-actions { display: flex; gap: 8px; flex-wrap: wrap; }
   .action-btn {
     background: #fff;
     border: 1px solid var(--border);
-    padding: 7px 16px;
-    border-radius: 10px;
-    font-size: 12.5px;
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-size: 11.5px;
     color: var(--ink);
     cursor: pointer;
     transition: 0.2s;
@@ -420,7 +420,7 @@
       barWidth: 1,
       barGap: 0.5,
       barRadius: 1,
-      height: 64,
+      height: 44,
       interact: true,
       normalize: true,
       url: track.src,
