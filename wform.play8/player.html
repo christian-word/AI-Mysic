@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Worship Player — Під Твоїми крилами</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:       #f0f7ff;
+    --ink:      #1e2d4a;
+    --mist:     #6b9ec8;
+    --mist-s:   #a0c4e0;
+    --mist-p:   #daedf8;
+    --breeze:   #7ab8a0;
+    --breeze-s: #a8d4c0;
+    --breeze-p: #d8f0e8;
+    --border:   rgba(30,45,74,0.07);
+    --shadow:   0 4px 20px rgba(30,45,74,0.06);
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    padding: 14px 10px 24px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Soft sky gradient */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse 100% 40% at 50% 0%,   rgba(160,196,224,0.30) 0%, transparent 60%),
+      radial-gradient(ellipse 60%  60% at 10% 30%,  rgba(122,184,160,0.10) 0%, transparent 55%),
+      radial-gradient(ellipse 50%  50% at 90% 80%,  rgba(107,158,200,0.10) 0%, transparent 55%);
+    pointer-events: none;
+  }
+
+  /* Subtle horizontal wind streaks */
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0; left: -10%; width: 120%; height: 100%;
+    background: repeating-linear-gradient(
+      170deg,
+      transparent 0px, transparent 60px,
+      rgba(160,196,224,0.04) 60px, rgba(160,196,224,0.04) 62px
+    );
+    pointer-events: none;
+  }
+
+  .page-wrap { width: 100%; max-width: 780px; position: relative; }
+
+  /* ── Header ── */
+  .page-header {
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .header-eyebrow {
+    font-size: 9.5px;
+    font-weight: 500;
+    letter-spacing: 3.5px;
+    text-transform: uppercase;
+    color: var(--mist);
+    margin-bottom: 5px;
+    opacity: 0.9;
+  }
+  .page-header h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-style: italic;
+    font-size: 1.75rem;
+    color: var(--ink);
+    letter-spacing: 0.2px;
+    line-height: 1.15;
+    margin-bottom: 3px;
+  }
+  .page-header p {
+    font-size: 11px;
+    color: rgba(30,45,74,0.38);
+    font-weight: 300;
+  }
+
+  /* ── Card ── */
+  .track-card {
+    background: rgba(255,255,255,0.80);
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    padding: 11px 13px;
+    margin-bottom: 9px;
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(10px);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+  .track-card:hover { transform: translateY(-1px); box-shadow: 0 8px 28px rgba(30,45,74,0.09); }
+  .track-card.playing { border-color: var(--ca); box-shadow: 0 0 0 3px var(--cg), var(--shadow); }
+
+  .track-card.c0 { --ca: var(--mist);   --cg: rgba(107,158,200,0.14); }
+  .track-card.c1 { --ca: var(--breeze); --cg: rgba(122,184,160,0.14); }
+
+  .track-top { display: flex; align-items: center; gap: 10px; margin-bottom: 9px; }
+
+  /* Cover */
+  .track-cover {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-size: 16px; color: white;
+    position: relative; overflow: hidden;
+  }
+  .track-cover::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.30), transparent);
+  }
+  .c0 .track-cover { background: linear-gradient(145deg, #5b8db8, #90bcd8); box-shadow: 0 4px 12px rgba(91,141,184,0.35); }
+  .c1 .track-cover { background: linear-gradient(145deg, #5ea88a, #90cbb0); box-shadow: 0 4px 12px rgba(94,168,138,0.35); }
+
+  .track-info { flex: 1; min-width: 0; }
+  .track-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.95rem; font-weight: 400;
+    color: var(--ink); margin-bottom: 4px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .track-meta { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 3px;
+    padding: 1px 7px; border-radius: 20px;
+    font-size: 9px; font-weight: 500;
+    letter-spacing: 0.5px; text-transform: uppercase;
+  }
+  .c0 .badge { background: var(--mist-p);   color: var(--mist); }
+  .c1 .badge { background: var(--breeze-p); color: var(--breeze); }
+  .track-label { font-size: 10.5px; color: rgba(30,45,74,0.34); font-weight: 300; }
+
+  /* Play btn */
+  .play-btn {
+    width: 36px; height: 36px; border-radius: 50%;
+    border: 1.5px solid; background: transparent;
+    font-size: 11px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all 0.2s ease; flex-shrink: 0;
+  }
+  .play-btn .fa-play { margin-left: 2px; }
+  .c0 .play-btn { border-color: var(--mist);   color: var(--mist); }
+  .c1 .play-btn { border-color: var(--breeze); color: var(--breeze); }
+  .c0 .play-btn:hover, .c0.playing .play-btn { background: var(--mist);   color: #fff; transform: scale(1.08); }
+  .c1 .play-btn:hover, .c1.playing .play-btn { background: var(--breeze); color: #fff; transform: scale(1.08); }
+
+  /* Waveform */
+  .wave-wrap {
+    position: relative;
+    background: rgba(30,45,74,0.02);
+    border-radius: 8px; height: 44px;
+    cursor: pointer; overflow: hidden;
+  }
+  .wave-inner { height: 44px; }
+  .time-label {
+    position: absolute; bottom: 4px; right: 7px;
+    font-size: 9.5px; font-family: monospace;
+    color: rgba(30,45,74,0.25); pointer-events: none; z-index: 10;
+  }
+  .cur-label {
+    position: absolute; bottom: 4px; left: 7px;
+    font-size: 9.5px; font-family: monospace;
+    pointer-events: none; z-index: 10;
+  }
+  .c0 .cur-label { color: var(--mist); }
+  .c1 .cur-label { color: var(--breeze); }
+
+  @keyframes halo {
+    0%   { box-shadow: 0 0 0 0   var(--ca); }
+    70%  { box-shadow: 0 0 0 7px transparent; }
+    100% { box-shadow: 0 0 0 0   transparent; }
+  }
+  .track-card.playing .track-cover { animation: halo 2.2s ease infinite; }
+
+  /* Footer */
+  .page-footer {
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 10px;
+    margin-top: 6px; padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+  .footer-actions { display: flex; gap: 7px; }
+  .action-btn {
+    background: rgba(255,255,255,0.7);
+    border: 1px solid var(--border);
+    padding: 5px 12px; border-radius: 8px;
+    font-size: 11.5px; color: var(--ink);
+    cursor: pointer; transition: 0.2s;
+    display: flex; align-items: center; gap: 5px;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .action-btn:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+  .brand-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+  .brand-icon {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: linear-gradient(135deg, #5b8db8, #5ea88a);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 3px 10px rgba(91,141,184,0.25);
+  }
+  .brand-icon i { font-size: 12px; color: white; }
+  .brand-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 14px; font-weight: 400;
+    color: var(--ink); letter-spacing: 1.5px;
+  }
+  .brand-sub { font-size: 9px; color: rgba(30,45,74,0.35); display: block; line-height: 1; letter-spacing: 1px; text-transform: uppercase; }
+
+  .toast {
+    position: fixed; top: 18px; left: 50%;
+    transform: translateX(-50%) translateY(-12px);
+    background: var(--ink); color: #f0f7ff;
+    padding: 9px 20px; border-radius: 30px;
+    font-size: 12px; opacity: 0; visibility: hidden;
+    transition: 0.3s; z-index: 1000;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<div id="toast" class="toast">🔗 Посилання скопійовано!</div>
+
+<div class="page-wrap">
+  <div class="page-header">
+    <div class="header-eyebrow">Worship Collection</div>
+    <h1>Під Твоїми крилами</h1>
+    <p>Дві версії · тихе поклоніння · простір і вітер</p>
+  </div>
+
+  <!-- Track 1 — sky blue -->
+  <div class="track-card c0" id="card-0">
+    <div class="track-top">
+      <div class="track-cover"><i class="fas fa-feather-pointed"></i></div>
+      <div class="track-info">
+        <div class="track-title">Під Твоїми крилами</div>
+        <div class="track-meta">
+          <span class="badge"><i class="fas fa-music" style="font-size:7px"></i> Версія 2</span>
+          <span class="track-label">Основне аранжування</span>
+        </div>
+      </div>
+      <button class="play-btn" id="btn-0" onclick="togglePlay(0)">
+        <i class="fas fa-play"></i>
+      </button>
+    </div>
+    <div class="wave-wrap">
+      <div id="wave-0" class="wave-inner"></div>
+      <span class="cur-label" id="cur-0">00:00</span>
+      <span class="time-label" id="dur-0">--:--</span>
+    </div>
+  </div>
+
+  <!-- Track 2 — breeze green -->
+  <div class="track-card c1" id="card-1">
+    <div class="track-top">
+      <div class="track-cover"><i class="fas fa-dove"></i></div>
+      <div class="track-info">
+        <div class="track-title">Під Твоїми крилами (Вокал 2)</div>
+        <div class="track-meta">
+          <span class="badge"><i class="fas fa-rotate" style="font-size:7px"></i> Remix</span>
+          <span class="track-label">Альтернативний вокал</span>
+        </div>
+      </div>
+      <button class="play-btn" id="btn-1" onclick="togglePlay(1)">
+        <i class="fas fa-play"></i>
+      </button>
+    </div>
+    <div class="wave-wrap">
+      <div id="wave-1" class="wave-inner"></div>
+      <span class="cur-label" id="cur-1">00:00</span>
+      <span class="time-label" id="dur-1">--:--</span>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <div class="footer-actions">
+      <button class="action-btn" onclick="shareTG()"><i class="fab fa-telegram-plane"></i> Telegram</button>
+      <button class="action-btn" onclick="copyLink()"><i class="fas fa-link"></i> Посилання</button>
+    </div>
+    <div class="brand-logo">
+      <div class="brand-icon"><i class="fas fa-music"></i></div>
+      <div>
+        <span class="brand-text">МЕЛОДІЯ</span>
+        <span class="brand-sub">christian music</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import WaveSurfer from 'https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.esm.js';
+
+  const tracks = [
+    { src: 'Під Твоїми крилами (версія 2).m4a' },
+    { src: 'Під Твоїми крилами (Вокал 2) (Remix).m4a' }
+  ];
+
+  const colors = [
+    { wave: '#daedf8', progress: '#6b9ec8' },
+    { wave: '#d8f0e8', progress: '#7ab8a0' }
+  ];
+
+  const fmt = s => new Date(s * 1000).toISOString().substr(14, 5);
+
+  const players = tracks.map((track, i) => {
+    const ws = WaveSurfer.create({
+      container: `#wave-${i}`,
+      waveColor: colors[i].wave,
+      progressColor: colors[i].progress,
+      barWidth: 1,
+      barGap: 0.5,
+      barRadius: 1,
+      height: 44,
+      url: track.src,
+    });
+
+    const btn = document.getElementById(`btn-${i}`);
+    ws.on('ready', dur => document.getElementById(`dur-${i}`).textContent = fmt(dur));
+    ws.on('timeupdate', cur => document.getElementById(`cur-${i}`).textContent = fmt(cur));
+    ws.on('play', () => {
+      btn.innerHTML = '<i class="fas fa-pause"></i>';
+      document.getElementById(`card-${i}`).classList.add('playing');
+      players.forEach((p, j) => { if (j !== i && p.isPlaying()) p.pause(); });
+    });
+    ws.on('pause', () => {
+      btn.innerHTML = '<i class="fas fa-play"></i>';
+      document.getElementById(`card-${i}`).classList.remove('playing');
+    });
+    return ws;
+  });
+
+  window.togglePlay = i => players[i].playPause();
+  window.shareTG = () => window.open(`https://t.me/share/url?url=${encodeURIComponent(window.location.href)}`, '_blank');
+  window.copyLink = () => {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      const t = document.getElementById('toast');
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2000);
+    });
+  };
+</script>
+</body>
+</html>
