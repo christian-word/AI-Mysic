@@ -35,7 +35,6 @@
     overflow-x: hidden;
   }
 
-  /* Soft sky gradient */
   body::before {
     content: '';
     position: fixed; inset: 0;
@@ -46,7 +45,6 @@
     pointer-events: none;
   }
 
-  /* Subtle horizontal wind streaks */
   body::after {
     content: '';
     position: fixed;
@@ -61,7 +59,6 @@
 
   .page-wrap { width: 100%; max-width: 780px; position: relative; }
 
-  /* ── Header ── */
   .page-header {
     margin-bottom: 12px;
     padding-bottom: 12px;
@@ -92,7 +89,6 @@
     font-weight: 300;
   }
 
-  /* ── Card ── */
   .track-card {
     background: rgba(255,255,255,0.80);
     border: 1px solid var(--border);
@@ -108,10 +104,10 @@
 
   .track-card.c0 { --ca: var(--mist);   --cg: rgba(107,158,200,0.14); }
   .track-card.c1 { --ca: var(--breeze); --cg: rgba(122,184,160,0.14); }
+  .track-card.c2 { --ca: #9b7fd1;       --cg: rgba(155,127,209,0.14); } /* лаванда */
 
   .track-top { display: flex; align-items: center; gap: 10px; margin-bottom: 9px; }
 
-  /* Cover */
   .track-cover {
     width: 40px; height: 40px;
     border-radius: 10px;
@@ -123,8 +119,10 @@
     content: ''; position: absolute; inset: 0;
     background: linear-gradient(135deg, rgba(255,255,255,0.30), transparent);
   }
+
   .c0 .track-cover { background: linear-gradient(145deg, #5b8db8, #90bcd8); box-shadow: 0 4px 12px rgba(91,141,184,0.35); }
   .c1 .track-cover { background: linear-gradient(145deg, #5ea88a, #90cbb0); box-shadow: 0 4px 12px rgba(94,168,138,0.35); }
+  .c2 .track-cover { background: linear-gradient(145deg, #8a6bc4, #b89edc); box-shadow: 0 4px 12px rgba(139,107,196,0.35); }
 
   .track-info { flex: 1; min-width: 0; }
   .track-title {
@@ -142,9 +140,10 @@
   }
   .c0 .badge { background: var(--mist-p);   color: var(--mist); }
   .c1 .badge { background: var(--breeze-p); color: var(--breeze); }
+  .c2 .badge { background: #f0e6ff; color: #9b7fd1; }
+
   .track-label { font-size: 10.5px; color: rgba(30,45,74,0.34); font-weight: 300; }
 
-  /* Play btn */
   .play-btn {
     width: 36px; height: 36px; border-radius: 50%;
     border: 1.5px solid; background: transparent;
@@ -153,12 +152,15 @@
     cursor: pointer; transition: all 0.2s ease; flex-shrink: 0;
   }
   .play-btn .fa-play { margin-left: 2px; }
+
   .c0 .play-btn { border-color: var(--mist);   color: var(--mist); }
   .c1 .play-btn { border-color: var(--breeze); color: var(--breeze); }
+  .c2 .play-btn { border-color: #9b7fd1;      color: #9b7fd1; }
+
   .c0 .play-btn:hover, .c0.playing .play-btn { background: var(--mist);   color: #fff; transform: scale(1.08); }
   .c1 .play-btn:hover, .c1.playing .play-btn { background: var(--breeze); color: #fff; transform: scale(1.08); }
+  .c2 .play-btn:hover, .c2.playing .play-btn { background: #9b7fd1;      color: #fff; transform: scale(1.08); }
 
-  /* Waveform */
   .wave-wrap {
     position: relative;
     background: rgba(30,45,74,0.02);
@@ -178,6 +180,7 @@
   }
   .c0 .cur-label { color: var(--mist); }
   .c1 .cur-label { color: var(--breeze); }
+  .c2 .cur-label { color: #9b7fd1; }
 
   @keyframes halo {
     0%   { box-shadow: 0 0 0 0   var(--ca); }
@@ -186,7 +189,6 @@
   }
   .track-card.playing .track-cover { animation: halo 2.2s ease infinite; }
 
-  /* Footer */
   .page-footer {
     display: flex; justify-content: space-between; align-items: center;
     flex-wrap: wrap; gap: 10px;
@@ -243,7 +245,7 @@
     <p>Три версії · тихе поклоніння · простір і вітер</p>
   </div>
 
-  <!-- Track 1 — sky blue -->
+  <!-- Track 1 -->
   <div class="track-card c0" id="card-0">
     <div class="track-top">
       <div class="track-cover"><i class="fas fa-feather-pointed"></i></div>
@@ -265,7 +267,7 @@
     </div>
   </div>
 
-  <!-- Track 2 — breeze green -->
+  <!-- Track 2 -->
   <div class="track-card c1" id="card-1">
     <div class="track-top">
       <div class="track-cover"><i class="fas fa-dove"></i></div>
@@ -287,12 +289,12 @@
     </div>
   </div>
 
-  <!-- Track 3 — новий (дубль Remix) -->
-  <div class="track-card c1" id="card-2">
+  <!-- Track 3 -->
+  <div class="track-card c2" id="card-2">
     <div class="track-top">
-      <div class="track-cover"><i class="fas fa-dove"></i></div>
+      <div class="track-cover"><i class="fas fa-microphone"></i></div>
       <div class="track-info">
-        <div class="track-title">Під Твоїми крилами (Вокал 2) (Remix)</div>
+        <div class="track-title">Під Твоїми крилами (Вокал 2)</div>
         <div class="track-meta">
           <span class="badge"><i class="fas fa-rotate" style="font-size:7px"></i> Remix</span>
           <span class="track-label">Альтернативний вокал 2</span>
@@ -330,13 +332,13 @@
   const tracks = [
     { src: 'Під Твоїми крилами (версія 2).m4a' },
     { src: 'Під Твоїми крилами (Вокал 2) (Remix).m4a' },
-    { src: 'Під Твоїми крилами (Вокал 2) (Remix2).m4a' }   // ← третій трек
+    { src: 'Під Твоїми крилами (Вокал 2) (Remix).m4a' }
   ];
 
   const colors = [
-    { wave: '#daedf8', progress: '#6b9ec8' },
-    { wave: '#d8f0e8', progress: '#7ab8a0' },
-    { wave: '#d8f0e8', progress: '#7ab8a0' }   // той самий стиль, що й у другого
+    { wave: '#daedf8', progress: '#6b9ec8' },     // Track 1
+    { wave: '#d8f0e8', progress: '#7ab8a0' },     // Track 2
+    { wave: '#f0e6ff', progress: '#9b7fd1' }      // Track 3 (лаванда)
   ];
 
   const fmt = s => new Date(s * 1000).toISOString().substr(14, 5);
