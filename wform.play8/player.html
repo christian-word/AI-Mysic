@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="uk">
 <head>
 <meta charset="UTF-8">
@@ -240,7 +240,7 @@
   <div class="page-header">
     <div class="header-eyebrow">Worship Collection</div>
     <h1>Під Твоїми крилами</h1>
-    <p>Дві версії · тихе поклоніння · простір і вітер</p>
+    <p>Три версії · тихе поклоніння · простір і вітер</p>
   </div>
 
   <!-- Track 1 — sky blue -->
@@ -287,6 +287,28 @@
     </div>
   </div>
 
+  <!-- Track 3 — новий (дубль Remix) -->
+  <div class="track-card c1" id="card-2">
+    <div class="track-top">
+      <div class="track-cover"><i class="fas fa-dove"></i></div>
+      <div class="track-info">
+        <div class="track-title">Під Твоїми крилами (Вокал 2) (Remix)</div>
+        <div class="track-meta">
+          <span class="badge"><i class="fas fa-rotate" style="font-size:7px"></i> Remix</span>
+          <span class="track-label">Альтернативний вокал 2</span>
+        </div>
+      </div>
+      <button class="play-btn" id="btn-2" onclick="togglePlay(2)">
+        <i class="fas fa-play"></i>
+      </button>
+    </div>
+    <div class="wave-wrap">
+      <div id="wave-2" class="wave-inner"></div>
+      <span class="cur-label" id="cur-2">00:00</span>
+      <span class="time-label" id="dur-2">--:--</span>
+    </div>
+  </div>
+
   <div class="page-footer">
     <div class="footer-actions">
       <button class="action-btn" onclick="shareTG()"><i class="fab fa-telegram-plane"></i> Telegram</button>
@@ -307,12 +329,14 @@
 
   const tracks = [
     { src: 'Під Твоїми крилами (версія 2).m4a' },
-    { src: 'Під Твоїми крилами (Вокал 2) (Remix).m4a' }
+    { src: 'Під Твоїми крилами (Вокал 2) (Remix).m4a' },
+    { src: 'Під Твоїми крилами (Вокал 2) (Remix).m4a' }   // ← третій трек
   ];
 
   const colors = [
     { wave: '#daedf8', progress: '#6b9ec8' },
-    { wave: '#d8f0e8', progress: '#7ab8a0' }
+    { wave: '#d8f0e8', progress: '#7ab8a0' },
+    { wave: '#d8f0e8', progress: '#7ab8a0' }   // той самий стиль, що й у другого
   ];
 
   const fmt = s => new Date(s * 1000).toISOString().substr(14, 5);
