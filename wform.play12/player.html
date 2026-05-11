@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Worship Player — Ти зі мною</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:      #f4f2f9;
+    --ink:     #1e1a2e;
+    --border:  rgba(30,26,46,0.09);
+    --shadow:  0 4px 20px rgba(30,26,46,0.07);
+
+    /* card 0 — лавандовий */
+    --c0:      #7c5cbf;
+    --c0-soft: #a88ad8;
+    --c0-pale: #ece5f8;
+
+    /* card 1 — перванш / блакитно-фіолетовий */
+    --c1:      #4a7abf;
+    --c1-soft: #7aaad8;
+    --c1-pale: #ddeaf8;
+
+    /* card 2 — рожево-ліловий / New Vibe */
+    --c2:      #9b5ea8;
+    --c2-soft: #c48ed4;
+    --c2-pale: #f2e2f8;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    padding: 14px 10px 24px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse 65% 40% at 80% 0%,   rgba(124,92,191,0.10) 0%, transparent 55%),
+      radial-gradient(ellipse 50% 45% at 10% 80%,  rgba(74,122,191,0.08) 0%, transparent 55%),
+      radial-gradient(ellipse 40% 35% at 50% 45%,  rgba(155,94,168,0.05) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  /* Subtle soft shimmer */
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background: repeating-linear-gradient(
+      135deg,
+      transparent 0px, transparent 80px,
+      rgba(124,92,191,0.018) 80px, rgba(124,92,191,0.018) 81px
+    );
+    pointer-events: none;
+  }
+
+  .page-wrap { width: 100%; max-width: 780px; position: relative; }
+
+  /* ── Header ── */
+  .page-header {
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .header-eyebrow {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 3.5px;
+    text-transform: uppercase;
+    color: var(--c0);
+    margin-bottom: 5px;
+    opacity: 0.85;
+  }
+  .page-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 600;
+    font-size: 1.65rem;
+    color: var(--ink);
+    letter-spacing: -0.2px;
+    line-height: 1.15;
+    margin-bottom: 3px;
+  }
+  .page-header p {
+    font-size: 11px;
+    color: rgba(30,26,46,0.42);
+    font-weight: 300;
+  }
+
+  /* ── Card ── */
+  .track-card {
+    background: rgba(255,254,255,0.95);
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    padding: 11px 13px;
+    margin-bottom: 9px;
+    box-shadow: var(--shadow);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+  .track-card:hover { transform: translateY(-1px); box-shadow: 0 8px 28px rgba(30,26,46,0.11); }
+  .track-card.playing { border-color: var(--ca); box-shadow: 0 0 0 3px var(--cg), var(--shadow); }
+
+  .track-card.c0 { --ca: var(--c0); --cg: rgba(124,92,191,0.13); }
+  .track-card.c1 { --ca: var(--c1); --cg: rgba(74,122,191,0.13); }
+  .track-card.c2 { --ca: var(--c2); --cg: rgba(155,94,168,0.13); }
+
+  .track-top { display: flex; align-items: center; gap: 10px; margin-bottom: 9px; }
+
+  .track-cover {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-size: 16px; color: white;
+    position: relative; overflow: hidden;
+  }
+  .track-cover::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.22), transparent);
+  }
+  .c0 .track-cover { background: linear-gradient(145deg, #7c5cbf, #a88ad8); box-shadow: 0 4px 12px rgba(124,92,191,0.38); }
+  .c1 .track-cover { background: linear-gradient(145deg, #4a7abf, #7aaad8); box-shadow: 0 4px 12px rgba(74,122,191,0.38); }
+  .c2 .track-cover { background: linear-gradient(145deg, #9b5ea8, #c48ed4); box-shadow: 0 4px 12px rgba(155,94,168,0.38); }
+
+  .track-info { flex: 1; min-width: 0; }
+  .track-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.88rem; font-weight: 600;
+    color: var(--ink); margin-bottom: 4px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .track-meta { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 3px;
+    padding: 1px 7px; border-radius: 20px;
+    font-size: 9px; font-weight: 500;
+    letter-spacing: 0.5px; text-transform: uppercase;
+  }
+  .c0 .badge { background: var(--c0-pale); color: var(--c0); }
+  .c1 .badge { background: var(--c1-pale); color: var(--c1); }
+  .c2 .badge { background: var(--c2-pale); color: var(--c2); }
+  .track-label { font-size: 10.5px; color: rgba(30,26,46,0.36); font-weight: 300; }
+
+  .play-btn {
+    width: 36px; height: 36px; border-radius: 50%;
+    border: 2px solid; background: transparent;
+    font-size: 11px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all 0.2s ease; flex-shrink: 0;
+  }
+  .play-btn .fa-play { margin-left: 2px; }
+  .c0 .play-btn { border-color: var(--c0); color: var(--c0); }
+  .c1 .play-btn { border-color: var(--c1); color: var(--c1); }
+  .c2 .play-btn { border-color: var(--c2); color: var(--c2); }
+  .c0 .play-btn:hover, .c0.playing .play-btn { background: var(--c0); color: #fff; transform: scale(1.08); }
+  .c1 .play-btn:hover, .c1.playing .play-btn { background: var(--c1); color: #fff; transform: scale(1.08); }
+  .c2 .play-btn:hover, .c2.playing .play-btn { background: var(--c2); color: #fff; transform: scale(1.08); }
+
+  .wave-wrap {
+    position: relative;
+    background: rgba(30,26,46,0.03);
+    border-radius: 8px; height: 44px;
+    cursor: pointer; overflow: hidden;
+  }
+  .wave-inner { height: 44px; }
+  .time-label {
+    position: absolute; bottom: 4px; right: 7px;
+    font-size: 9.5px; font-family: monospace;
+    color: rgba(30,26,46,0.28); pointer-events: none; z-index: 10;
+  }
+  .cur-label {
+    position: absolute; bottom: 4px; left: 7px;
+    font-size: 9.5px; font-family: monospace;
+    pointer-events: none; z-index: 10;
+  }
+  .c0 .cur-label { color: var(--c0); }
+  .c1 .cur-label { color: var(--c1); }
+  .c2 .cur-label { color: var(--c2); }
+
+  @keyframes halo {
+    0%   { box-shadow: 0 0 0 0   var(--ca, var(--c0)); }
+    70%  { box-shadow: 0 0 0 8px transparent; }
+    100% { box-shadow: 0 0 0 0   transparent; }
+  }
+  .track-card.playing .track-cover { animation: halo 2s ease infinite; }
+
+  .page-footer {
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 10px;
+    margin-top: 6px; padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+  .footer-actions { display: flex; gap: 7px; }
+  .action-btn {
+    background: rgba(255,254,255,0.9);
+    border: 1px solid var(--border);
+    padding: 5px 12px; border-radius: 8px;
+    font-size: 11.5px; color: var(--ink);
+    cursor: pointer; transition: 0.2s;
+    display: flex; align-items: center; gap: 5px;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .action-btn:hover { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+  .brand-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+  .brand-icon {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: linear-gradient(135deg, #7c5cbf, #4a7abf);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 3px 10px rgba(124,92,191,0.28);
+  }
+  .brand-icon i { font-size: 12px; color: white; }
+  .brand-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 13px; font-weight: 600;
+    color: var(--ink); letter-spacing: 0.8px;
+  }
+  .brand-sub { font-size: 9px; color: rgba(30,26,46,0.38); display: block; line-height: 1; letter-spacing: 1px; text-transform: uppercase; }
+
+  .toast {
+    position: fixed; top: 18px; left: 50%;
+    transform: translateX(-50%) translateY(-12px);
+    background: var(--ink); color: var(--bg);
+    padding: 9px 20px; border-radius: 30px;
+    font-size: 12px; opacity: 0; visibility: hidden;
+    transition: 0.3s; z-index: 1000;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<div id="toast" class="toast">🔗 Посилання скопійовано!</div>
+
+<div class="page-wrap">
+  <div class="page-header">
+    <div class="header-eyebrow">Worship Collection</div>
+    <h1>Ти зі мною</h1>
+    <p>Три версії — присутність, вічність, новий вимір</p>
+  </div>
+
+  <!-- Track 1 — лавандовий -->
+  <div class="track-card c0" id="card-0">
+    <div class="track-top">
+      <div class="track-cover"><i class="fas fa-hands-praying"></i></div>
+      <div class="track-info">
+        <div class="track-title">Ти зі мною</div>
+        <div class="track-meta">
+          <span class="badge"><i class="fas fa-music" style="font-size:7px"></i> Worship</span>
+          <span class="track-label">Основна версія</span>
+        </div>
+      </div>
+      <button class="play-btn" id="btn-0" onclick="togglePlay(0)">
+        <i class="fas fa-play"></i>
+      </button>
+    </div>
+    <div class="wave-wrap">
+      <div id="wave-0" class="wave-inner"></div>
+      <span class="cur-label" id="cur-0">00:00</span>
+      <span class="time-label" id="dur-0">--:--</span>
+    </div>
+  </div>
+
+  <!-- Track 2 — блакитний -->
+  <div class="track-card c1" id="card-1">
+    <div class="track-top">
+      <div class="track-cover"><i class="fas fa-infinity"></i></div>
+      <div class="track-info">
+        <div class="track-title">Ти зі мною назавжди</div>
+        <div class="track-meta">
+          <span class="badge"><i class="fas fa-heart" style="font-size:7px"></i> Назавжди</span>
+          <span class="track-label">Розширена версія</span>
+        </div>
+      </div>
+      <button class="play-btn" id="btn-1" onclick="togglePlay(1)">
+        <i class="fas fa-play"></i>
+      </button>
+    </div>
+    <div class="wave-wrap">
+      <div id="wave-1" class="wave-inner"></div>
+      <span class="cur-label" id="cur-1">00:00</span>
+      <span class="time-label" id="dur-1">--:--</span>
+    </div>
+  </div>
+
+  <!-- Track 3 — ліловий -->
+  <div class="track-card c2" id="card-2">
+    <div class="track-top">
+      <div class="track-cover"><i class="fas fa-wand-sparkles"></i></div>
+      <div class="track-info">
+        <div class="track-title">Ти зі мною назавжди — New Vibe</div>
+        <div class="track-meta">
+          <span class="badge"><i class="fas fa-rotate" style="font-size:7px"></i> New Vibe</span>
+          <span class="track-label">Новий вимір</span>
+        </div>
+      </div>
+      <button class="play-btn" id="btn-2" onclick="togglePlay(2)">
+        <i class="fas fa-play"></i>
+      </button>
+    </div>
+    <div class="wave-wrap">
+      <div id="wave-2" class="wave-inner"></div>
+      <span class="cur-label" id="cur-2">00:00</span>
+      <span class="time-label" id="dur-2">--:--</span>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <div class="footer-actions">
+      <button class="action-btn" onclick="shareTG()"><i class="fab fa-telegram-plane"></i> Telegram</button>
+      <button class="action-btn" onclick="copyLink()"><i class="fas fa-link"></i> Посилання</button>
+    </div>
+    <div class="brand-logo">
+      <div class="brand-icon"><i class="fas fa-music"></i></div>
+      <div>
+        <span class="brand-text">МЕЛОДІЯ</span>
+        <span class="brand-sub">christian music</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import WaveSurfer from 'https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.esm.js';
+
+  const tracks = [
+    { src: 'Ти зі мною.m4a' },
+    { src: 'Ти зі мною назавжди.m4a' },
+    { src: 'Ти зі мною назавжди (New Vibe).m4a' }
+  ];
+
+  const colors = [
+    { wave: '#ece5f8', progress: '#7c5cbf' },
+    { wave: '#ddeaf8', progress: '#4a7abf' },
+    { wave: '#f2e2f8', progress: '#9b5ea8' }
+  ];
+
+  const fmt = s => new Date(s * 1000).toISOString().substr(14, 5);
+
+  const players = tracks.map((track, i) => {
+    const ws = WaveSurfer.create({
+      container: `#wave-${i}`,
+      waveColor: colors[i].wave,
+      progressColor: colors[i].progress,
+      barWidth: 2,
+      barGap: 0.5,
+      barRadius: 1,
+      height: 44,
+      url: track.src,
+    });
+
+    const btn = document.getElementById(`btn-${i}`);
+
+    ws.on('ready',      (dur) => document.getElementById(`dur-${i}`).textContent = fmt(dur));
+    ws.on('timeupdate', (cur) => document.getElementById(`cur-${i}`).textContent = fmt(cur));
+
+    ws.on('play', () => {
+      btn.innerHTML = '<i class="fas fa-pause"></i>';
+      document.getElementById(`card-${i}`).classList.add('playing');
+      players.forEach((p, j) => { if (j !== i && p.isPlaying()) p.pause(); });
+    });
+    ws.on('pause', () => {
+      btn.innerHTML = '<i class="fas fa-play"></i>';
+      document.getElementById(`card-${i}`).classList.remove('playing');
+    });
+
+    return ws;
+  });
+
+  window.togglePlay = (i) => players[i].playPause();
+
+  window.shareTG = () =>
+    window.open(`https://t.me/share/url?url=${encodeURIComponent(window.location.href)}`, '_blank');
+
+  window.copyLink = () =>
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      const t = document.getElementById('toast');
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2000);
+    });
+</script>
+</body>
+</html>
