@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="uk">
 <head>
 <meta charset="UTF-8">
@@ -310,17 +310,100 @@
     backdrop-filter: blur(12px);
   }
   .toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+
+  /* ── Loading overlay ── */
+  .loading-overlay {
+    position: fixed; inset: 0; z-index: 999;
+    background: var(--bg0);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 20px;
+    transition: opacity 0.7s ease, visibility 0.7s ease;
+  }
+  .loading-overlay.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+
+  .loader-icon {
+    position: relative; width: 68px; height: 68px;
+  }
+  .loader-icon i {
+    font-size: 26px; color: var(--c0);
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    filter: drop-shadow(0 0 10px var(--c0));
+  }
+  .loader-ring {
+    position: absolute; inset: 0; border-radius: 50%;
+    border: 2px solid rgba(245,158,11,0.12);
+    border-top-color: var(--c0);
+    animation: spin 1.2s linear infinite;
+  }
+  .loader-ring2 {
+    position: absolute; inset: 7px; border-radius: 50%;
+    border: 1.5px solid rgba(245,158,11,0.07);
+    border-bottom-color: rgba(234,140,52,0.55);
+    animation: spin 2s linear infinite reverse;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .loader-text {
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 10px; font-weight: 300;
+    letter-spacing: 4px; text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .loader-bar-wrap {
+    width: 160px; height: 2px;
+    background: rgba(245,158,11,0.10);
+    border-radius: 2px; overflow: hidden;
+  }
+  .loader-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--c2), var(--c0), var(--c4));
+    border-radius: 2px; width: 0%;
+    transition: width 0.4s ease;
+    box-shadow: 0 0 8px var(--c0);
+  }
+
+  .loader-dots { display: flex; gap: 6px; }
+  .loader-dots span {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--c0); opacity: 0.25;
+    animation: dot-pulse 1.2s ease infinite;
+  }
+  .loader-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .loader-dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes dot-pulse {
+    0%, 100% { opacity: 0.2; transform: scale(0.8); }
+    50%       { opacity: 1;   transform: scale(1.2); filter: drop-shadow(0 0 4px var(--c0)); }
+  }
 </style>
 </head>
 <body>
 
 <canvas id="stars-canvas"></canvas>
+
+<div class="loading-overlay" id="loading-overlay">
+  <div class="loader-icon">
+    <div class="loader-ring"></div>
+    <div class="loader-ring2"></div>
+    <i class="fas fa-microchip"></i>
+  </div>
+  <div class="loader-text">Завантаження</div>
+  <div class="loader-bar-wrap">
+    <div class="loader-bar" id="loader-bar"></div>
+  </div>
+  <div class="loader-dots">
+    <span></span><span></span><span></span>
+  </div>
+</div>
+
 <div id="toast" class="toast">✦ Посилання скопійовано</div>
 
 <div class="page-wrap">
   <div class="page-header">
     <div class="album-badge"><i class="fas fa-microchip"></i> AI Music Collection</div>
-    <h1>AI Music<span>Collection</span></h1>
+    <h1>AI Musi<span>Collection</span></h1>
     <p>1 трек · AI Generated · Instrumental</p>
     <div class="star-divider">✦ ✦ ✦</div>
   </div>
@@ -331,7 +414,7 @@
     <div class="track-top">
       <div class="track-cover"><i class="fas fa-microchip"></i></div>
       <div class="track-info">
-        <div class="track-title">AI Music Collection</div>
+        <div class="track-title">AI Musi Collection</div>
         <div class="track-meta">
           <span class="badge"><i class="fas fa-wand-sparkles" style="font-size:7px"></i> AI Generated</span>
           <span class="track-label">Instrumental · Collection</span>
@@ -429,7 +512,19 @@
 
     const btn = document.getElementById(`btn-${i}`);
 
-    ws.on('ready',      (dur) => document.getElementById(`dur-${i}`).textContent = fmt(dur));
+    ws.on('loading', (percent) => {
+      const bar = document.getElementById('loader-bar');
+      if (bar) bar.style.width = percent + '%';
+    });
+    ws.on('ready', (dur) => {
+      document.getElementById(`dur-${i}`).textContent = fmt(dur);
+      const bar = document.getElementById('loader-bar');
+      if (bar) bar.style.width = '100%';
+      setTimeout(() => {
+        const overlay = document.getElementById('loading-overlay');
+        if (overlay) overlay.classList.add('hidden');
+      }, 500);
+    });
     ws.on('timeupdate', (cur) => document.getElementById(`cur-${i}`).textContent = fmt(cur));
 
     ws.on('play', () => {
