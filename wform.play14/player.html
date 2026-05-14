@@ -1,0 +1,536 @@
+﻿<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Worship Player - Промінь Надії</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream:   #1c2030;
+    --ink:     #ddd8f0;
+    --amber:   #6b9fd4;
+    --amber-soft: #4a7ab0;
+    --amber-pale: #1e2d3d;
+    --rose:    #5ab8a8;
+    --rose-soft: #3a9080;
+    --rose-pale: #1a2d2a;
+    --sage:    #8aaa60;
+    --sage-soft: #6a8840;
+    --sage-pale: #1e2a18;
+    --violet:  #7aa0b0;
+    --violet-soft: #5a8090;
+    --violet-pale: #1a2530;
+    --border:  rgba(255,255,255,0.09);
+    --shadow:  0 4px 24px rgba(0,0,0,0.40);
+    /* extra colours */
+    --gold:    #d4aa60;
+    --terra:   #c07850;
+    --ocean:   #5090b8;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    min-height: 100vh;
+    padding: 14px 10px 24px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Subtle background texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 80% 10%, rgba(107,159,212,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 50% at 10% 80%, rgba(90,160,168,0.05) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .page-wrap { width: 100%; max-width: 780px; position: relative; }
+
+  /* ── Header ── */
+  .page-header {
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .header-eyebrow {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #6b9fd4;
+    margin-bottom: 8px;
+  }
+  .page-header h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: 1.7rem;
+    color: var(--ink);
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+    margin-bottom: 4px;
+  }
+  .page-header p {
+    font-size: 11px;
+    color: rgba(220,216,240,0.38);
+    font-weight: 300;
+  }
+
+  /* ── Track Card ── */
+  .track-card {
+    background: #242840;
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    padding: 11px 13px;
+    margin-bottom: 9px;
+    box-shadow: var(--shadow);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+  .track-card:hover { transform: translateY(-1px); box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
+  .track-card.playing { border-color: var(--card-accent, var(--amber)); box-shadow: 0 0 0 3px var(--card-glow, rgba(201,125,46,0.15)), var(--shadow); }
+
+  /* Per-card accent colours */
+  .track-card.c0 { --card-accent: var(--amber);  --card-glow: rgba(201,125,46,0.15); }
+  .track-card.c1 { --card-accent: var(--rose);   --card-glow: rgba(201,95,74,0.15); }
+  .track-card.c2 { --card-accent: var(--sage);   --card-glow: rgba(74,124,89,0.15); }
+  .track-card.c3 { --card-accent: var(--violet); --card-glow: rgba(107,78,140,0.15); }
+  .track-card.c4 { --card-accent: #7a4a8a;  --card-glow: rgba(122,74,138,0.15); }
+  .track-card.c5 { --card-accent: #a07830;  --card-glow: rgba(160,120,48,0.15); }
+  .track-card.c6 { --card-accent: #8a4a2a;  --card-glow: rgba(138,74,42,0.15); }
+  .track-card.c7 { --card-accent: #2a5a7a;  --card-glow: rgba(42,90,122,0.15); }
+
+  .track-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 9px;
+  }
+
+  /* Cover icons */
+  .track-cover {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-size: 16px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+  .track-cover::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent);
+    border-radius: inherit;
+  }
+  .c0 .track-cover { background: linear-gradient(145deg, #3a6ea8, #6b9fd4); box-shadow: 0 4px 14px rgba(58,110,168,0.35); }
+  .c1 .track-cover { background: linear-gradient(145deg, #2a8a7a, #5ab8a8); box-shadow: 0 4px 14px rgba(42,138,122,0.35); }
+  .c2 .track-cover { background: linear-gradient(145deg, #5a7a3a, #8aaa60); box-shadow: 0 4px 14px rgba(90,122,58,0.35); }
+  .c3 .track-cover { background: linear-gradient(145deg, #4a6a7a, #7aa0b0); box-shadow: 0 4px 14px rgba(74,106,122,0.35); }
+  .c4 .track-cover { background: linear-gradient(145deg, #7a4a8a, #b07cc0); box-shadow: 0 4px 14px rgba(122,74,138,0.35); }
+  .c5 .track-cover { background: linear-gradient(145deg, #a07830, #d4aa60); box-shadow: 0 4px 14px rgba(160,120,48,0.35); }
+  .c6 .track-cover { background: linear-gradient(145deg, #8a4a2a, #c07850); box-shadow: 0 4px 14px rgba(138,74,42,0.35); }
+  .c7 .track-cover { background: linear-gradient(145deg, #2a5a7a, #5090b8); box-shadow: 0 4px 14px rgba(42,90,122,0.35); }
+
+  .track-info { flex: 1; min-width: 0; }
+  .track-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .track-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 1px 7px;
+    border-radius: 20px;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .c0 .badge { background: var(--amber-pale); color: var(--amber); }
+  .c1 .badge { background: var(--rose-pale);  color: var(--rose); }
+  .c2 .badge { background: var(--sage-pale);  color: var(--sage); }
+  .c3 .badge { background: var(--violet-pale); color: var(--violet); }
+  .c4 .badge { background: #2a1e35; color: #b07cc0; }
+  .c5 .badge { background: #2d2410; color: #d4aa60; }
+  .c6 .badge { background: #2d1e10; color: #c07850; }
+  .c7 .badge { background: #102030; color: #5090b8; }
+
+  .track-label { font-size: 10.5px; color: rgba(220,216,240,0.38); font-weight: 300; }
+
+  /* Play button */
+  .play-btn {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: 2px solid;
+    background: #242840;
+    font-size: 11px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+  }
+  .play-btn .fa-play { margin-left: 2px; }
+  .c0 .play-btn { border-color: var(--amber); color: var(--amber); }
+  .c1 .play-btn { border-color: var(--rose);  color: var(--rose); }
+  .c2 .play-btn { border-color: var(--sage);  color: var(--sage); }
+  .c3 .play-btn { border-color: var(--violet); color: var(--violet); }
+  .c0 .play-btn:hover, .c0.playing .play-btn { background: var(--amber);  color: #fff; transform: scale(1.08); }
+  .c1 .play-btn:hover, .c1.playing .play-btn { background: var(--rose);   color: #fff; transform: scale(1.08); }
+  .c2 .play-btn:hover, .c2.playing .play-btn { background: var(--sage);   color: #fff; transform: scale(1.08); }
+  .c3 .play-btn:hover, .c3.playing .play-btn { background: var(--violet); color: #fff; transform: scale(1.08); }
+  .c4 .play-btn { border-color: #b07cc0; color: #b07cc0; }
+  .c5 .play-btn { border-color: #d4aa60; color: #d4aa60; }
+  .c6 .play-btn { border-color: #c07850; color: #c07850; }
+  .c7 .play-btn { border-color: #5090b8; color: #5090b8; }
+  .c4 .play-btn:hover, .c4.playing .play-btn { background: #b07cc0; color: #fff; transform: scale(1.08); }
+  .c5 .play-btn:hover, .c5.playing .play-btn { background: #d4aa60; color: #fff; transform: scale(1.08); }
+  .c6 .play-btn:hover, .c6.playing .play-btn { background: #c07850; color: #fff; transform: scale(1.08); }
+  .c7 .play-btn:hover, .c7.playing .play-btn { background: #5090b8; color: #fff; transform: scale(1.08); }
+
+  /* Waveform */
+  .wave-wrap {
+    position: relative;
+    background: rgba(255,255,255,0.04);
+    border-radius: 8px;
+    height: 44px;
+    cursor: pointer;
+  }
+  .wave-inner { 
+    height: 44px;
+    display: block;
+  }
+  .wave-inner > div { border-radius: 0 !important; }
+  .time-label {
+    position: absolute; bottom: 4px; right: 7px;
+    font-size: 9.5px; font-family: 'DM Mono', monospace, monospace;
+    color: rgba(220,216,240,0.30);
+    pointer-events: none; z-index: 10;
+    letter-spacing: 0.5px;
+  }
+  .cur-label {
+    position: absolute; bottom: 4px; left: 7px;
+    font-size: 9.5px; font-family: 'DM Mono', monospace, monospace;
+    pointer-events: none; z-index: 10;
+    letter-spacing: 0.5px;
+  }
+  .c0 .cur-label { color: var(--amber); }
+  .c1 .cur-label { color: var(--rose); }
+  .c2 .cur-label { color: var(--sage); }
+  .c3 .cur-label { color: var(--violet); }
+  .c4 .cur-label { color: #b07cc0; }
+  .c5 .cur-label { color: #d4aa60; }
+  .c6 .cur-label { color: #c07850; }
+  .c7 .cur-label { color: #5090b8; }
+
+  /* Footer */
+  .page-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 6px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+  .footer-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .action-btn {
+    background: #242840;
+    border: 1px solid var(--border);
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-size: 11.5px;
+    color: var(--ink);
+    cursor: pointer;
+    transition: 0.2s;
+    display: flex; align-items: center; gap: 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+  }
+  .action-btn:hover { background: rgba(255,255,255,0.12); color: #fff; border-color: rgba(255,255,255,0.2); }
+
+  .brand-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .brand-icon {
+    width: 32px; height: 32px; border-radius: 9px;
+    background: linear-gradient(135deg, #3a6ea8, #2a8a7a);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 3px 10px rgba(58,110,168,0.3);
+  }
+  .brand-icon i { font-size: 14px; color: white; }
+  .brand-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: 1px;
+  }
+  .brand-sub { font-size: 9px; color: rgba(220,216,240,0.35); display: block; line-height: 1; letter-spacing: 1px; text-transform: uppercase; }
+
+  /* Toast */
+  .toast {
+    position: fixed; top: 20px; left: 50%;
+    transform: translateX(-50%) translateY(-12px);
+    background: #ddd8f0; color: #1c2030;
+    padding: 10px 22px; border-radius: 30px;
+    font-size: 13px; opacity: 0; visibility: hidden;
+    transition: 0.3s; z-index: 1000;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+
+  /* ── Equalizer indicator ── */
+  .eq-bars {
+    display: none;
+    align-items: flex-end;
+    gap: 2px;
+    height: 16px;
+    width: 16px;
+    flex-shrink: 0;
+  }
+  .eq-bars span {
+    display: block;
+    width: 3px;
+    border-radius: 1px;
+    background: var(--card-accent, var(--amber));
+    animation: none;
+    height: 4px;
+  }
+  .track-card.playing .eq-bars { display: flex; }
+  .track-card.playing .eq-bars span:nth-child(1) { animation: eq 0.8s ease-in-out infinite; }
+  .track-card.playing .eq-bars span:nth-child(2) { animation: eq 0.65s ease-in-out infinite 0.15s; }
+  .track-card.playing .eq-bars span:nth-child(3) { animation: eq 0.9s ease-in-out infinite 0.05s; }
+  @keyframes eq {
+    0%, 100% { height: 3px; }
+    50%       { height: 14px; }
+  }
+
+  @keyframes pulse-ring {
+    0%   { box-shadow: 0 0 0 0px var(--card-accent, var(--amber)); }
+    70%  { box-shadow: 0 0 0 8px transparent; }
+    100% { box-shadow: 0 0 0 0px transparent; }
+  }
+  .track-card.playing .track-cover { outline: 2px solid var(--card-accent, var(--amber)); outline-offset: 2px; }
+</style>
+</head>
+<body>
+
+<div id="toast" class="toast">🔗 Посилання скопійовано!</div>
+
+<div class="page-wrap">
+  <div class="page-header">
+    <div class="header-eyebrow">Worship Collection</div>
+    <h1>Промінь Надії</h1>
+    <p>Від літнього світла до живої акустики — 5 версій</p>
+  </div>
+
+  <!-- Track 1 – early summer light -->
+  <div class="track-card c0" id="card-0">
+    <div class="track-top">
+      <div class="track-cover"><i class="fas fa-sun"></i></div>
+      <div class="track-info">
+        <div class="track-title">Світло Раннього Літа</div>
+        <div class="track-meta">
+          <span class="badge"><i class="fas fa-seedling" style="font-size:8px"></i> Summer</span>
+          <span class="eq-bars"><span></span><span></span><span></span></span>
+          <span class="track-label">Тепле світанкове звучання</span>
+        </div>
+      </div>
+      <button class="play-btn" id="btn-0" onclick="togglePlay(0)"><i class="fas fa-play"></i></button>
+    </div>
+    <div class="wave-wrap">
+      <div id="wave-0" class="wave-inner"></div>
+      <span class="cur-label" id="cur-0">00:00</span>
+      <span class="time-label" id="dur-0">--:--</span>
+    </div>
+  </div>
+
+  <!-- Track 2 – forest evolution -->
+  <div class="track-card c1" id="card-1">
+    <div class="track-top">
+      <div class="track-cover"><i class="fas fa-tree"></i></div>
+      <div class="track-info">
+        <div class="track-title">Живе Світло (Forest Evolution)</div>
+        <div class="track-meta">
+          <span class="badge"><i class="fas fa-leaf" style="font-size:8px"></i> Forest</span>
+          <span class="eq-bars"><span></span><span></span><span></span></span>
+          <span class="track-label">Органічне світло — природне звучання</span>
+        </div>
+      </div>
+      <button class="play-btn" id="btn-1" onclick="togglePlay(1)"><i class="fas fa-play"></i></button>
+    </div>
+    <div class="wave-wrap">
+      <div id="wave-1" class="wave-inner"></div>
+      <span class="cur-label" id="cur-1">00:00</span>
+      <span class="time-label" id="dur-1">--:--</span>
+    </div>
+  </div>
+
+  <!-- Track 3 – golden stream -->
+  <div class="track-card c5" id="card-2">
+    <div class="track-top">
+      <div class="track-cover"><i class="fas fa-sun"></i></div>
+      <div class="track-info">
+        <div class="track-title">Золотий Потік Надії</div>
+        <div class="track-meta">
+          <span class="badge"><i class="fas fa-star" style="font-size:8px"></i> Gold</span>
+          <span class="eq-bars"><span></span><span></span><span></span></span>
+          <span class="track-label">Золотий потік — світло зсередини</span>
+        </div>
+      </div>
+      <button class="play-btn" id="btn-2" onclick="togglePlay(2)"><i class="fas fa-play"></i></button>
+    </div>
+    <div class="wave-wrap">
+      <div id="wave-2" class="wave-inner"></div>
+      <span class="cur-label" id="cur-2">00:00</span>
+      <span class="time-label" id="dur-2">--:--</span>
+    </div>
+  </div>
+
+  <!-- Track 4 – remix 2 -->
+  <div class="track-card c6" id="card-3">
+    <div class="track-top">
+      <div class="track-cover"><i class="fas fa-wind"></i></div>
+      <div class="track-info">
+        <div class="track-title">Промінь Надії (Remix 2)</div>
+        <div class="track-meta">
+          <span class="badge"><i class="fas fa-rotate" style="font-size:8px"></i> Remix 2</span>
+          <span class="eq-bars"><span></span><span></span><span></span></span>
+          <span class="track-label">Динамічний ремікс — надія в русі</span>
+        </div>
+      </div>
+      <button class="play-btn" id="btn-3" onclick="togglePlay(3)"><i class="fas fa-play"></i></button>
+    </div>
+    <div class="wave-wrap">
+      <div id="wave-3" class="wave-inner"></div>
+      <span class="cur-label" id="cur-3">00:00</span>
+      <span class="time-label" id="dur-3">--:--</span>
+    </div>
+  </div>
+
+  <!-- Track 5 – acoustic guitar -->
+  <div class="track-card c2" id="card-4">
+    <div class="track-top">
+      <div class="track-cover"><i class="fas fa-guitar"></i></div>
+      <div class="track-info">
+        <div class="track-title">Живе Світло — Акустична гітара</div>
+        <div class="track-meta">
+          <span class="badge"><i class="fas fa-guitar" style="font-size:8px"></i> Acoustic</span>
+          <span class="eq-bars"><span></span><span></span><span></span></span>
+          <span class="track-label">Жива акустична гітара · Remix</span>
+        </div>
+      </div>
+      <button class="play-btn" id="btn-4" onclick="togglePlay(4)"><i class="fas fa-play"></i></button>
+    </div>
+    <div class="wave-wrap">
+      <div id="wave-4" class="wave-inner"></div>
+      <span class="cur-label" id="cur-4">00:00</span>
+      <span class="time-label" id="dur-4">--:--</span>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <div class="footer-actions">
+      <button class="action-btn" onclick="shareTG()"><i class="fab fa-telegram-plane"></i> Telegram</button>
+      <button class="action-btn" onclick="copyLink()"><i class="fas fa-link"></i> Посилання</button>
+    </div>
+    <div class="brand-logo">
+      <div class="brand-icon"><i class="fas fa-music"></i></div>
+      <div>
+        <span class="brand-text">МЕЛОДІЯ</span>
+        <span class="brand-sub">christian music</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import WaveSurfer from 'https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.esm.js';
+
+  const tracks = [
+    { src: 'Свет раннего лета.m4a' },
+    { src: 'Golden Hour Grace (Forest Evolution).m4a' },
+    { src: 'Золотой Поток Благодати2.m4a' },
+    { src: 'Осенняя Благодать (Remix2).m4a' },
+    { src: 'Осенняя Благодать(ак.гит.) (Remix).m4a' }
+  ];
+
+  const colors = [
+    { wave: '#2a3520', progress: '#7ab840' },
+    { wave: '#1e3030', progress: '#5ab8a8' },
+    { wave: '#2d2410', progress: '#d4aa60' },
+    { wave: '#2d1e10', progress: '#c07850' },
+    { wave: '#222e18', progress: '#8aaa60' }
+  ];
+
+  const fmt = s => new Date(s * 1000).toISOString().substr(14, 5);
+
+  const players = tracks.map((track, i) => {
+    const ws = WaveSurfer.create({
+      container: `#wave-${i}`,
+      waveColor: colors[i].wave,
+      progressColor: colors[i].progress,
+      barWidth: 1,
+      barGap: 0.5,
+      barRadius: 1,
+      height: 44,
+      interact: true,
+      normalize: true,
+      volume: 1,
+      url: track.src,
+    });
+
+    const btn = document.getElementById(`btn-${i}`);
+
+    ws.on('ready', (dur) => document.getElementById(`dur-${i}`).textContent = fmt(dur));
+    ws.on('timeupdate', (cur) => document.getElementById(`cur-${i}`).textContent = fmt(cur));
+
+    ws.on('play', () => {
+      btn.innerHTML = '<i class="fas fa-pause"></i>';
+      document.getElementById(`card-${i}`).classList.add('playing');
+      players.forEach((p, j) => { if (j !== i && p.isPlaying()) p.pause(); });
+    });
+
+    ws.on('pause', () => {
+      btn.innerHTML = '<i class="fas fa-play"></i>';
+      document.getElementById(`card-${i}`).classList.remove('playing');
+    });
+
+    return ws;
+  });
+
+  window.togglePlay = (i) => players[i].playPause();
+
+  window.shareTG = () => {
+    window.open(`https://t.me/share/url?url=${encodeURIComponent(window.location.href)}`, '_blank');
+  };
+
+  window.copyLink = () => {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      const t = document.getElementById('toast');
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2000);
+    });
+  };
+</script>
+</body>
+</html>
