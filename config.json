@@ -1,0 +1,46 @@
+{
+  "title": "Промінь Надії",
+  "subtitle": "Від літнього світла до живої акустики — 5 версій",
+  "tracks": [
+    {
+      "src":   "Свет раннего лета.m4a",
+      "title": "Світло Раннього Літа",
+      "badge": "Summer",
+      "icon":  "fa-seedling",
+      "label": "Тепле світанкове звучання",
+      "color": 0
+    },
+    {
+      "src":   "Golden Hour Grace (Forest Evolution).m4a",
+      "title": "Живе Світло (Forest Evolution)",
+      "badge": "Forest",
+      "icon":  "fa-tree",
+      "label": "Органічне світло — природне звучання",
+      "color": 1
+    },
+    {
+      "src":   "Золотой Поток Благодати2.m4a",
+      "title": "Золотий Потік Надії",
+      "badge": "Gold",
+      "icon":  "fa-sun",
+      "label": "Золотий потік — світло зсередини",
+      "color": 5
+    },
+    {
+      "src":   "Осенняя Благодать (Remix2).m4a",
+      "title": "Промінь Надії (Remix 2)",
+      "badge": "Remix 2",
+      "icon":  "fa-wind",
+      "label": "Динамічний ремікс — надія в русі",
+      "color": 6
+    },
+    {
+      "src":   "Осенняя Благодать(ак.гит.) (Remix).m4a",
+      "title": "Живе Світло — Акустична гітара",
+      "badge": "Acoustic",
+      "icon":  "fa-guitar",
+      "label": "Жива акустична гітара · Remix",
+      "color": 2
+    }
+  ]
+}
