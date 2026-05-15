@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nature Ambient — Electronic Ambient Collection</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&family=Syne:wght@300;400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    /* Electronic Ambient Palette */
+    --bg:          #090d14;
+    --bg-card:     #0d1220;
+    --bg-card2:    #111827;
+    --ink:         #e2e8f8;
+    --ink-soft:    rgba(226,232,248,0.45);
+    --ink-faint:   rgba(226,232,248,0.18);
+    --border:      rgba(120,160,255,0.10);
+    --border-glow: rgba(120,160,255,0.22);
+    --shadow:      0 6px 32px rgba(0,0,0,0.6);
+
+    /* Accent spectrum — electronic tones */
+    --a0: #4fc3f7;   /* cyan */
+    --a1: #818cf8;   /* indigo */
+    --a2: #34d399;   /* emerald */
+    --a3: #c084fc;   /* purple */
+    --a4: #38bdf8;   /* sky */
+
+    --a0-pale: rgba(79,195,247,0.08);
+    --a1-pale: rgba(129,140,248,0.08);
+    --a2-pale: rgba(52,211,153,0.08);
+    --a3-pale: rgba(192,132,252,0.08);
+    --a4-pale: rgba(56,189,248,0.08);
+  }
+
+  body {
+    font-family: 'Space Grotesk', sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    padding: 20px 12px 36px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Ambient background glow */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 70% 50% at 15% 0%,   rgba(79,195,247,0.055) 0%, transparent 65%),
+      radial-gradient(ellipse 60% 45% at 85% 100%,  rgba(129,140,248,0.06) 0%, transparent 65%),
+      radial-gradient(ellipse 40% 60% at 50% 50%,   rgba(52,211,153,0.025) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Animated grid lines */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(79,195,247,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(79,195,247,0.025) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page-wrap {
+    width: 100%;
+    max-width: 800px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── Header ── */
+  .page-header {
+    margin-bottom: 20px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+
+  .header-eyebrow {
+    font-size: 9.5px;
+    font-weight: 500;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--a0);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .header-eyebrow::before {
+    content: '';
+    display: inline-block;
+    width: 24px; height: 1px;
+    background: var(--a0);
+    opacity: 0.6;
+  }
+
+  .page-header h1 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 2rem;
+    color: var(--ink);
+    letter-spacing: -1px;
+    line-height: 1.1;
+    margin-bottom: 6px;
+  }
+  .page-header h1 span {
+    background: linear-gradient(90deg, var(--a0), var(--a1));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .page-header p {
+    font-size: 11.5px;
+    color: var(--ink-faint);
+    font-weight: 300;
+    letter-spacing: 0.3px;
+  }
+
+  /* Auto-play indicator */
+  .autoplay-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    padding: 4px 12px;
+    background: rgba(52,211,153,0.1);
+    border: 1px solid rgba(52,211,153,0.25);
+    border-radius: 20px;
+    font-size: 10px;
+    color: var(--a2);
+    letter-spacing: 0.5px;
+  }
+  .autoplay-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--a2);
+    animation: pulse-dot 1.8s ease-in-out infinite;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.4; transform: scale(0.7); }
+  }
+
+  /* ── Track Card ── */
+  .track-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    box-shadow: var(--shadow);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Subtle inner glow top-left */
+  .track-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 60%; height: 1px;
+    background: linear-gradient(90deg, var(--ca, var(--a0)), transparent);
+    opacity: 0.4;
+  }
+
+  .track-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.65);
+  }
+
+  .track-card.playing {
+    border-color: var(--ca, var(--a0));
+    background: var(--bg-card2);
+    box-shadow: 0 0 0 1px var(--ca, var(--a0)),
+                0 0 40px rgba(79,195,247,0.08),
+                var(--shadow);
+  }
+
+  /* Card accent variables */
+  .c0 { --ca: var(--a0); --ca-pale: var(--a0-pale); }
+  .c1 { --ca: var(--a1); --ca-pale: var(--a1-pale); }
+  .c2 { --ca: var(--a2); --ca-pale: var(--a2-pale); }
+  .c3 { --ca: var(--a3); --ca-pale: var(--a3-pale); }
+  .c4 { --ca: var(--a4); --ca-pale: var(--a4-pale); }
+
+  .track-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+
+  /* Track number */
+  .track-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ca, var(--a0));
+    opacity: 0.5;
+    min-width: 18px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .track-card.playing .track-num { opacity: 1; }
+
+  /* Cover */
+  .track-cover {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-size: 17px;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+    transition: box-shadow 0.3s ease;
+  }
+  .track-cover::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.18), transparent 60%);
+    border-radius: inherit;
+  }
+  .c0 .track-cover { background: linear-gradient(145deg, #1a5f7a, #4fc3f7); box-shadow: 0 4px 16px rgba(79,195,247,0.3); }
+  .c1 .track-cover { background: linear-gradient(145deg, #3730a3, #818cf8); box-shadow: 0 4px 16px rgba(129,140,248,0.3); }
+  .c2 .track-cover { background: linear-gradient(145deg, #065f46, #34d399); box-shadow: 0 4px 16px rgba(52,211,153,0.3); }
+  .c3 .track-cover { background: linear-gradient(145deg, #6b21a8, #c084fc); box-shadow: 0 4px 16px rgba(192,132,252,0.3); }
+  .c4 .track-cover { background: linear-gradient(145deg, #075985, #38bdf8); box-shadow: 0 4px 16px rgba(56,189,248,0.3); }
+
+  .track-card.playing .track-cover {
+    box-shadow: 0 4px 24px var(--ca, var(--a0)), 0 0 0 2px var(--ca, var(--a0));
+    animation: cover-glow 2s ease-in-out infinite;
+  }
+  @keyframes cover-glow {
+    0%, 100% { filter: brightness(1); }
+    50%       { filter: brightness(1.15); }
+  }
+
+  .track-info { flex: 1; min-width: 0; }
+  .track-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    letter-spacing: -0.2px;
+  }
+
+  .track-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+  .badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 8.5px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    border: 1px solid;
+  }
+  .c0 .badge { background: var(--a0-pale); color: var(--a0); border-color: rgba(79,195,247,0.2); }
+  .c1 .badge { background: var(--a1-pale); color: var(--a1); border-color: rgba(129,140,248,0.2); }
+  .c2 .badge { background: var(--a2-pale); color: var(--a2); border-color: rgba(52,211,153,0.2); }
+  .c3 .badge { background: var(--a3-pale); color: var(--a3); border-color: rgba(192,132,252,0.2); }
+  .c4 .badge { background: var(--a4-pale); color: var(--a4); border-color: rgba(56,189,248,0.2); }
+
+  .track-label {
+    font-size: 10px;
+    color: var(--ink-faint);
+    font-weight: 300;
+    letter-spacing: 0.2px;
+  }
+
+  /* EQ bars */
+  .eq-bars { display: inline-flex; align-items: flex-end; gap: 2px; height: 12px; }
+  .eq-bars span {
+    display: block;
+    width: 2.5px;
+    border-radius: 1px;
+    background: var(--ca, var(--a0));
+    opacity: 0.45;
+    height: 30%;
+    transition: height 0.1s;
+  }
+  .playing .eq-bars span { opacity: 1; }
+  .playing .eq-bars span:nth-child(1) { animation: eq1 0.7s ease-in-out infinite; }
+  .playing .eq-bars span:nth-child(2) { animation: eq2 0.9s ease-in-out infinite 0.15s; }
+  .playing .eq-bars span:nth-child(3) { animation: eq1 0.65s ease-in-out infinite 0.3s; }
+  @keyframes eq1 { 0%,100%{height:30%} 50%{height:95%} }
+  @keyframes eq2 { 0%,100%{height:70%} 50%{height:25%} }
+
+  /* Play button */
+  .play-btn {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    border: 1.5px solid var(--ca, var(--a0));
+    background: transparent;
+    font-size: 12px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    color: var(--ca, var(--a0));
+    position: relative;
+    overflow: hidden;
+  }
+  .play-btn::before {
+    content: '';
+    position: absolute; inset: 0;
+    border-radius: 50%;
+    background: var(--ca, var(--a0));
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .play-btn i { position: relative; z-index: 1; }
+  .play-btn .fa-play { margin-left: 2px; }
+  .play-btn:hover::before { opacity: 0.15; }
+  .playing .play-btn::before { opacity: 0.12; }
+  .play-btn:hover { transform: scale(1.1); box-shadow: 0 0 16px rgba(79,195,247,0.3); }
+
+  /* Waveform */
+  .wave-wrap {
+    position: relative;
+    padding-bottom: 16px;
+  }
+  .wave-inner { border-radius: 6px; overflow: hidden; cursor: pointer; }
+  .cur-label, .time-label {
+    position: absolute;
+    bottom: 0;
+    font-size: 9px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.5px;
+    color: var(--ink-faint);
+  }
+  .cur-label { left: 0; }
+  .time-label { right: 0; }
+
+  /* Now playing banner */
+  .now-playing-bar {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    background: rgba(79,195,247,0.06);
+    border: 1px solid rgba(79,195,247,0.15);
+    border-radius: 10px;
+    padding: 8px 14px;
+    margin-bottom: 12px;
+    font-size: 11px;
+    color: var(--ink-soft);
+  }
+  .now-playing-bar.visible { display: flex; }
+  .now-playing-bar .np-label {
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--a0);
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+  .now-playing-bar .np-title {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .np-next {
+    font-size: 9px;
+    color: var(--ink-faint);
+    flex-shrink: 0;
+  }
+
+  /* Footer */
+  .page-footer {
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .footer-actions { display: flex; gap: 8px; }
+  .action-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border-glow);
+    background: rgba(255,255,255,0.03);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.3px;
+  }
+  .action-btn:hover { background: rgba(79,195,247,0.08); border-color: var(--a0); color: var(--a0); }
+
+  .brand-logo {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .brand-icon {
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: linear-gradient(145deg, #1a5f7a, #4fc3f7);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+    color: #fff;
+    box-shadow: 0 2px 10px rgba(79,195,247,0.3);
+  }
+  .brand-text {
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: 1px;
+    display: block;
+  }
+  .brand-sub {
+    font-size: 9px;
+    color: var(--ink-faint);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    display: block;
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: rgba(52,211,153,0.12);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(52,211,153,0.3);
+    color: var(--a2);
+    padding: 9px 20px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 500;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    z-index: 999;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 480px) {
+    .page-header h1 { font-size: 1.5rem; }
+    .track-card { padding: 11px 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="toast" class="toast">🔗 Посилання скопійовано!</div>
+
+<div class="page-wrap">
+  <div class="page-header">
+    <div class="header-eyebrow">Electronic Ambient</div>
+    <h1>Nature <span>Ambient</span></h1>
+    <p>Атмосферні та ефірні версії — 5 треків</p>
+    <div class="autoplay-badge">
+      <div class="autoplay-dot"></div>
+      Автоперехід увімкнено
+    </div>
+  </div>
+
+  <!-- Now playing bar -->
+  <div class="now-playing-bar" id="now-playing-bar">
+    <span class="np-label">Зараз</span>
+    <span class="np-title" id="np-title">—</span>
+    <span class="np-next" id="np-next"></span>
+  </div>
+
+  <!-- Track 1 -->
+  <div class="track-card c0" id="card-0">
+    <div class="track-top">
+      <span class="track-num">01</span>
+      <div class="track-cover"><i class="fas fa-wind"></i></div>
+      <div class="track-info">
+        <div class="track-title">Nature Ambient — Atmospheric Version</div>
+        <div class="track-meta">
+          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Atmospheric</span>
+          <span class="eq-bars"><span></span><span></span><span></span></span>
+          <span class="track-label">Оригінальна атмосферна версія</span>
+        </div>
+      </div>
+      <button class="play-btn" id="btn-0" onclick="togglePlay(0)"><i class="fas fa-play"></i></button>
+    </div>
+    <div class="wave-wrap">
+      <div id="wave-0" class="wave-inner"></div>
+      <span class="cur-label" id="cur-0">00:00</span>
+      <span class="time-label" id="dur-0">--:--</span>
+    </div>
+  </div>
+
+  <!-- Track 2 -->
+  <div class="track-card c1" id="card-1">
+    <div class="track-top">
+      <span class="track-num">02</span>
+      <div class="track-cover"><i class="fas fa-star"></i></div>
+      <div class="track-info">
+        <div class="track-title">Nature Ambient — Ethereal Version (Remix)</div>
+        <div class="track-meta">
+          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Ethereal · Remix</span>
+          <span class="eq-bars"><span></span><span></span><span></span></span>
+          <span class="track-label">Ефірна версія — перший ремікс</span>
+        </div>
+      </div>
+      <button class="play-btn" id="btn-1" onclick="togglePlay(1)"><i class="fas fa-play"></i></button>
+    </div>
+    <div class="wave-wrap">
+      <div id="wave-1" class="wave-inner"></div>
+      <span class="cur-label" id="cur-1">00:00</span>
+      <span class="time-label" id="dur-1">--:--</span>
+    </div>
+  </div>
+
+  <!-- Track 3 -->
+  <div class="track-card c2" id="card-2">
+    <div class="track-top">
+      <span class="track-num">03</span>
+      <div class="track-cover"><i class="fas fa-leaf"></i></div>
+      <div class="track-info">
+        <div class="track-title">Nature Ambient — Atmospheric Version (Remix)</div>
+        <div class="track-meta">
+          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Atmospheric · Remix</span>
+          <span class="eq-bars"><span></span><span></span><span></span></span>
+          <span class="track-label">Атмосферна версія — ремікс</span>
+        </div>
+      </div>
+      <button class="play-btn" id="btn-2" onclick="togglePlay(2)"><i class="fas fa-play"></i></button>
+    </div>
+    <div class="wave-wrap">
+      <div id="wave-2" class="wave-inner"></div>
+      <span class="cur-label" id="cur-2">00:00</span>
+      <span class="time-label" id="dur-2">--:--</span>
+    </div>
+  </div>
+
+  <!-- Track 4 -->
+  <div class="track-card c3" id="card-3">
+    <div class="track-top">
+      <span class="track-num">04</span>
+      <div class="track-cover"><i class="fas fa-moon"></i></div>
+      <div class="track-info">
+        <div class="track-title">Nature Ambient — Ethereal Version (Remix 2)</div>
+        <div class="track-meta">
+          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Ethereal · Remix 2</span>
+          <span class="eq-bars"><span></span><span></span><span></span></span>
+          <span class="track-label">Ефірна версія — другий ремікс</span>
+        </div>
+      </div>
+      <button class="play-btn" id="btn-3" onclick="togglePlay(3)"><i class="fas fa-play"></i></button>
+    </div>
+    <div class="wave-wrap">
+      <div id="wave-3" class="wave-inner"></div>
+      <span class="cur-label" id="cur-3">00:00</span>
+      <span class="time-label" id="dur-3">--:--</span>
+    </div>
+  </div>
+
+  <!-- Track 5 -->
+  <div class="track-card c4" id="card-4">
+    <div class="track-top">
+      <span class="track-num">05</span>
+      <div class="track-cover"><i class="fas fa-infinity"></i></div>
+      <div class="track-info">
+        <div class="track-title">Nature Ambient — Ethereal Version (Remix 3)</div>
+        <div class="track-meta">
+          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Ethereal · Remix 3</span>
+          <span class="eq-bars"><span></span><span></span><span></span></span>
+          <span class="track-label">Ефірна версія — третій ремікс</span>
+        </div>
+      </div>
+      <button class="play-btn" id="btn-4" onclick="togglePlay(4)"><i class="fas fa-play"></i></button>
+    </div>
+    <div class="wave-wrap">
+      <div id="wave-4" class="wave-inner"></div>
+      <span class="cur-label" id="cur-4">00:00</span>
+      <span class="time-label" id="dur-4">--:--</span>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <div class="footer-actions">
+      <button class="action-btn" onclick="shareTG()"><i class="fab fa-telegram-plane"></i> Telegram</button>
+      <button class="action-btn" onclick="copyLink()"><i class="fas fa-link"></i> Посилання</button>
+    </div>
+    <div class="brand-logo">
+      <div class="brand-icon"><i class="fas fa-wave-square"></i></div>
+      <div>
+        <span class="brand-text">AMBIENT</span>
+        <span class="brand-sub">electronic music</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import WaveSurfer from 'https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.esm.js';
+
+  const tracks = [
+    { src: 'Nature Ambient (Atmospheric Version).m4a',              title: 'Atmospheric Version' },
+    { src: 'Nature Ambient (Ethereal Version) (Remix).m4a',         title: 'Ethereal Version (Remix)' },
+    { src: 'Nature Ambient (Atmospheric Version) (Remix).m4a',      title: 'Atmospheric Version (Remix)' },
+    { src: 'Nature Ambient (Ethereal Version) (Remix2).m4a',        title: 'Ethereal Version (Remix 2)' },
+    { src: 'Nature Ambient (Ethereal Version) (Remix3).m4a',        title: 'Ethereal Version (Remix 3)' }
+  ];
+
+  // Waveform colours per track (dark base + glowing progress)
+  const colors = [
+    { wave: '#0d2a35', progress: '#4fc3f7' },
+    { wave: '#13103e', progress: '#818cf8' },
+    { wave: '#072820', progress: '#34d399' },
+    { wave: '#1e0a35', progress: '#c084fc' },
+    { wave: '#0a1f35', progress: '#38bdf8' }
+  ];
+
+  const fmt = s => new Date(s * 1000).toISOString().substr(14, 5);
+
+  let currentPlaying = -1;
+
+  const updateNowPlaying = (i) => {
+    const bar   = document.getElementById('now-playing-bar');
+    const title = document.getElementById('np-title');
+    const next  = document.getElementById('np-next');
+    if (i >= 0) {
+      bar.classList.add('visible');
+      title.textContent = tracks[i].title;
+      next.textContent  = i < tracks.length - 1 ? `→ ${tracks[i+1].title}` : '— Кінець плейлисту';
+    } else {
+      bar.classList.remove('visible');
+    }
+  };
+
+  const players = tracks.map((track, i) => {
+    const ws = WaveSurfer.create({
+      container:     `#wave-${i}`,
+      waveColor:     colors[i].wave,
+      progressColor: colors[i].progress,
+      barWidth:  2,
+      barGap:    1,
+      barRadius: 2,
+      height:    46,
+      interact:  true,
+      normalize: true,
+      url:       track.src,
+    });
+
+    ws.on('ready', (dur) => {
+      document.getElementById(`dur-${i}`).textContent = fmt(dur);
+    });
+
+    ws.on('timeupdate', (cur) => {
+      document.getElementById(`cur-${i}`).textContent = fmt(cur);
+    });
+
+    ws.on('play', () => {
+      document.getElementById(`btn-${i}`).innerHTML = '<i class="fas fa-pause"></i>';
+      document.getElementById(`card-${i}`).classList.add('playing');
+      // Pause all others
+      players.forEach((p, j) => { if (j !== i && p.isPlaying()) p.pause(); });
+      currentPlaying = i;
+      updateNowPlaying(i);
+    });
+
+    ws.on('pause', () => {
+      document.getElementById(`btn-${i}`).innerHTML = '<i class="fas fa-play"></i>';
+      document.getElementById(`card-${i}`).classList.remove('playing');
+      if (currentPlaying === i) {
+        currentPlaying = -1;
+        updateNowPlaying(-1);
+      }
+    });
+
+    // ── Auto-next: play next track when current finishes ──
+    ws.on('finish', () => {
+      document.getElementById(`btn-${i}`).innerHTML = '<i class="fas fa-play"></i>';
+      document.getElementById(`card-${i}`).classList.remove('playing');
+      currentPlaying = -1;
+      const next = i + 1;
+      if (next < players.length) {
+        setTimeout(() => {
+          players[next].play();
+          // Scroll next card into view smoothly
+          document.getElementById(`card-${next}`).scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 600);
+      } else {
+        updateNowPlaying(-1);
+      }
+    });
+
+    return ws;
+  });
+
+  window.togglePlay = (i) => players[i].playPause();
+
+  window.shareTG = () => {
+    window.open(`https://t.me/share/url?url=${encodeURIComponent(window.location.href)}`, '_blank');
+  };
+
+  window.copyLink = () => {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      const t = document.getElementById('toast');
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2200);
+    });
+  };
+</script>
+</body>
+</html>
