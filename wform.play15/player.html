@@ -184,6 +184,30 @@
     box-shadow: 0 12px 40px rgba(0,0,0,0.65);
   }
 
+  /* selected = last touched track, stays highlighted after pause/screen-off */
+  .track-card.selected {
+    background: var(--bg-card2);
+    border-color: rgba(120,160,255,0.25);
+  }
+  .track-card.selected .track-num { opacity: 1; }
+  .track-card.selected .track-title { color: #fff; }
+  .track-card.selected::after {
+    content: '';
+    position: absolute;
+    left: 0; top: 6px; bottom: 6px;
+    width: 3px;
+    border-radius: 3px;
+    background: var(--ca, var(--a0));
+    opacity: 0.85;
+  }
+  /* paused indicator in badge */
+  .track-card.selected:not(.playing) .badge::after {
+    content: ' ⏸';
+    font-size: 7px;
+    opacity: 0.55;
+  }
+
+  /* playing = actively playing (bright glow) */
   .track-card.playing {
     border-color: var(--ca, var(--a0));
     background: var(--bg-card2);
@@ -682,8 +706,14 @@
     ws.on('play', () => {
       document.getElementById(`btn-${i}`).innerHTML = '<i class="fas fa-pause"></i>';
       document.getElementById(`card-${i}`).classList.add('playing');
-      // Pause all others
-      players.forEach((p, j) => { if (j !== i && p.isPlaying()) p.pause(); });
+      document.getElementById(`card-${i}`).classList.add('selected');
+      // Pause all others and remove their selected state
+      players.forEach((p, j) => {
+        if (j !== i) {
+          if (p.isPlaying()) p.pause();
+          document.getElementById(`card-${j}`).classList.remove('selected');
+        }
+      });
       currentPlaying = i;
       updateNowPlaying(i);
     });
@@ -691,6 +721,7 @@
     ws.on('pause', () => {
       document.getElementById(`btn-${i}`).innerHTML = '<i class="fas fa-play"></i>';
       document.getElementById(`card-${i}`).classList.remove('playing');
+      // keep 'selected' so user knows which track was last active
       if (currentPlaying === i) {
         currentPlaying = -1;
         updateNowPlaying(-1);
