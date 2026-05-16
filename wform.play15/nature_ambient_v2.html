@@ -674,6 +674,23 @@
     }
   };
 
+  // Fix: force redraw progress color on all instances to prevent WaveSurfer glitch
+  function fixAllProgress() {
+    players.forEach((p, j) => {
+      try {
+        const dur = p.getDuration();
+        const cur = p.getCurrentTime();
+        if (dur > 0) {
+          // Re-apply colors explicitly — prevents progress wash-out bug
+          p.setOptions({
+            waveColor:     colors[j].wave,
+            progressColor: colors[j].progress,
+          });
+        }
+      } catch(e) {}
+    });
+  }
+
   const players = tracks.map((track, i) => {
     const ws = WaveSurfer.create({
       container:     `#wave-${i}`,
@@ -690,6 +707,8 @@
 
     ws.on('ready', (dur) => {
       document.getElementById(`dur-${i}`).textContent = fmt(dur);
+      // Re-apply colors after load to prevent initial wash-out
+      ws.setOptions({ waveColor: colors[i].wave, progressColor: colors[i].progress });
     });
 
     ws.on('timeupdate', (cur) => {
@@ -709,6 +728,8 @@
       });
       currentPlaying = i;
       updateNowPlaying(i);
+      // Fix: restore colors on all waveforms when playback starts
+      setTimeout(fixAllProgress, 50);
     });
 
     ws.on('pause', () => {
@@ -719,6 +740,8 @@
         currentPlaying = -1;
         updateNowPlaying(-1);
       }
+      // Fix: restore colors after pause
+      setTimeout(fixAllProgress, 50);
     });
 
     // ── Auto-next: play next track when current finishes ──
@@ -726,16 +749,25 @@
       document.getElementById(`btn-${i}`).innerHTML = '<i class="fas fa-play"></i>';
       document.getElementById(`card-${i}`).classList.remove('playing');
       currentPlaying = -1;
+      // Fix: restore this track's colors after finish
+      ws.setOptions({ waveColor: colors[i].wave, progressColor: colors[i].progress });
       const next = i + 1;
       if (next < players.length) {
         setTimeout(() => {
+          fixAllProgress();
           players[next].play();
-          // Scroll next card into view smoothly
           document.getElementById(`card-${next}`).scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }, 600);
       } else {
         updateNowPlaying(-1);
       }
+    });
+
+    // Fix: re-apply colors after seek to prevent wash-out on scrub
+    ws.on('seeking', () => {
+      setTimeout(() => {
+        ws.setOptions({ waveColor: colors[i].wave, progressColor: colors[i].progress });
+      }, 30);
     });
 
     return ws;
