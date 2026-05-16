@@ -496,7 +496,10 @@
 
 <div class="page-wrap">
   <div class="page-header">
-    <div class="header-eyebrow">Electronic Ambient</div>
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+      <div class="header-eyebrow">Electronic Ambient</div>
+      <div style="font-family:'Space Grotesk',sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;color:#f97316;opacity:0.85;padding-top:1px;text-transform:uppercase;">AI&nbsp;Liria&nbsp;3</div>
+    </div>
     <h1>Nature <span>Ambient</span></h1>
     <p>Атмосферні та ефірні версії — 5 треків</p>
     <div class="autoplay-badge">
@@ -674,23 +677,6 @@
     }
   };
 
-  // Fix: force redraw progress color on all instances to prevent WaveSurfer glitch
-  function fixAllProgress() {
-    players.forEach((p, j) => {
-      try {
-        const dur = p.getDuration();
-        const cur = p.getCurrentTime();
-        if (dur > 0) {
-          // Re-apply colors explicitly — prevents progress wash-out bug
-          p.setOptions({
-            waveColor:     colors[j].wave,
-            progressColor: colors[j].progress,
-          });
-        }
-      } catch(e) {}
-    });
-  }
-
   const players = tracks.map((track, i) => {
     const ws = WaveSurfer.create({
       container:     `#wave-${i}`,
@@ -707,8 +693,6 @@
 
     ws.on('ready', (dur) => {
       document.getElementById(`dur-${i}`).textContent = fmt(dur);
-      // Re-apply colors after load to prevent initial wash-out
-      ws.setOptions({ waveColor: colors[i].wave, progressColor: colors[i].progress });
     });
 
     ws.on('timeupdate', (cur) => {
@@ -719,7 +703,6 @@
       document.getElementById(`btn-${i}`).innerHTML = '<i class="fas fa-pause"></i>';
       document.getElementById(`card-${i}`).classList.add('playing');
       document.getElementById(`card-${i}`).classList.add('selected');
-      // Pause all others and remove their selected state
       players.forEach((p, j) => {
         if (j !== i) {
           if (p.isPlaying()) p.pause();
@@ -728,46 +711,30 @@
       });
       currentPlaying = i;
       updateNowPlaying(i);
-      // Fix: restore colors on all waveforms when playback starts
-      setTimeout(fixAllProgress, 50);
     });
 
     ws.on('pause', () => {
       document.getElementById(`btn-${i}`).innerHTML = '<i class="fas fa-play"></i>';
       document.getElementById(`card-${i}`).classList.remove('playing');
-      // keep 'selected' so user knows which track was last active
       if (currentPlaying === i) {
         currentPlaying = -1;
         updateNowPlaying(-1);
       }
-      // Fix: restore colors after pause
-      setTimeout(fixAllProgress, 50);
     });
 
-    // ── Auto-next: play next track when current finishes ──
     ws.on('finish', () => {
       document.getElementById(`btn-${i}`).innerHTML = '<i class="fas fa-play"></i>';
       document.getElementById(`card-${i}`).classList.remove('playing');
       currentPlaying = -1;
-      // Fix: restore this track's colors after finish
-      ws.setOptions({ waveColor: colors[i].wave, progressColor: colors[i].progress });
       const next = i + 1;
       if (next < players.length) {
         setTimeout(() => {
-          fixAllProgress();
           players[next].play();
           document.getElementById(`card-${next}`).scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }, 600);
       } else {
         updateNowPlaying(-1);
       }
-    });
-
-    // Fix: re-apply colors after seek to prevent wash-out on scrub
-    ws.on('seeking', () => {
-      setTimeout(() => {
-        ws.setOptions({ waveColor: colors[i].wave, progressColor: colors[i].progress });
-      }, 30);
     });
 
     return ws;
