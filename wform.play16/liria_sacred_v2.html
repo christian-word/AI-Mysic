@@ -11,16 +11,16 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    /* Sacred Ambient Palette */
-    --bg:          #09080f;
-    --bg-card:     #0e0c18;
-    --bg-card2:    #131020;
-    --ink:         #ede8f8;
-    --ink-soft:    rgba(237,232,248,0.45);
-    --ink-faint:   rgba(237,232,248,0.18);
-    --border:      rgba(201,168,76,0.10);
-    --border-glow: rgba(201,168,76,0.22);
-    --shadow:      0 6px 32px rgba(0,0,0,0.6);
+    /* Sacred Ambient — Light Grey Palette */
+    --bg:          #f0eee8;
+    --bg-card:     #f8f6f2;
+    --bg-card2:    #ffffff;
+    --ink:         #2a2420;
+    --ink-soft:    rgba(42,36,32,0.55);
+    --ink-faint:   rgba(42,36,32,0.35);
+    --border:      rgba(160,128,60,0.15);
+    --border-glow: rgba(160,128,60,0.30);
+    --shadow:      0 4px 20px rgba(0,0,0,0.08);
 
     /* Accent spectrum — sacred tones */
     --a0: #c9a84c;   /* gold */
@@ -60,9 +60,9 @@
     position: fixed;
     inset: 0;
     background:
-      radial-gradient(ellipse 70% 50% at 50% -5%,   rgba(201,168,76,0.06) 0%, transparent 65%),
-      radial-gradient(ellipse 50% 40% at 10% 80%,   rgba(123,167,212,0.04) 0%, transparent 60%),
-      radial-gradient(ellipse 40% 50% at 90% 50%,   rgba(167,139,212,0.04) 0%, transparent 65%);
+      radial-gradient(ellipse 70% 50% at 50% -5%,   rgba(201,168,76,0.10) 0%, transparent 65%),
+      radial-gradient(ellipse 50% 40% at 10% 80%,   rgba(123,167,212,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 50% at 90% 50%,   rgba(167,139,212,0.07) 0%, transparent 65%);
     pointer-events: none;
     z-index: 0;
   }
@@ -73,8 +73,8 @@
     position: fixed;
     inset: 0;
     background-image:
-      linear-gradient(rgba(201,168,76,0.02) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(201,168,76,0.02) 1px, transparent 1px);
+      linear-gradient(rgba(160,128,60,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(160,128,60,0.06) 1px, transparent 1px);
     background-size: 60px 60px;
     pointer-events: none;
     z-index: 0;
@@ -124,7 +124,7 @@
     margin-bottom: 6px;
   }
   .page-header h1 span {
-    background: linear-gradient(90deg, var(--a0), var(--a1));
+    background: linear-gradient(90deg, #8a6010, #1e5080);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -179,14 +179,14 @@
   .track-card::before { content: none; }
 
   .track-card:hover {
-    border-color: rgba(120,160,255,0.14);
-    background: #0e1525;
+    border-color: rgba(160,128,60,0.22);
+    background: #f2efe8;
   }
 
   /* selected = last touched track, stays highlighted after pause/screen-off */
   .track-card.selected {
     background: var(--bg-card2);
-    border-color: rgba(34,211,238,0.28);
+    border-color: rgba(160,128,60,0.35);
   }
   .track-card.selected .track-num { opacity: 1; }
   .track-card.selected .track-title { color: #fff; }
@@ -197,7 +197,7 @@
     width: 3px;
     border-radius: 3px;
     background: var(--ca, var(--a0));
-    opacity: 0.85;
+    opacity: 0.7;
   }
   /* paused indicator in badge */
   .track-card.selected:not(.playing) .badge::after {
@@ -208,7 +208,7 @@
 
   /* playing = actively playing */
   .track-card.playing {
-    border-color: rgba(34,211,238,0.5);
+    border-color: rgba(160,128,60,0.55);
     background: var(--bg-card2);
   }
 
@@ -261,14 +261,14 @@
     background: linear-gradient(135deg, rgba(255,255,255,0.18), transparent 60%);
     border-radius: inherit;
   }
-  .c0 .track-cover { background: linear-gradient(145deg, #3a2800, #c9a84c); box-shadow: 0 4px 16px rgba(201,168,76,0.3); }
-  .c1 .track-cover { background: linear-gradient(145deg, #0e2040, #7ba7d4); box-shadow: 0 4px 16px rgba(123,167,212,0.3); }
-  .c2 .track-cover { background: linear-gradient(145deg, #251848, #a78bd4); box-shadow: 0 4px 16px rgba(167,139,212,0.3); }
-  .c3 .track-cover { background: linear-gradient(145deg, #3a1020, #c07090); box-shadow: 0 4px 16px rgba(192,112,144,0.3); }
-  .c4 .track-cover { background: linear-gradient(145deg, #0e2818, #8ab8a0); box-shadow: 0 4px 16px rgba(138,184,160,0.3); }
-  .c5 .track-cover { background: linear-gradient(145deg, #3a2010, #d4a878); box-shadow: 0 4px 16px rgba(212,168,120,0.3); }
-  .c6 .track-cover { background: linear-gradient(145deg, #3a3000, #e2c97e); box-shadow: 0 4px 16px rgba(226,201,126,0.3); }
-  .c7 .track-cover { background: linear-gradient(145deg, #20183a, #c8b8e8); box-shadow: 0 4px 16px rgba(200,184,232,0.3); }
+  .c0 .track-cover { background: linear-gradient(145deg, #7a5a10, #c9a84c); box-shadow: 0 4px 16px rgba(201,168,76,0.25); }
+  .c1 .track-cover { background: linear-gradient(145deg, #1e4878, #7ba7d4); box-shadow: 0 4px 16px rgba(123,167,212,0.25); }
+  .c2 .track-cover { background: linear-gradient(145deg, #4a3080, #a78bd4); box-shadow: 0 4px 16px rgba(167,139,212,0.25); }
+  .c3 .track-cover { background: linear-gradient(145deg, #7a2848, #c07090); box-shadow: 0 4px 16px rgba(192,112,144,0.25); }
+  .c4 .track-cover { background: linear-gradient(145deg, #1e5838, #8ab8a0); box-shadow: 0 4px 16px rgba(138,184,160,0.25); }
+  .c5 .track-cover { background: linear-gradient(145deg, #7a4820, #d4a878); box-shadow: 0 4px 16px rgba(212,168,120,0.25); }
+  .c6 .track-cover { background: linear-gradient(145deg, #7a6800, #c9a84c); box-shadow: 0 4px 16px rgba(226,201,126,0.25); }
+  .c7 .track-cover { background: linear-gradient(145deg, #483070, #c8b8e8); box-shadow: 0 4px 16px rgba(200,184,232,0.25); }
 
   .track-card.playing .track-cover {
     box-shadow: 0 0 18px var(--ca, var(--a0));
@@ -389,8 +389,8 @@
     display: none;
     align-items: center;
     gap: 10px;
-    background: rgba(201,168,76,0.05);
-    border: 1px solid rgba(201,168,76,0.15);
+    background: rgba(201,168,76,0.08);
+    border: 1px solid rgba(160,128,60,0.25);
     border-radius: 10px;
     padding: 8px 14px;
     margin-bottom: 12px;
@@ -446,7 +446,7 @@
     transition: all 0.2s;
     letter-spacing: 0.3px;
   }
-  .action-btn:hover { background: rgba(79,195,247,0.08); border-color: var(--a0); color: var(--a0); }
+  .action-btn:hover { background: rgba(160,128,60,0.10); border-color: var(--a0); color: var(--a0); }
 
   .brand-logo {
     display: flex; align-items: center; gap: 8px;
@@ -734,14 +734,14 @@
 
   // Waveform colours per track (dark base + glowing progress)
   const colors = [
-    { wave: '#1a1408', progress: '#c9a84c' },
-    { wave: '#0e1a28', progress: '#7ba7d4' },
-    { wave: '#180f2e', progress: '#a78bd4' },
-    { wave: '#280c1a', progress: '#c07090' },
-    { wave: '#0e1e14', progress: '#8ab8a0' },
-    { wave: '#201808', progress: '#d4a878' },
-    { wave: '#282000', progress: '#e2c97e' },
-    { wave: '#180e2a', progress: '#c8b8e8' }
+    { wave: '#e8dfc8', progress: '#9a7820' },
+    { wave: '#ccd8e8', progress: '#3a78b0' },
+    { wave: '#d8cce8', progress: '#7050b0' },
+    { wave: '#e8ccd8', progress: '#a04868' },
+    { wave: '#cce0d8', progress: '#408060' },
+    { wave: '#e8dac8', progress: '#a06828' },
+    { wave: '#e8e0b8', progress: '#907010' },
+    { wave: '#dcd0e8', progress: '#7048a0' }
   ];
 
   const fmt = s => new Date(s * 1000).toISOString().substr(14, 5);
