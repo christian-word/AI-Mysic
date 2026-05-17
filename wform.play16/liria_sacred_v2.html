@@ -761,6 +761,7 @@
     }
   };
 
+  // Lazy loading: створюємо інстанції без url, завантажуємо по черзі
   const players = tracks.map((track, i) => {
     const ws = WaveSurfer.create({
       container:     `#wave-${i}`,
@@ -772,11 +773,18 @@
       height:    34,
       interact:  true,
       normalize: true,
-      url:       track.src,
+      // url не передаємо — завантажуємо вручну через load()
     });
 
     ws.on('ready', (dur) => {
       document.getElementById(`dur-${i}`).textContent = fmt(dur);
+      document.getElementById(`btn-${i}`).disabled = false;
+      document.getElementById(`btn-${i}`).style.opacity = '';
+      // Після того як i-й готовий — завантажуємо наступний
+      if (i + 1 < tracks.length && !loaded[i + 1]) {
+        loaded[i + 1] = true;
+        players[i + 1].load(tracks[i + 1].src);
+      }
     });
 
     ws.on('timeupdate', (cur) => {
@@ -795,6 +803,11 @@
       });
       currentPlaying = i;
       updateNowPlaying(i);
+      // Завантажуємо наступний якщо ще не завантажений
+      if (i + 1 < tracks.length && !loaded[i + 1]) {
+        loaded[i + 1] = true;
+        players[i + 1].load(tracks[i + 1].src);
+      }
     });
 
     ws.on('pause', () => {
@@ -824,7 +837,29 @@
     return ws;
   });
 
-  window.togglePlay = (i) => players[i].playPause();
+  // Відмічаємо які треки вже завантажені
+  const loaded = new Array(tracks.length).fill(false);
+
+  // Кнопки 2-8 робимо трохи приглушеними поки не завантажились
+  for (let i = 1; i < tracks.length; i++) {
+    const btn = document.getElementById(`btn-${i}`);
+    btn.style.opacity = '0.35';
+  }
+
+  // Стартуємо завантаження тільки першого треку
+  loaded[0] = true;
+  players[0].load(tracks[0].src);
+
+  window.togglePlay = (i) => {
+    // Якщо трек ще не завантажений — завантажуємо і чекаємо ready
+    if (!loaded[i]) {
+      loaded[i] = true;
+      players[i].load(tracks[i].src);
+      players[i].once('ready', () => players[i].play());
+    } else {
+      players[i].playPause();
+    }
+  };
 
   window.shareTG = () => {
     window.open(`https://t.me/share/url?url=${encodeURIComponent(window.location.href)}`, '_blank');
