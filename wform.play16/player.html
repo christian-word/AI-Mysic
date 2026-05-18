@@ -756,10 +756,52 @@
       bar.classList.add('visible');
       title.textContent = tracks[i].title;
       next.textContent  = i < tracks.length - 1 ? `→ ${tracks[i+1].title}` : '— Кінець плейлисту';
+      updateMediaSession(i);
     } else {
       bar.classList.remove('visible');
     }
   };
+
+  // ── AudioContext lock — не дає браузеру заморозити аудіо ──
+  let audioCtx = null;
+  function unlockAudio() {
+    if (audioCtx) return;
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    // Тихий осцилятор — тримає аудіо сесію живою
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    gain.gain.value = 0.001; // майже нечутно
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start();
+    // Відновлюємо якщо система призупинила
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible' && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    });
+  }
+
+  // ── MediaSession API — реєструє плеєр в системі ──
+  function updateMediaSession(i) {
+    if (!('mediaSession' in navigator)) return;
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title:  tracks[i].title,
+      artist: 'AI Liria 3',
+      album:  'Безмовна Слава',
+    });
+    navigator.mediaSession.setActionHandler('play',         () => { if (currentPlaying >= 0) players[currentPlaying].play(); });
+    navigator.mediaSession.setActionHandler('pause',        () => { if (currentPlaying >= 0) players[currentPlaying].pause(); });
+    navigator.mediaSession.setActionHandler('nexttrack',    () => {
+      const next = (currentPlaying >= 0 ? currentPlaying : -1) + 1;
+      if (next < players.length) window.togglePlay(next);
+    });
+    navigator.mediaSession.setActionHandler('previoustrack', () => {
+      const prev = (currentPlaying >= 0 ? currentPlaying : 1) - 1;
+      if (prev >= 0) window.togglePlay(prev);
+    });
+    navigator.mediaSession.playbackState = 'playing';
+  }
 
   // Lazy loading: створюємо інстанції без url, завантажуємо по черзі
   const players = tracks.map((track, i) => {
@@ -813,6 +855,7 @@
     ws.on('pause', () => {
       document.getElementById(`btn-${i}`).innerHTML = '<i class="fas fa-play"></i>';
       document.getElementById(`card-${i}`).classList.remove('playing');
+      if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'paused';
       if (currentPlaying === i) {
         currentPlaying = -1;
         updateNowPlaying(-1);
@@ -851,6 +894,7 @@
   players[0].load(tracks[0].src);
 
   window.togglePlay = (i) => {
+    unlockAudio(); // активуємо AudioContext при першому натисканні
     // Якщо трек ще не завантажений — завантажуємо і чекаємо ready
     if (!loaded[i]) {
       loaded[i] = true;
