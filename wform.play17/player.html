@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ethereal Realms — Ambient Collection</title>
+<title>The Glow of Starlight — Ambient Collection</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&family=Syne:wght@300;400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -11,34 +11,32 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg:          #eaf5f2;
-    --bg-card:     #f3fbf8;
-    --bg-card2:    #ffffff;
-    --ink:         #1a2e28;
-    --ink-soft:    rgba(26,46,40,0.55);
-    --ink-faint:   rgba(26,46,40,0.35);
-    --border:      rgba(30,160,120,0.15);
-    --border-glow: rgba(30,160,120,0.30);
-    --shadow:      0 4px 20px rgba(0,0,0,0.07);
+    --bg:          #0d0f1a;
+    --bg-card:     #13162a;
+    --bg-card2:    #181c35;
+    --ink:         #e8eaf6;
+    --ink-soft:    rgba(232,234,246,0.60);
+    --ink-faint:   rgba(232,234,246,0.35);
+    --border:      rgba(120,100,220,0.18);
+    --border-glow: rgba(140,120,240,0.30);
 
-    /* Accent spectrum — ethereal tones */
-    --a0: #2eb89a;   /* teal */
-    --a1: #38c4a8;   /* mint */
-    --a2: #7ed4c0;   /* aqua */
-    --a3: #e0c84a;   /* gold */
-    --a4: #a8d87e;   /* lime */
-    --a5: #4ac8b8;   /* seafoam */
-    --a6: #c8e87e;   /* yellow-green */
-    --a7: #80d4b8;   /* pale teal */
+    --a0: #7c6ff0;   /* indigo */
+    --a1: #a78bfa;   /* violet */
+    --a2: #60a5fa;   /* sky blue */
+    --a3: #f0c060;   /* star gold */
+    --a4: #c084fc;   /* purple */
+    --a5: #38bdf8;   /* cyan */
+    --a6: #e879f9;   /* pink-violet */
+    --a7: #818cf8;   /* periwinkle */
 
-    --a0-pale: rgba(46,184,154,0.08);
-    --a1-pale: rgba(56,196,168,0.08);
-    --a2-pale: rgba(126,212,192,0.08);
-    --a3-pale: rgba(224,200,74,0.10);
-    --a4-pale: rgba(168,216,126,0.08);
-    --a5-pale: rgba(74,200,184,0.08);
-    --a6-pale: rgba(200,232,126,0.08);
-    --a7-pale: rgba(128,212,184,0.08);
+    --a0-pale: rgba(124,111,240,0.10);
+    --a1-pale: rgba(167,139,250,0.10);
+    --a2-pale: rgba(96,165,250,0.10);
+    --a3-pale: rgba(240,192,96,0.10);
+    --a4-pale: rgba(192,132,252,0.10);
+    --a5-pale: rgba(56,189,248,0.10);
+    --a6-pale: rgba(232,121,249,0.10);
+    --a7-pale: rgba(129,140,248,0.10);
   }
 
   body {
@@ -53,23 +51,37 @@
     overflow-x: hidden;
   }
 
+  /* Deep space nebula background */
   body::before {
     content: '';
     position: fixed; inset: 0;
     background:
-      radial-gradient(ellipse 70% 50% at 50% -5%,   rgba(46,184,154,0.12) 0%, transparent 65%),
-      radial-gradient(ellipse 50% 40% at 10% 80%,   rgba(224,200,74,0.07) 0%, transparent 60%),
-      radial-gradient(ellipse 40% 50% at 90% 50%,   rgba(126,212,192,0.08) 0%, transparent 65%);
+      radial-gradient(ellipse 80% 60% at 50% -10%,  rgba(124,111,240,0.18) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 50% at 15% 70%,   rgba(96,165,250,0.10) 0%, transparent 55%),
+      radial-gradient(ellipse 45% 55% at 88% 40%,   rgba(192,132,252,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 50% 100%,  rgba(56,189,248,0.07) 0%, transparent 55%);
     pointer-events: none; z-index: 0;
   }
 
+  /* Star field */
   body::after {
     content: '';
     position: fixed; inset: 0;
     background-image:
-      linear-gradient(rgba(30,160,120,0.06) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(30,160,120,0.06) 1px, transparent 1px);
-    background-size: 60px 60px;
+      radial-gradient(1px 1px at 10%  15%, rgba(255,255,255,0.55) 0%, transparent 100%),
+      radial-gradient(1px 1px at 25%  60%, rgba(255,255,255,0.40) 0%, transparent 100%),
+      radial-gradient(1px 1px at 40%  25%, rgba(255,255,255,0.60) 0%, transparent 100%),
+      radial-gradient(1px 1px at 55%  80%, rgba(255,255,255,0.35) 0%, transparent 100%),
+      radial-gradient(1px 1px at 70%  10%, rgba(255,255,255,0.50) 0%, transparent 100%),
+      radial-gradient(1px 1px at 80%  55%, rgba(255,255,255,0.45) 0%, transparent 100%),
+      radial-gradient(1px 1px at 92%  30%, rgba(255,255,255,0.55) 0%, transparent 100%),
+      radial-gradient(1px 1px at 05%  85%, rgba(255,255,255,0.40) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 33% 45%, rgba(167,139,250,0.70) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 65% 70%, rgba(96,165,250,0.65)  0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 85% 88%, rgba(192,132,252,0.60) 0%, transparent 100%),
+      radial-gradient(1px 1px at 47%  50%, rgba(255,255,255,0.30) 0%, transparent 100%),
+      radial-gradient(1px 1px at 18%  38%, rgba(255,255,255,0.45) 0%, transparent 100%),
+      radial-gradient(1px 1px at 73%  22%, rgba(255,255,255,0.38) 0%, transparent 100%);
     pointer-events: none; z-index: 0;
   }
 
@@ -86,58 +98,45 @@
   }
 
   .header-eyebrow {
-    font-size: 9.5px;
-    font-weight: 500;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    color: var(--a0);
-    margin-bottom: 10px;
+    font-size: 9.5px; font-weight: 500;
+    letter-spacing: 4px; text-transform: uppercase;
+    color: var(--a1); margin-bottom: 10px;
     display: flex; align-items: center; gap: 8px;
   }
   .header-eyebrow::before {
     content: '';
-    display: inline-block;
-    width: 24px; height: 1px;
-    background: var(--a0); opacity: 0.6;
+    display: inline-block; width: 24px; height: 1px;
+    background: var(--a1); opacity: 0.6;
   }
 
   .page-header h1 {
     font-family: 'Syne', sans-serif;
-    font-weight: 700;
-    font-size: 1.6rem;
-    color: var(--ink);
-    letter-spacing: -1px;
-    line-height: 1.1;
-    margin-bottom: 6px;
+    font-weight: 700; font-size: 1.6rem;
+    color: var(--ink); letter-spacing: -1px;
+    line-height: 1.1; margin-bottom: 6px;
   }
   .page-header h1 span {
-    background: linear-gradient(90deg, #0e7a5e, #b8a000);
+    background: linear-gradient(90deg, #a78bfa, #60a5fa, #e879f9);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
   .page-header p {
-    font-size: 11.5px;
-    color: var(--ink-faint);
-    font-weight: 300;
-    letter-spacing: 0.3px;
+    font-size: 11.5px; color: var(--ink-faint);
+    font-weight: 300; letter-spacing: 0.3px;
   }
 
   .autoplay-badge {
     display: inline-flex; align-items: center; gap: 6px;
-    margin-top: 10px;
-    padding: 4px 12px;
-    background: rgba(46,184,154,0.10);
-    border: 1px solid rgba(46,184,154,0.25);
-    border-radius: 20px;
-    font-size: 10px;
-    color: var(--a0);
-    letter-spacing: 0.5px;
+    margin-top: 10px; padding: 4px 12px;
+    background: rgba(124,111,240,0.12);
+    border: 1px solid rgba(124,111,240,0.28);
+    border-radius: 20px; font-size: 10px;
+    color: var(--a1); letter-spacing: 0.5px;
   }
   .autoplay-dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
+    width: 6px; height: 6px; border-radius: 50%;
     background: var(--a3);
     animation: pulse-dot 1.8s ease-in-out infinite;
   }
@@ -149,36 +148,31 @@
   /* ── Track Card ── */
   .track-card {
     background: var(--bg-card);
-    border: 1px solid rgba(30,160,120,0.08);
+    border: 1px solid rgba(120,100,220,0.12);
     border-radius: 13px;
-    padding: 9px 11px;
-    margin-bottom: 6px;
+    padding: 9px 11px; margin-bottom: 6px;
     transition: border-color 0.25s ease, background 0.25s ease;
-    position: relative;
-    overflow: hidden;
+    position: relative; overflow: hidden;
   }
-  .track-card::before { content: none; }
   .track-card:hover {
-    border-color: rgba(30,160,120,0.25);
-    background: #ecf9f5;
+    border-color: rgba(167,139,250,0.28);
+    background: #161a30;
   }
   .track-card.selected {
     background: var(--bg-card2);
-    border-color: rgba(46,184,154,0.40);
+    border-color: rgba(167,139,250,0.42);
   }
   .track-card.selected::after {
     content: '';
-    position: absolute;
-    left: 0; top: 6px; bottom: 6px;
+    position: absolute; left: 0; top: 6px; bottom: 6px;
     width: 3px; border-radius: 3px;
-    background: var(--ca, var(--a0));
-    opacity: 0.8;
+    background: var(--ca, var(--a0)); opacity: 0.85;
   }
   .track-card.selected:not(.playing) .badge::after {
     content: ' ⏸'; font-size: 7px; opacity: 0.55;
   }
   .track-card.playing {
-    border-color: rgba(46,184,154,0.55);
+    border-color: rgba(167,139,250,0.55);
     background: var(--bg-card2);
   }
 
@@ -199,16 +193,15 @@
   .track-num {
     font-family: 'Syne', sans-serif;
     font-size: 15px; font-weight: 700;
-    color: rgba(46,184,154,0.30);
+    color: rgba(167,139,250,0.25);
     min-width: 22px; text-align: right;
     flex-shrink: 0; letter-spacing: -0.5px;
   }
-  .track-card.playing .track-num  { color: var(--a0); }
-  .track-card.selected .track-num { color: rgba(46,184,154,0.6); }
+  .track-card.playing .track-num  { color: var(--a1); }
+  .track-card.selected .track-num { color: rgba(167,139,250,0.55); }
 
   .track-cover {
-    width: 36px; height: 36px;
-    border-radius: 9px;
+    width: 36px; height: 36px; border-radius: 9px;
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0; font-size: 14px; color: #fff;
     position: relative; overflow: hidden;
@@ -220,22 +213,21 @@
     background: linear-gradient(135deg, rgba(255,255,255,0.18), transparent 60%);
     border-radius: inherit;
   }
-  .c0 .track-cover { background: linear-gradient(145deg, #0a6050, #2eb89a); box-shadow: 0 4px 16px rgba(46,184,154,0.25); }
-  .c1 .track-cover { background: linear-gradient(145deg, #0a7858, #38c4a8); box-shadow: 0 4px 16px rgba(56,196,168,0.25); }
-  .c2 .track-cover { background: linear-gradient(145deg, #208070, #7ed4c0); box-shadow: 0 4px 16px rgba(126,212,192,0.25); }
-  .c3 .track-cover { background: linear-gradient(145deg, #907800, #e0c84a); box-shadow: 0 4px 16px rgba(224,200,74,0.25); }
-  .c4 .track-cover { background: linear-gradient(145deg, #408020, #a8d87e); box-shadow: 0 4px 16px rgba(168,216,126,0.25); }
-  .c5 .track-cover { background: linear-gradient(145deg, #107870, #4ac8b8); box-shadow: 0 4px 16px rgba(74,200,184,0.25); }
-  .c6 .track-cover { background: linear-gradient(145deg, #708000, #c8e87e); box-shadow: 0 4px 16px rgba(200,232,126,0.25); }
-  .c7 .track-cover { background: linear-gradient(145deg, #107060, #80d4b8); box-shadow: 0 4px 16px rgba(128,212,184,0.25); }
+  .c0 .track-cover { background: linear-gradient(145deg, #3a28a0, #7c6ff0); box-shadow: 0 4px 16px rgba(124,111,240,0.30); }
+  .c1 .track-cover { background: linear-gradient(145deg, #5a30b0, #a78bfa); box-shadow: 0 4px 16px rgba(167,139,250,0.30); }
+  .c2 .track-cover { background: linear-gradient(145deg, #1a4898, #60a5fa); box-shadow: 0 4px 16px rgba(96,165,250,0.30); }
+  .c3 .track-cover { background: linear-gradient(145deg, #805800, #f0c060); box-shadow: 0 4px 16px rgba(240,192,96,0.30); }
+  .c4 .track-cover { background: linear-gradient(145deg, #6a2090, #c084fc); box-shadow: 0 4px 16px rgba(192,132,252,0.30); }
+  .c5 .track-cover { background: linear-gradient(145deg, #0a5878, #38bdf8); box-shadow: 0 4px 16px rgba(56,189,248,0.30); }
+  .c6 .track-cover { background: linear-gradient(145deg, #801090, #e879f9); box-shadow: 0 4px 16px rgba(232,121,249,0.30); }
 
   .track-card.playing .track-cover {
-    box-shadow: 0 0 18px var(--ca, var(--a0));
+    box-shadow: 0 0 22px var(--ca, var(--a0));
     animation: cover-glow 2s ease-in-out infinite;
   }
   @keyframes cover-glow {
     0%, 100% { filter: brightness(1); }
-    50%       { filter: brightness(1.15); }
+    50%       { filter: brightness(1.20); }
   }
 
   .track-info { flex: 1; min-width: 0; }
@@ -255,14 +247,13 @@
     letter-spacing: 0.8px; text-transform: uppercase;
     border: 1px solid;
   }
-  .c0 .badge { background: var(--a0-pale); color: var(--a0); border-color: rgba(46,184,154,0.25); }
-  .c1 .badge { background: var(--a1-pale); color: var(--a1); border-color: rgba(56,196,168,0.25); }
-  .c2 .badge { background: var(--a2-pale); color: #2a9a88; border-color: rgba(126,212,192,0.25); }
-  .c3 .badge { background: var(--a3-pale); color: #9a8000; border-color: rgba(224,200,74,0.25); }
-  .c4 .badge { background: var(--a4-pale); color: #5a9020; border-color: rgba(168,216,126,0.25); }
-  .c5 .badge { background: var(--a5-pale); color: var(--a5); border-color: rgba(74,200,184,0.25); }
-  .c6 .badge { background: var(--a6-pale); color: #787800; border-color: rgba(200,232,126,0.25); }
-  .c7 .badge { background: var(--a7-pale); color: #208870; border-color: rgba(128,212,184,0.25); }
+  .c0 .badge { background: var(--a0-pale); color: var(--a0); border-color: rgba(124,111,240,0.25); }
+  .c1 .badge { background: var(--a1-pale); color: var(--a1); border-color: rgba(167,139,250,0.25); }
+  .c2 .badge { background: var(--a2-pale); color: var(--a2); border-color: rgba(96,165,250,0.25); }
+  .c3 .badge { background: var(--a3-pale); color: var(--a3); border-color: rgba(240,192,96,0.25); }
+  .c4 .badge { background: var(--a4-pale); color: var(--a4); border-color: rgba(192,132,252,0.25); }
+  .c5 .badge { background: var(--a5-pale); color: var(--a5); border-color: rgba(56,189,248,0.25); }
+  .c6 .badge { background: var(--a6-pale); color: var(--a6); border-color: rgba(232,121,249,0.25); }
 
   .track-label {
     font-size: 10px; color: var(--ink-faint);
@@ -272,36 +263,35 @@
   .eq-bars { display: inline-flex; align-items: flex-end; gap: 2px; height: 12px; }
   .eq-bars span {
     display: block; width: 2.5px; border-radius: 1px;
-    background: var(--ca, var(--a0)); opacity: 0.45;
+    background: var(--ca, var(--a0)); opacity: 0.40;
     height: 30%; transition: height 0.1s;
   }
   .playing .eq-bars span { opacity: 1; }
-  .playing .eq-bars span:nth-child(1) { animation: eq1 0.7s ease-in-out infinite; }
-  .playing .eq-bars span:nth-child(2) { animation: eq2 0.9s ease-in-out infinite 0.15s; }
+  .playing .eq-bars span:nth-child(1) { animation: eq1 0.7s  ease-in-out infinite; }
+  .playing .eq-bars span:nth-child(2) { animation: eq2 0.9s  ease-in-out infinite 0.15s; }
   .playing .eq-bars span:nth-child(3) { animation: eq1 0.65s ease-in-out infinite 0.3s; }
   @keyframes eq1 { 0%,100%{height:30%} 50%{height:95%} }
   @keyframes eq2 { 0%,100%{height:70%} 50%{height:25%} }
 
   .play-btn {
-    width: 32px; height: 32px;
-    border-radius: 50%;
-    border: 1.5px solid var(--a0);
+    width: 32px; height: 32px; border-radius: 50%;
+    border: 1.5px solid var(--a1);
     background: transparent; font-size: 11px;
     display: flex; align-items: center; justify-content: center;
     cursor: pointer; transition: all 0.2s ease;
-    flex-shrink: 0; color: var(--a0);
-    position: relative; overflow: hidden; opacity: 0.65;
+    flex-shrink: 0; color: var(--a1);
+    position: relative; overflow: hidden; opacity: 0.60;
   }
   .play-btn::before {
     content: ''; position: absolute; inset: 0;
-    border-radius: 50%; background: var(--a0);
+    border-radius: 50%; background: var(--a1);
     opacity: 0; transition: opacity 0.2s;
   }
   .play-btn i { position: relative; z-index: 1; }
   .play-btn .fa-play { margin-left: 2px; }
-  .play-btn:hover { opacity: 1; transform: scale(1.08); box-shadow: 0 0 14px rgba(46,184,154,0.40); }
-  .play-btn:hover::before { opacity: 0.12; }
-  .playing .play-btn { opacity: 1; box-shadow: 0 0 12px rgba(46,184,154,0.35); }
+  .play-btn:hover { opacity: 1; transform: scale(1.08); box-shadow: 0 0 16px rgba(167,139,250,0.45); }
+  .play-btn:hover::before { opacity: 0.14; }
+  .playing .play-btn { opacity: 1; box-shadow: 0 0 14px rgba(167,139,250,0.40); }
   .playing .play-btn::before { opacity: 0.10; }
 
   .wave-wrap { position: relative; padding-bottom: 13px; }
@@ -318,19 +308,19 @@
   /* Now playing bar */
   .now-playing-bar {
     display: none; align-items: center; gap: 10px;
-    background: rgba(46,184,154,0.07);
-    border: 1px solid rgba(30,160,120,0.22);
+    background: rgba(124,111,240,0.08);
+    border: 1px solid rgba(124,111,240,0.22);
     border-radius: 10px; padding: 8px 14px;
     margin-bottom: 12px; font-size: 11px;
     color: var(--ink-soft);
   }
   .now-playing-bar.visible { display: flex; }
-  .now-playing-bar .np-label {
+  .np-label {
     font-size: 9px; letter-spacing: 2px;
-    text-transform: uppercase; color: var(--a0);
+    text-transform: uppercase; color: var(--a1);
     font-weight: 600; flex-shrink: 0;
   }
-  .now-playing-bar .np-title {
+  .np-title {
     flex: 1; white-space: nowrap;
     overflow: hidden; text-overflow: ellipsis;
     color: var(--ink); font-weight: 500;
@@ -350,21 +340,21 @@
     display: inline-flex; align-items: center; gap: 6px;
     padding: 7px 14px; border-radius: 8px;
     border: 1px solid var(--border-glow);
-    background: rgba(255,255,255,0.04);
+    background: rgba(255,255,255,0.03);
     font-family: 'Space Grotesk', sans-serif;
     font-size: 11px; font-weight: 500;
     color: var(--ink-soft); cursor: pointer;
     transition: all 0.2s; letter-spacing: 0.3px;
   }
-  .action-btn:hover { background: rgba(46,184,154,0.10); border-color: var(--a0); color: var(--a0); }
+  .action-btn:hover { background: rgba(124,111,240,0.14); border-color: var(--a1); color: var(--a1); }
 
   .brand-logo { display: flex; align-items: center; gap: 8px; }
   .brand-icon {
     width: 28px; height: 28px; border-radius: 8px;
-    background: linear-gradient(145deg, #0a6050, #38c4a8);
+    background: linear-gradient(145deg, #3a28a0, #a78bfa);
     display: flex; align-items: center; justify-content: center;
     font-size: 11px; color: #fff;
-    box-shadow: 0 2px 10px rgba(46,184,154,0.35);
+    box-shadow: 0 2px 12px rgba(167,139,250,0.40);
   }
   .brand-text {
     font-family: 'Syne', sans-serif; font-size: 12px;
@@ -379,13 +369,13 @@
   .toast {
     position: fixed; bottom: 24px; left: 50%;
     transform: translateX(-50%) translateY(20px);
-    background: rgba(46,184,154,0.10);
+    background: rgba(124,111,240,0.15);
     backdrop-filter: blur(12px);
-    border: 1px solid rgba(46,184,154,0.30);
-    color: var(--a0); padding: 9px 20px;
-    border-radius: 10px; font-size: 12px;
-    font-weight: 500; opacity: 0;
-    pointer-events: none; transition: all 0.3s ease; z-index: 999;
+    border: 1px solid rgba(167,139,250,0.35);
+    color: var(--a1); padding: 9px 20px;
+    border-radius: 10px; font-size: 12px; font-weight: 500;
+    opacity: 0; pointer-events: none;
+    transition: all 0.3s ease; z-index: 999;
   }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
@@ -402,11 +392,11 @@
 <div class="page-wrap">
   <div class="page-header">
     <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-      <div class="header-eyebrow">Ambient · Fantasy</div>
-      <div style="font-family:'Space Grotesk',sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;color:#2eb89a;opacity:0.85;padding-top:1px;text-transform:uppercase;">AI&nbsp;Liria&nbsp;4</div>
+      <div class="header-eyebrow">Stellar Ambient</div>
+      <div style="font-family:'Space Grotesk',sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;color:#a78bfa;opacity:0.80;padding-top:1px;text-transform:uppercase;">AI&nbsp;Liria&nbsp;4</div>
     </div>
-    <h1>Ethereal <span>Realms</span></h1>
-    <p>Where silence weaves into sound, and sound into dreams</p>
+    <h1>The Glow of <span>Starlight</span></h1>
+    <p>Seven stars. Seven worlds. One endless night.</p>
     <div class="autoplay-badge">
       <div class="autoplay-dot"></div>
       Auto-advance enabled
@@ -423,13 +413,13 @@
   <div class="track-card c0" id="card-0">
     <div class="track-top">
       <span class="track-num">01</span>
-      <div class="track-cover"><i class="fas fa-star"></i></div>
+      <div class="track-cover"><i class="fas fa-meteor"></i></div>
       <div class="track-info">
-        <div class="track-title">Enchanted Starlight — Remix I</div>
+        <div class="track-title">Enchanted Starlight — Remix II</div>
         <div class="track-meta">
-          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Remix · Take 1</span>
+          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Remix · Take 2</span>
           <span class="eq-bars"><span></span><span></span><span></span></span>
-          <span class="track-label">First vision</span>
+          <span class="track-label">Second vision</span>
         </div>
       </div>
       <button class="play-btn" id="btn-0" onclick="togglePlay(0)"><i class="fas fa-play"></i></button>
@@ -445,13 +435,13 @@
   <div class="track-card c1" id="card-1">
     <div class="track-top">
       <span class="track-num">02</span>
-      <div class="track-cover"><i class="fas fa-meteor"></i></div>
+      <div class="track-cover"><i class="fas fa-moon"></i></div>
       <div class="track-info">
-        <div class="track-title">Enchanted Starlight — Remix II</div>
+        <div class="track-title">Enchanted Starlight — Remix III</div>
         <div class="track-meta">
-          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Remix · Take 2</span>
+          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Remix · Take 3</span>
           <span class="eq-bars"><span></span><span></span><span></span></span>
-          <span class="track-label">Second vision</span>
+          <span class="track-label">Third vision</span>
         </div>
       </div>
       <button class="play-btn" id="btn-1" onclick="togglePlay(1)"><i class="fas fa-play"></i></button>
@@ -467,13 +457,13 @@
   <div class="track-card c2" id="card-2">
     <div class="track-top">
       <span class="track-num">03</span>
-      <div class="track-cover"><i class="fas fa-moon"></i></div>
+      <div class="track-cover"><i class="fas fa-dragon"></i></div>
       <div class="track-info">
-        <div class="track-title">Enchanted Starlight — Remix III</div>
+        <div class="track-title">Fairy Tale Epic</div>
         <div class="track-meta">
-          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Remix · Take 3</span>
+          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Epic · Original</span>
           <span class="eq-bars"><span></span><span></span><span></span></span>
-          <span class="track-label">Third vision</span>
+          <span class="track-label">Orchestral grandeur</span>
         </div>
       </div>
       <button class="play-btn" id="btn-2" onclick="togglePlay(2)"><i class="fas fa-play"></i></button>
@@ -489,13 +479,13 @@
   <div class="track-card c3" id="card-3">
     <div class="track-top">
       <span class="track-num">04</span>
-      <div class="track-cover"><i class="fas fa-dragon"></i></div>
+      <div class="track-cover"><i class="fas fa-sun"></i></div>
       <div class="track-info">
-        <div class="track-title">Fairy Tale Epic</div>
+        <div class="track-title">Morning Light — Var 2 Remix</div>
         <div class="track-meta">
-          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Epic · Original</span>
+          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Remix · Var 2</span>
           <span class="eq-bars"><span></span><span></span><span></span></span>
-          <span class="track-label">Orchestral grandeur</span>
+          <span class="track-label">Dawn variations</span>
         </div>
       </div>
       <button class="play-btn" id="btn-3" onclick="togglePlay(3)"><i class="fas fa-play"></i></button>
@@ -511,13 +501,13 @@
   <div class="track-card c4" id="card-4">
     <div class="track-top">
       <span class="track-num">05</span>
-      <div class="track-cover"><i class="fas fa-sun"></i></div>
+      <div class="track-cover"><i class="fas fa-gem"></i></div>
       <div class="track-info">
-        <div class="track-title">Morning Light — Var 2 Remix</div>
+        <div class="track-title">Stardust Sanctuary — Remix</div>
         <div class="track-meta">
-          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Remix · Var 2</span>
+          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Remix · Sanctuary</span>
           <span class="eq-bars"><span></span><span></span><span></span></span>
-          <span class="track-label">Dawn variations</span>
+          <span class="track-label">A place between stars</span>
         </div>
       </div>
       <button class="play-btn" id="btn-4" onclick="togglePlay(4)"><i class="fas fa-play"></i></button>
@@ -533,13 +523,13 @@
   <div class="track-card c5" id="card-5">
     <div class="track-top">
       <span class="track-num">06</span>
-      <div class="track-cover"><i class="fas fa-gem"></i></div>
+      <div class="track-cover"><i class="fas fa-tree"></i></div>
       <div class="track-info">
-        <div class="track-title">Stardust Sanctuary — Remix</div>
+        <div class="track-title">The Hidden Grove</div>
         <div class="track-meta">
-          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Remix · Sanctuary</span>
+          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Nature · Ambient</span>
           <span class="eq-bars"><span></span><span></span><span></span></span>
-          <span class="track-label">A place between stars</span>
+          <span class="track-label">Deep forest secrets</span>
         </div>
       </div>
       <button class="play-btn" id="btn-5" onclick="togglePlay(5)"><i class="fas fa-play"></i></button>
@@ -555,13 +545,13 @@
   <div class="track-card c6" id="card-6">
     <div class="track-top">
       <span class="track-num">07</span>
-      <div class="track-cover"><i class="fas fa-tree"></i></div>
+      <div class="track-cover"><i class="fas fa-feather-alt"></i></div>
       <div class="track-info">
-        <div class="track-title">The Hidden Grove</div>
+        <div class="track-title">Whispers of the Fae</div>
         <div class="track-meta">
-          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Nature · Ambient</span>
+          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Fae · Ethereal</span>
           <span class="eq-bars"><span></span><span></span><span></span></span>
-          <span class="track-label">Deep forest secrets</span>
+          <span class="track-label">Voices beyond the veil</span>
         </div>
       </div>
       <button class="play-btn" id="btn-6" onclick="togglePlay(6)"><i class="fas fa-play"></i></button>
@@ -573,38 +563,16 @@
     </div>
   </div>
 
-  <!-- 08 -->
-  <div class="track-card c7" id="card-7">
-    <div class="track-top">
-      <span class="track-num">08</span>
-      <div class="track-cover"><i class="fas fa-feather-alt"></i></div>
-      <div class="track-info">
-        <div class="track-title">Whispers of the Fae</div>
-        <div class="track-meta">
-          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Fae · Ethereal</span>
-          <span class="eq-bars"><span></span><span></span><span></span></span>
-          <span class="track-label">Voices beyond the veil</span>
-        </div>
-      </div>
-      <button class="play-btn" id="btn-7" onclick="togglePlay(7)"><i class="fas fa-play"></i></button>
-    </div>
-    <div class="wave-wrap">
-      <div id="wave-7" class="wave-inner"></div>
-      <span class="cur-label" id="cur-7">00:00</span>
-      <span class="time-label" id="dur-7">--:--</span>
-    </div>
-  </div>
-
   <div class="page-footer">
     <div class="footer-actions">
       <button class="action-btn" onclick="shareTG()"><i class="fab fa-telegram-plane"></i> Telegram</button>
       <button class="action-btn" onclick="copyLink()"><i class="fas fa-link"></i> Link</button>
     </div>
     <div class="brand-logo">
-      <div class="brand-icon"><i class="fas fa-music"></i></div>
+      <div class="brand-icon"><i class="fas fa-star"></i></div>
       <div>
         <span class="brand-text">LIRIA</span>
-        <span class="brand-sub">ethereal ambient</span>
+        <span class="brand-sub">stellar ambient</span>
       </div>
     </div>
   </div>
@@ -614,25 +582,23 @@
   import WaveSurfer from 'https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.esm.js';
 
   const tracks = [
-    { src: 'Enchanted Starlight (Remix) (1).m4a', title: 'Enchanted Starlight — Remix I' },
-    { src: 'Enchanted Starlight (Remix) (2).m4a', title: 'Enchanted Starlight — Remix II' },
-    { src: 'Enchanted Starlight (Remix) (3).m4a', title: 'Enchanted Starlight — Remix III' },
-    { src: 'Fairy Tale Epic.m4a',                  title: 'Fairy Tale Epic' },
-    { src: 'Morning Light (Var 2) (Remix).m4a',    title: 'Morning Light — Var 2 Remix' },
-    { src: 'Stardust Sanctuary (Remix).m4a',        title: 'Stardust Sanctuary — Remix' },
-    { src: 'The Hidden Grove.m4a',                  title: 'The Hidden Grove' },
-    { src: 'Whispers of the Fae.m4a',               title: 'Whispers of the Fae' },
+    { src: 'Enchanted Starlight (Remix) (2).m4a', title: 'Enchanted Starlight — Remix II'   },
+    { src: 'Enchanted Starlight (Remix) (3).m4a', title: 'Enchanted Starlight — Remix III'  },
+    { src: 'Fairy Tale Epic.m4a',                  title: 'Fairy Tale Epic'                  },
+    { src: 'Morning Light (Var 2) (Remix).m4a',    title: 'Morning Light — Var 2 Remix'      },
+    { src: 'Stardust Sanctuary (Remix).m4a',        title: 'Stardust Sanctuary — Remix'       },
+    { src: 'The Hidden Grove.m4a',                  title: 'The Hidden Grove'                 },
+    { src: 'Whispers of the Fae.m4a',               title: 'Whispers of the Fae'              },
   ];
 
   const colors = [
-    { wave: '#b8e8dc', progress: '#2eb89a' },
-    { wave: '#b8ece0', progress: '#38c4a8' },
-    { wave: '#c8ece4', progress: '#4ac8b0' },
-    { wave: '#f0e8a0', progress: '#b0980a' },
-    { wave: '#cce8b0', progress: '#5a9820' },
-    { wave: '#b8ece8', progress: '#20a898' },
-    { wave: '#d8eea0', progress: '#788800' },
-    { wave: '#c0e8d8', progress: '#208870' },
+    { wave: '#2a2060', progress: '#7c6ff0' },
+    { wave: '#2e1a60', progress: '#a78bfa' },
+    { wave: '#102048', progress: '#60a5fa' },
+    { wave: '#3a2800', progress: '#d4a020' },
+    { wave: '#2a1050', progress: '#c084fc' },
+    { wave: '#062040', progress: '#38bdf8' },
+    { wave: '#320848', progress: '#e879f9' },
   ];
 
   const fmt = s => new Date(s * 1000).toISOString().substr(14, 5);
@@ -668,7 +634,7 @@
   function updateMediaSession(i) {
     if (!('mediaSession' in navigator)) return;
     navigator.mediaSession.metadata = new MediaMetadata({
-      title: tracks[i].title, artist: 'AI Liria 4', album: 'Ethereal Realms',
+      title: tracks[i].title, artist: 'AI Liria 4', album: 'The Glow of Starlight',
     });
     navigator.mediaSession.setActionHandler('play',          () => { if (currentPlaying >= 0) players[currentPlaying].play(); });
     navigator.mediaSession.setActionHandler('pause',         () => { if (currentPlaying >= 0) players[currentPlaying].pause(); });
