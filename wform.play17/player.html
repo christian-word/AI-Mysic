@@ -658,3 +658,205 @@
   </div>
 
 
+<script type="module">
+  import WaveSurfer from 'https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.esm.js';
+
+  const tracks = [
+    { src: 'Хваліть Господа (Forest Whispers & Majesty).m4a',             title: 'Forest Whispers & Majesty' },
+    { src: 'Хваліть Господа (Massive Angelic Choir).m4a',                 title: 'Massive Angelic Choir' },
+    { src: 'Хваліть Господа (With Loud Angelic Choir).m4a',               title: 'With Loud Angelic Choir' },
+    { src: 'Хто достойний слави_ (Ambient Instrumental) (Remix).m4a',     title: 'Хто достойний слави?' },
+    { src: 'Я схиляюсь перед Тобою (Ambient Instrumental) Take 2.m4a',    title: 'Я схиляюсь · Take 2' },
+    { src: 'Я схиляюсь перед Тобою (Ambient Instrumental).m4a',           title: 'Я схиляюсь перед Тобою' },
+    { src: 'Сияние Святости (Ambient Electronics).m4a',                   title: 'Сяяння Святості' },
+    { src: 'Слава Творця (Pure Ambient Edit).m4a',                        title: 'Слава Творця' }
+  ];
+
+  // Waveform colours per track (dark base + glowing progress)
+  const colors = [
+    { wave: '#e8dfc8', progress: '#9a7820' },
+    { wave: '#ccd8e8', progress: '#3a78b0' },
+    { wave: '#d8cce8', progress: '#7050b0' },
+    { wave: '#e8ccd8', progress: '#a04868' },
+    { wave: '#cce0d8', progress: '#408060' },
+    { wave: '#e8dac8', progress: '#a06828' },
+    { wave: '#e8e0b8', progress: '#907010' },
+    { wave: '#dcd0e8', progress: '#7048a0' }
+  ];
+
+  const fmt = s => new Date(s * 1000).toISOString().substr(14, 5);
+
+  let currentPlaying = -1;
+
+  const updateNowPlaying = (i) => {
+    const bar   = document.getElementById('now-playing-bar');
+    const title = document.getElementById('np-title');
+    const next  = document.getElementById('np-next');
+    if (i >= 0) {
+      bar.classList.add('visible');
+      title.textContent = tracks[i].title;
+      next.textContent  = i < tracks.length - 1 ? `→ ${tracks[i+1].title}` : '— Кінець плейлисту';
+      updateMediaSession(i);
+    } else {
+      bar.classList.remove('visible');
+    }
+  };
+
+  // ── AudioContext lock — не дає браузеру заморозити аудіо ──
+  let audioCtx = null;
+  function unlockAudio() {
+    if (audioCtx) return;
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    // Тихий осцилятор — тримає аудіо сесію живою
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    gain.gain.value = 0.001; // майже нечутно
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start();
+    // Відновлюємо якщо система призупинила
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible' && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    });
+  }
+
+  // ── MediaSession API — реєструє плеєр в системі ──
+  function updateMediaSession(i) {
+    if (!('mediaSession' in navigator)) return;
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title:  tracks[i].title,
+      artist: 'AI Liria 3',
+      album:  'Безмовна Слава',
+    });
+    navigator.mediaSession.setActionHandler('play',         () => { if (currentPlaying >= 0) players[currentPlaying].play(); });
+    navigator.mediaSession.setActionHandler('pause',        () => { if (currentPlaying >= 0) players[currentPlaying].pause(); });
+    navigator.mediaSession.setActionHandler('nexttrack',    () => {
+      const next = (currentPlaying >= 0 ? currentPlaying : -1) + 1;
+      if (next < players.length) window.togglePlay(next);
+    });
+    navigator.mediaSession.setActionHandler('previoustrack', () => {
+      const prev = (currentPlaying >= 0 ? currentPlaying : 1) - 1;
+      if (prev >= 0) window.togglePlay(prev);
+    });
+    navigator.mediaSession.playbackState = 'playing';
+  }
+
+  // Lazy loading: створюємо інстанції без url, завантажуємо по черзі
+  const players = tracks.map((track, i) => {
+    const ws = WaveSurfer.create({
+      container:     `#wave-${i}`,
+      waveColor:     colors[i].wave,
+      progressColor: colors[i].progress,
+      barWidth:  2,
+      barGap:    1,
+      barRadius: 2,
+      height:    34,
+      interact:  true,
+      normalize: true,
+      // url не передаємо — завантажуємо вручну через load()
+    });
+
+    ws.on('ready', (dur) => {
+      document.getElementById(`dur-${i}`).textContent = fmt(dur);
+      document.getElementById(`btn-${i}`).disabled = false;
+      document.getElementById(`btn-${i}`).style.opacity = '';
+      // Після того як i-й готовий — завантажуємо наступний
+      if (i + 1 < tracks.length && !loaded[i + 1]) {
+        loaded[i + 1] = true;
+        players[i + 1].load(tracks[i + 1].src);
+      }
+    });
+
+    ws.on('timeupdate', (cur) => {
+      document.getElementById(`cur-${i}`).textContent = fmt(cur);
+    });
+
+    ws.on('play', () => {
+      document.getElementById(`btn-${i}`).innerHTML = '<i class="fas fa-pause"></i>';
+      document.getElementById(`card-${i}`).classList.add('playing');
+      document.getElementById(`card-${i}`).classList.add('selected');
+      players.forEach((p, j) => {
+        if (j !== i) {
+          if (p.isPlaying()) p.pause();
+          document.getElementById(`card-${j}`).classList.remove('selected');
+        }
+      });
+      currentPlaying = i;
+      updateNowPlaying(i);
+      // Завантажуємо наступний якщо ще не завантажений
+      if (i + 1 < tracks.length && !loaded[i + 1]) {
+        loaded[i + 1] = true;
+        players[i + 1].load(tracks[i + 1].src);
+      }
+    });
+
+    ws.on('pause', () => {
+      document.getElementById(`btn-${i}`).innerHTML = '<i class="fas fa-play"></i>';
+      document.getElementById(`card-${i}`).classList.remove('playing');
+      if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'paused';
+      if (currentPlaying === i) {
+        currentPlaying = -1;
+        updateNowPlaying(-1);
+      }
+    });
+
+    ws.on('finish', () => {
+      document.getElementById(`btn-${i}`).innerHTML = '<i class="fas fa-play"></i>';
+      document.getElementById(`card-${i}`).classList.remove('playing');
+      currentPlaying = -1;
+      const next = i + 1;
+      if (next < players.length) {
+        setTimeout(() => {
+          players[next].play();
+          document.getElementById(`card-${next}`).scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 600);
+      } else {
+        updateNowPlaying(-1);
+      }
+    });
+
+    return ws;
+  });
+
+  // Відмічаємо які треки вже завантажені
+  const loaded = new Array(tracks.length).fill(false);
+
+  // Кнопки 2-8 робимо трохи приглушеними поки не завантажились
+  for (let i = 1; i < tracks.length; i++) {
+    const btn = document.getElementById(`btn-${i}`);
+    btn.style.opacity = '0.35';
+  }
+
+  // Стартуємо завантаження тільки першого треку
+  loaded[0] = true;
+  players[0].load(tracks[0].src);
+
+  window.togglePlay = (i) => {
+    unlockAudio(); // активуємо AudioContext при першому натисканні
+    // Якщо трек ще не завантажений — завантажуємо і чекаємо ready
+    if (!loaded[i]) {
+      loaded[i] = true;
+      players[i].load(tracks[i].src);
+      players[i].once('ready', () => players[i].play());
+    } else {
+      players[i].playPause();
+    }
+  };
+
+  window.shareTG = () => {
+    window.open(`https://t.me/share/url?url=${encodeURIComponent(window.location.href)}`, '_blank');
+  };
+
+  window.copyLink = () => {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      const t = document.getElementById('toast');
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2200);
+    });
+  };
+</script>
+</body>
+</html>
+
