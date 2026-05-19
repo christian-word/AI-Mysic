@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
-<html lang="uk">
+<!DOCTYPE html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Liria 3 — Wings of Dawn</title>
+<title>Ethereal Realms — Ambient Collection</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&family=Syne:wght@300;400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -11,35 +11,34 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    /* Sacred Ambient — Light Grey Palette */
-    --bg:          #f0eee8;
-    --bg-card:     #f8f6f2;
+    --bg:          #eaf5f2;
+    --bg-card:     #f3fbf8;
     --bg-card2:    #ffffff;
-    --ink:         #2a2420;
-    --ink-soft:    rgba(42,36,32,0.55);
-    --ink-faint:   rgba(42,36,32,0.35);
-    --border:      rgba(160,128,60,0.15);
-    --border-glow: rgba(160,128,60,0.30);
-    --shadow:      0 4px 20px rgba(0,0,0,0.08);
+    --ink:         #1a2e28;
+    --ink-soft:    rgba(26,46,40,0.55);
+    --ink-faint:   rgba(26,46,40,0.35);
+    --border:      rgba(30,160,120,0.15);
+    --border-glow: rgba(30,160,120,0.30);
+    --shadow:      0 4px 20px rgba(0,0,0,0.07);
 
-    /* Accent spectrum — небесна блакить */
-    --a0: #2a6090;   /* deep sky */
-    --a1: #4a7fa8;   /* mid blue */
-    --a2: #6a9fc0;   /* soft blue */
-    --a3: #3a70a0;   /* azure */
-    --a4: #5890b8;   /* cornflower */
-    --a5: #2a5878;   /* navy soft */
-    --a6: #3a80b0;   /* heaven */
-    --a7: #5078a0;   /* mist */
+    /* Accent spectrum — ethereal tones */
+    --a0: #2eb89a;   /* teal */
+    --a1: #38c4a8;   /* mint */
+    --a2: #7ed4c0;   /* aqua */
+    --a3: #e0c84a;   /* gold */
+    --a4: #a8d87e;   /* lime */
+    --a5: #4ac8b8;   /* seafoam */
+    --a6: #c8e87e;   /* yellow-green */
+    --a7: #80d4b8;   /* pale teal */
 
-    --a0-pale: rgba(42,96,144,0.08);
-    --a1-pale: rgba(74,127,168,0.08);
-    --a2-pale: rgba(106,159,192,0.08);
-    --a3-pale: rgba(58,112,160,0.08);
-    --a4-pale: rgba(88,144,184,0.08);
-    --a5-pale: rgba(42,88,120,0.08);
-    --a6-pale: rgba(58,128,176,0.08);
-    --a7-pale: rgba(80,120,160,0.08);
+    --a0-pale: rgba(46,184,154,0.08);
+    --a1-pale: rgba(56,196,168,0.08);
+    --a2-pale: rgba(126,212,192,0.08);
+    --a3-pale: rgba(224,200,74,0.10);
+    --a4-pale: rgba(168,216,126,0.08);
+    --a5-pale: rgba(74,200,184,0.08);
+    --a6-pale: rgba(200,232,126,0.08);
+    --a7-pale: rgba(128,212,184,0.08);
   }
 
   body {
@@ -54,37 +53,29 @@
     overflow-x: hidden;
   }
 
-  /* Ambient background glow */
   body::before {
     content: '';
-    position: fixed;
-    inset: 0;
+    position: fixed; inset: 0;
     background:
-      radial-gradient(ellipse 80% 50% at 50% -5%,   rgba(74,127,168,0.12) 0%, transparent 65%),
-      radial-gradient(ellipse 50% 40% at 5% 70%,    rgba(42,96,144,0.07) 0%, transparent 60%),
-      radial-gradient(ellipse 40% 50% at 95% 40%,   rgba(106,159,192,0.08) 0%, transparent 65%);
-    pointer-events: none;
-    z-index: 0;
+      radial-gradient(ellipse 70% 50% at 50% -5%,   rgba(46,184,154,0.12) 0%, transparent 65%),
+      radial-gradient(ellipse 50% 40% at 10% 80%,   rgba(224,200,74,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 50% at 90% 50%,   rgba(126,212,192,0.08) 0%, transparent 65%);
+    pointer-events: none; z-index: 0;
   }
 
-  /* Animated grid lines */
   body::after {
     content: '';
-    position: fixed;
-    inset: 0;
+    position: fixed; inset: 0;
     background-image:
-      linear-gradient(rgba(74,127,168,0.06) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(74,127,168,0.06) 1px, transparent 1px);
+      linear-gradient(rgba(30,160,120,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(30,160,120,0.06) 1px, transparent 1px);
     background-size: 60px 60px;
-    pointer-events: none;
-    z-index: 0;
+    pointer-events: none; z-index: 0;
   }
 
   .page-wrap {
-    width: 100%;
-    max-width: 800px;
-    position: relative;
-    z-index: 1;
+    width: 100%; max-width: 800px;
+    position: relative; z-index: 1;
   }
 
   /* ── Header ── */
@@ -92,7 +83,6 @@
     margin-bottom: 14px;
     padding-bottom: 12px;
     border-bottom: 1px solid var(--border);
-    position: relative;
   }
 
   .header-eyebrow {
@@ -102,16 +92,13 @@
     text-transform: uppercase;
     color: var(--a0);
     margin-bottom: 10px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    display: flex; align-items: center; gap: 8px;
   }
   .header-eyebrow::before {
     content: '';
     display: inline-block;
     width: 24px; height: 1px;
-    background: var(--a0);
-    opacity: 0.6;
+    background: var(--a0); opacity: 0.6;
   }
 
   .page-header h1 {
@@ -124,7 +111,7 @@
     margin-bottom: 6px;
   }
   .page-header h1 span {
-    background: linear-gradient(90deg, #1a4870, #5890b8);
+    background: linear-gradient(90deg, #0e7a5e, #b8a000);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -137,24 +124,21 @@
     letter-spacing: 0.3px;
   }
 
-  /* Auto-play indicator */
   .autoplay-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
+    display: inline-flex; align-items: center; gap: 6px;
     margin-top: 10px;
     padding: 4px 12px;
-    background: rgba(52,211,153,0.1);
-    border: 1px solid rgba(52,211,153,0.25);
+    background: rgba(46,184,154,0.10);
+    border: 1px solid rgba(46,184,154,0.25);
     border-radius: 20px;
     font-size: 10px;
-    color: var(--a2);
+    color: var(--a0);
     letter-spacing: 0.5px;
   }
   .autoplay-dot {
     width: 6px; height: 6px;
     border-radius: 50%;
-    background: var(--a0);
+    background: var(--a3);
     animation: pulse-dot 1.8s ease-in-out infinite;
   }
   @keyframes pulse-dot {
@@ -165,54 +149,39 @@
   /* ── Track Card ── */
   .track-card {
     background: var(--bg-card);
-    border: 1px solid rgba(120,160,255,0.06);
+    border: 1px solid rgba(30,160,120,0.08);
     border-radius: 13px;
     padding: 9px 11px;
     margin-bottom: 6px;
-    box-shadow: none;
     transition: border-color 0.25s ease, background 0.25s ease;
     position: relative;
     overflow: hidden;
   }
-
-  /* no top decoration */
   .track-card::before { content: none; }
-
   .track-card:hover {
-    border-color: rgba(74,127,168,0.22);
-    background: #edf4fa;
+    border-color: rgba(30,160,120,0.25);
+    background: #ecf9f5;
   }
-
-  /* selected = last touched track, stays highlighted after pause/screen-off */
   .track-card.selected {
     background: var(--bg-card2);
-    border-color: rgba(74,127,168,0.40);
+    border-color: rgba(46,184,154,0.40);
   }
-  .track-card.selected .track-num { opacity: 1; }
-  .track-card.selected .track-title { color: #fff; }
   .track-card.selected::after {
     content: '';
     position: absolute;
     left: 0; top: 6px; bottom: 6px;
-    width: 3px;
-    border-radius: 3px;
+    width: 3px; border-radius: 3px;
     background: var(--ca, var(--a0));
-    opacity: 0.7;
+    opacity: 0.8;
   }
-  /* paused indicator in badge */
   .track-card.selected:not(.playing) .badge::after {
-    content: ' ⏸';
-    font-size: 7px;
-    opacity: 0.55;
+    content: ' ⏸'; font-size: 7px; opacity: 0.55;
   }
-
-  /* playing = actively playing */
   .track-card.playing {
-    border-color: rgba(74,127,168,0.60);
+    border-color: rgba(46,184,154,0.55);
     background: var(--bg-card2);
   }
 
-  /* Card accent variables */
   .c0 { --ca: var(--a0); --ca-pale: var(--a0-pale); }
   .c1 { --ca: var(--a1); --ca-pale: var(--a1-pale); }
   .c2 { --ca: var(--a2); --ca-pale: var(--a2-pale); }
@@ -223,36 +192,26 @@
   .c7 { --ca: var(--a7); --ca-pale: var(--a7-pale); }
 
   .track-top {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 7px;
+    display: flex; align-items: center;
+    gap: 8px; margin-bottom: 7px;
   }
 
-  /* Track number */
   .track-num {
     font-family: 'Syne', sans-serif;
-    font-size: 15px;
-    font-weight: 700;
-    color: rgba(34,211,238,0.35);
-    min-width: 22px;
-    text-align: right;
-    flex-shrink: 0;
-    letter-spacing: -0.5px;
+    font-size: 15px; font-weight: 700;
+    color: rgba(46,184,154,0.30);
+    min-width: 22px; text-align: right;
+    flex-shrink: 0; letter-spacing: -0.5px;
   }
-  .track-card.playing .track-num { color: #22d3ee; }
-  .track-card.selected .track-num { color: rgba(34,211,238,0.6); }
+  .track-card.playing .track-num  { color: var(--a0); }
+  .track-card.selected .track-num { color: rgba(46,184,154,0.6); }
 
-  /* Cover */
   .track-cover {
     width: 36px; height: 36px;
     border-radius: 9px;
     display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-    font-size: 14px;
-    color: #fff;
-    position: relative;
-    overflow: hidden;
+    flex-shrink: 0; font-size: 14px; color: #fff;
+    position: relative; overflow: hidden;
     transition: box-shadow 0.3s ease;
   }
   .track-cover::after {
@@ -261,12 +220,14 @@
     background: linear-gradient(135deg, rgba(255,255,255,0.18), transparent 60%);
     border-radius: inherit;
   }
-  .c0 .track-cover { background: linear-gradient(145deg, #0e3058, #2a6090); box-shadow: 0 4px 16px rgba(42,96,144,0.25); }
-  .c1 .track-cover { background: linear-gradient(145deg, #1a4870, #4a7fa8); box-shadow: 0 4px 16px rgba(74,127,168,0.25); }
-  .c2 .track-cover { background: linear-gradient(145deg, #2a5878, #6a9fc0); box-shadow: 0 4px 16px rgba(106,159,192,0.25); }
-  .c3 .track-cover { background: linear-gradient(145deg, #143860, #3a70a0); box-shadow: 0 4px 16px rgba(58,112,160,0.25); }
-  .c4 .track-cover { background: linear-gradient(145deg, #1e5080, #5890b8); box-shadow: 0 4px 16px rgba(88,144,184,0.25); }
-  .c5 .track-cover { background: linear-gradient(145deg, #0a3050, #2a5878); box-shadow: 0 4px 16px rgba(42,88,120,0.25); }
+  .c0 .track-cover { background: linear-gradient(145deg, #0a6050, #2eb89a); box-shadow: 0 4px 16px rgba(46,184,154,0.25); }
+  .c1 .track-cover { background: linear-gradient(145deg, #0a7858, #38c4a8); box-shadow: 0 4px 16px rgba(56,196,168,0.25); }
+  .c2 .track-cover { background: linear-gradient(145deg, #208070, #7ed4c0); box-shadow: 0 4px 16px rgba(126,212,192,0.25); }
+  .c3 .track-cover { background: linear-gradient(145deg, #907800, #e0c84a); box-shadow: 0 4px 16px rgba(224,200,74,0.25); }
+  .c4 .track-cover { background: linear-gradient(145deg, #408020, #a8d87e); box-shadow: 0 4px 16px rgba(168,216,126,0.25); }
+  .c5 .track-cover { background: linear-gradient(145deg, #107870, #4ac8b8); box-shadow: 0 4px 16px rgba(74,200,184,0.25); }
+  .c6 .track-cover { background: linear-gradient(145deg, #708000, #c8e87e); box-shadow: 0 4px 16px rgba(200,232,126,0.25); }
+  .c7 .track-cover { background: linear-gradient(145deg, #107060, #80d4b8); box-shadow: 0 4px 16px rgba(128,212,184,0.25); }
 
   .track-card.playing .track-cover {
     box-shadow: 0 0 18px var(--ca, var(--a0));
@@ -280,51 +241,39 @@
   .track-info { flex: 1; min-width: 0; }
   .track-title {
     font-family: 'Syne', sans-serif;
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: var(--ink);
-    margin-bottom: 3px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    letter-spacing: -0.2px;
+    font-size: 0.85rem; font-weight: 600;
+    color: var(--ink); margin-bottom: 3px;
+    white-space: nowrap; overflow: hidden;
+    text-overflow: ellipsis; letter-spacing: -0.2px;
   }
-
   .track-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 
   .badge {
     display: inline-flex; align-items: center; gap: 4px;
-    padding: 2px 8px;
-    border-radius: 20px;
-    font-size: 8.5px;
-    font-weight: 600;
-    letter-spacing: 0.8px;
-    text-transform: uppercase;
+    padding: 2px 8px; border-radius: 20px;
+    font-size: 8.5px; font-weight: 600;
+    letter-spacing: 0.8px; text-transform: uppercase;
     border: 1px solid;
   }
-  .c0 .badge { background: var(--a0-pale); color: var(--a0); border-color: rgba(79,195,247,0.2); }
-  .c1 .badge { background: var(--a1-pale); color: var(--a1); border-color: rgba(129,140,248,0.2); }
-  .c2 .badge { background: var(--a2-pale); color: var(--a2); border-color: rgba(52,211,153,0.2); }
-  .c3 .badge { background: var(--a3-pale); color: var(--a3); border-color: rgba(192,132,252,0.2); }
-  .c4 .badge { background: var(--a4-pale); color: var(--a4); border-color: rgba(56,189,248,0.2); }
+  .c0 .badge { background: var(--a0-pale); color: var(--a0); border-color: rgba(46,184,154,0.25); }
+  .c1 .badge { background: var(--a1-pale); color: var(--a1); border-color: rgba(56,196,168,0.25); }
+  .c2 .badge { background: var(--a2-pale); color: #2a9a88; border-color: rgba(126,212,192,0.25); }
+  .c3 .badge { background: var(--a3-pale); color: #9a8000; border-color: rgba(224,200,74,0.25); }
+  .c4 .badge { background: var(--a4-pale); color: #5a9020; border-color: rgba(168,216,126,0.25); }
+  .c5 .badge { background: var(--a5-pale); color: var(--a5); border-color: rgba(74,200,184,0.25); }
+  .c6 .badge { background: var(--a6-pale); color: #787800; border-color: rgba(200,232,126,0.25); }
+  .c7 .badge { background: var(--a7-pale); color: #208870; border-color: rgba(128,212,184,0.25); }
 
   .track-label {
-    font-size: 10px;
-    color: var(--ink-faint);
-    font-weight: 300;
-    letter-spacing: 0.2px;
+    font-size: 10px; color: var(--ink-faint);
+    font-weight: 300; letter-spacing: 0.2px;
   }
 
-  /* EQ bars */
   .eq-bars { display: inline-flex; align-items: flex-end; gap: 2px; height: 12px; }
   .eq-bars span {
-    display: block;
-    width: 2.5px;
-    border-radius: 1px;
-    background: var(--ca, var(--a0));
-    opacity: 0.45;
-    height: 30%;
-    transition: height 0.1s;
+    display: block; width: 2.5px; border-radius: 1px;
+    background: var(--ca, var(--a0)); opacity: 0.45;
+    height: 30%; transition: height 0.1s;
   }
   .playing .eq-bars span { opacity: 1; }
   .playing .eq-bars span:nth-child(1) { animation: eq1 0.7s ease-in-out infinite; }
@@ -333,164 +282,110 @@
   @keyframes eq1 { 0%,100%{height:30%} 50%{height:95%} }
   @keyframes eq2 { 0%,100%{height:70%} 50%{height:25%} }
 
-  /* Play button — unified teal */
   .play-btn {
     width: 32px; height: 32px;
     border-radius: 50%;
-    border: 1.5px solid #22d3ee;
-    background: transparent;
-    font-size: 11px;
+    border: 1.5px solid var(--a0);
+    background: transparent; font-size: 11px;
     display: flex; align-items: center; justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    flex-shrink: 0;
-    color: #22d3ee;
-    position: relative;
-    overflow: hidden;
-    opacity: 0.65;
+    cursor: pointer; transition: all 0.2s ease;
+    flex-shrink: 0; color: var(--a0);
+    position: relative; overflow: hidden; opacity: 0.65;
   }
   .play-btn::before {
-    content: '';
-    position: absolute; inset: 0;
-    border-radius: 50%;
-    background: #22d3ee;
-    opacity: 0;
-    transition: opacity 0.2s;
+    content: ''; position: absolute; inset: 0;
+    border-radius: 50%; background: var(--a0);
+    opacity: 0; transition: opacity 0.2s;
   }
   .play-btn i { position: relative; z-index: 1; }
   .play-btn .fa-play { margin-left: 2px; }
-  .play-btn:hover { opacity: 1; transform: scale(1.08); box-shadow: 0 0 14px rgba(34,211,238,0.35); }
+  .play-btn:hover { opacity: 1; transform: scale(1.08); box-shadow: 0 0 14px rgba(46,184,154,0.40); }
   .play-btn:hover::before { opacity: 0.12; }
-  .playing .play-btn { opacity: 1; border-color: #22d3ee; color: #22d3ee; box-shadow: 0 0 12px rgba(34,211,238,0.3); }
-  .playing .play-btn::before { opacity: 0.1; }
+  .playing .play-btn { opacity: 1; box-shadow: 0 0 12px rgba(46,184,154,0.35); }
+  .playing .play-btn::before { opacity: 0.10; }
 
-  /* Waveform */
-  .wave-wrap {
-    position: relative;
-    padding-bottom: 13px;
-  }
+  .wave-wrap { position: relative; padding-bottom: 13px; }
   .wave-inner { border-radius: 6px; overflow: hidden; cursor: pointer; }
   .cur-label, .time-label {
-    position: absolute;
-    bottom: 0;
-    font-size: 9px;
-    font-weight: 500;
+    position: absolute; bottom: 0;
+    font-size: 9px; font-weight: 500;
     font-variant-numeric: tabular-nums;
-    letter-spacing: 0.5px;
-    color: var(--ink-faint);
+    letter-spacing: 0.5px; color: var(--ink-faint);
   }
   .cur-label { left: 0; }
   .time-label { right: 0; }
 
-  /* Now playing banner */
+  /* Now playing bar */
   .now-playing-bar {
-    display: none;
-    align-items: center;
-    gap: 10px;
-    background: rgba(74,127,168,0.07);
-    border: 1px solid rgba(74,127,168,0.22);
-    border-radius: 10px;
-    padding: 8px 14px;
-    margin-bottom: 12px;
-    font-size: 11px;
+    display: none; align-items: center; gap: 10px;
+    background: rgba(46,184,154,0.07);
+    border: 1px solid rgba(30,160,120,0.22);
+    border-radius: 10px; padding: 8px 14px;
+    margin-bottom: 12px; font-size: 11px;
     color: var(--ink-soft);
   }
   .now-playing-bar.visible { display: flex; }
   .now-playing-bar .np-label {
-    font-size: 9px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--a0);
-    font-weight: 600;
-    flex-shrink: 0;
+    font-size: 9px; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--a0);
+    font-weight: 600; flex-shrink: 0;
   }
   .now-playing-bar .np-title {
-    flex: 1;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    color: var(--ink);
-    font-weight: 500;
+    flex: 1; white-space: nowrap;
+    overflow: hidden; text-overflow: ellipsis;
+    color: var(--ink); font-weight: 500;
   }
-  .np-next {
-    font-size: 9px;
-    color: var(--ink-faint);
-    flex-shrink: 0;
-  }
+  .np-next { font-size: 9px; color: var(--ink-faint); flex-shrink: 0; }
 
   /* Footer */
   .page-footer {
-    margin-top: 18px;
-    padding-top: 14px;
+    margin-top: 18px; padding-top: 14px;
     border-top: 1px solid var(--border);
-    display: flex;
-    align-items: center;
+    display: flex; align-items: center;
     justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 10px;
+    flex-wrap: wrap; gap: 10px;
   }
   .footer-actions { display: flex; gap: 8px; }
   .action-btn {
     display: inline-flex; align-items: center; gap: 6px;
-    padding: 7px 14px;
-    border-radius: 8px;
+    padding: 7px 14px; border-radius: 8px;
     border: 1px solid var(--border-glow);
-    background: rgba(255,255,255,0.03);
+    background: rgba(255,255,255,0.04);
     font-family: 'Space Grotesk', sans-serif;
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--ink-soft);
-    cursor: pointer;
-    transition: all 0.2s;
-    letter-spacing: 0.3px;
+    font-size: 11px; font-weight: 500;
+    color: var(--ink-soft); cursor: pointer;
+    transition: all 0.2s; letter-spacing: 0.3px;
   }
-  .action-btn:hover { background: rgba(160,128,60,0.10); border-color: var(--a0); color: var(--a0); }
+  .action-btn:hover { background: rgba(46,184,154,0.10); border-color: var(--a0); color: var(--a0); }
 
-  .brand-logo {
-    display: flex; align-items: center; gap: 8px;
-  }
+  .brand-logo { display: flex; align-items: center; gap: 8px; }
   .brand-icon {
-    width: 28px; height: 28px;
-    border-radius: 8px;
-    background: linear-gradient(145deg, #1a5f7a, #4fc3f7);
+    width: 28px; height: 28px; border-radius: 8px;
+    background: linear-gradient(145deg, #0a6050, #38c4a8);
     display: flex; align-items: center; justify-content: center;
-    font-size: 11px;
-    color: #fff;
-    box-shadow: 0 2px 10px rgba(79,195,247,0.3);
+    font-size: 11px; color: #fff;
+    box-shadow: 0 2px 10px rgba(46,184,154,0.35);
   }
   .brand-text {
-    font-family: 'Syne', sans-serif;
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--ink);
-    letter-spacing: 1px;
-    display: block;
+    font-family: 'Syne', sans-serif; font-size: 12px;
+    font-weight: 700; color: var(--ink);
+    letter-spacing: 1px; display: block;
   }
   .brand-sub {
-    font-size: 9px;
-    color: var(--ink-faint);
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    display: block;
+    font-size: 9px; color: var(--ink-faint);
+    letter-spacing: 1.5px; text-transform: uppercase; display: block;
   }
 
-  /* Toast */
   .toast {
-    position: fixed;
-    bottom: 24px; left: 50%;
+    position: fixed; bottom: 24px; left: 50%;
     transform: translateX(-50%) translateY(20px);
-    background: rgba(74,127,168,0.10);
+    background: rgba(46,184,154,0.10);
     backdrop-filter: blur(12px);
-    border: 1px solid rgba(74,127,168,0.30);
-    color: var(--a1);
-    padding: 9px 20px;
-    border-radius: 10px;
-    font-size: 12px;
-    font-weight: 500;
-    opacity: 0;
-    pointer-events: none;
-    transition: all 0.3s ease;
-    z-index: 999;
+    border: 1px solid rgba(46,184,154,0.30);
+    color: var(--a0); padding: 9px 20px;
+    border-radius: 10px; font-size: 12px;
+    font-weight: 500; opacity: 0;
+    pointer-events: none; transition: all 0.3s ease; z-index: 999;
   }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
@@ -502,40 +397,39 @@
 </head>
 <body>
 
-<div id="toast" class="toast">🔗 Посилання скопійовано!</div>
+<div id="toast" class="toast">🔗 Link copied!</div>
 
 <div class="page-wrap">
   <div class="page-header">
     <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-      <div class="header-eyebrow">Sacred Ambient</div>
-      <div style="font-family:'Space Grotesk',sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;color:#f97316;opacity:0.85;padding-top:1px;text-transform:uppercase;">AI&nbsp;Liria&nbsp;3</div>
+      <div class="header-eyebrow">Ambient · Fantasy</div>
+      <div style="font-family:'Space Grotesk',sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;color:#2eb89a;opacity:0.85;padding-top:1px;text-transform:uppercase;">AI&nbsp;Liria&nbsp;4</div>
     </div>
-    <h1>Wings <span>of Dawn </span></h1>
-    <p>Музика світла і небесного спокою — 6 треків</p>
+    <h1>Ethereal <span>Realms</span></h1>
+    <p>Where silence weaves into sound, and sound into dreams</p>
     <div class="autoplay-badge">
       <div class="autoplay-dot"></div>
-      Автоперехід увімкнено
+      Auto-advance enabled
     </div>
   </div>
 
-  <!-- Now playing bar -->
   <div class="now-playing-bar" id="now-playing-bar">
-    <span class="np-label">Зараз</span>
+    <span class="np-label">Now</span>
     <span class="np-title" id="np-title">—</span>
     <span class="np-next" id="np-next"></span>
   </div>
 
-  <!-- Track 1 -->
+  <!-- 01 -->
   <div class="track-card c0" id="card-0">
     <div class="track-top">
       <span class="track-num">01</span>
       <div class="track-cover"><i class="fas fa-star"></i></div>
       <div class="track-info">
-        <div class="track-title">Enchanted Starlight (Remix 1)</div>
+        <div class="track-title">Enchanted Starlight — Remix I</div>
         <div class="track-meta">
-          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Starlight · Remix 1</span>
+          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Remix · Take 1</span>
           <span class="eq-bars"><span></span><span></span><span></span></span>
-          <span class="track-label">Зачароване зоряне світло</span>
+          <span class="track-label">First vision</span>
         </div>
       </div>
       <button class="play-btn" id="btn-0" onclick="togglePlay(0)"><i class="fas fa-play"></i></button>
@@ -547,17 +441,17 @@
     </div>
   </div>
 
-  <!-- Track 2 -->
+  <!-- 02 -->
   <div class="track-card c1" id="card-1">
     <div class="track-top">
       <span class="track-num">02</span>
-      <div class="track-cover"><i class="fas fa-star"></i></div>
+      <div class="track-cover"><i class="fas fa-meteor"></i></div>
       <div class="track-info">
-        <div class="track-title">Enchanted Starlight (Remix 2)</div>
+        <div class="track-title">Enchanted Starlight — Remix II</div>
         <div class="track-meta">
-          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Starlight · Remix 2</span>
+          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Remix · Take 2</span>
           <span class="eq-bars"><span></span><span></span><span></span></span>
-          <span class="track-label">Зачароване зоряне світло</span>
+          <span class="track-label">Second vision</span>
         </div>
       </div>
       <button class="play-btn" id="btn-1" onclick="togglePlay(1)"><i class="fas fa-play"></i></button>
@@ -569,17 +463,17 @@
     </div>
   </div>
 
-  <!-- Track 3 -->
+  <!-- 03 -->
   <div class="track-card c2" id="card-2">
     <div class="track-top">
       <span class="track-num">03</span>
-      <div class="track-cover"><i class="fas fa-star"></i></div>
+      <div class="track-cover"><i class="fas fa-moon"></i></div>
       <div class="track-info">
-        <div class="track-title">Enchanted Starlight (Remix 3)</div>
+        <div class="track-title">Enchanted Starlight — Remix III</div>
         <div class="track-meta">
-          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Starlight · Remix 3</span>
+          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Remix · Take 3</span>
           <span class="eq-bars"><span></span><span></span><span></span></span>
-          <span class="track-label">Зачароване зоряне світло</span>
+          <span class="track-label">Third vision</span>
         </div>
       </div>
       <button class="play-btn" id="btn-2" onclick="togglePlay(2)"><i class="fas fa-play"></i></button>
@@ -591,7 +485,7 @@
     </div>
   </div>
 
-  <!-- Track 4 -->
+  <!-- 04 -->
   <div class="track-card c3" id="card-3">
     <div class="track-top">
       <span class="track-num">04</span>
@@ -599,9 +493,9 @@
       <div class="track-info">
         <div class="track-title">Fairy Tale Epic</div>
         <div class="track-meta">
-          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Epic</span>
+          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Epic · Original</span>
           <span class="eq-bars"><span></span><span></span><span></span></span>
-          <span class="track-label">Казкова епіка</span>
+          <span class="track-label">Orchestral grandeur</span>
         </div>
       </div>
       <button class="play-btn" id="btn-3" onclick="togglePlay(3)"><i class="fas fa-play"></i></button>
@@ -613,17 +507,17 @@
     </div>
   </div>
 
-  <!-- Track 5 -->
+  <!-- 05 -->
   <div class="track-card c4" id="card-4">
     <div class="track-top">
       <span class="track-num">05</span>
-      <div class="track-cover"><i class="fas fa-moon"></i></div>
+      <div class="track-cover"><i class="fas fa-sun"></i></div>
       <div class="track-info">
-        <div class="track-title">Stardust Sanctuary (Remix)</div>
+        <div class="track-title">Morning Light — Var 2 Remix</div>
         <div class="track-meta">
-          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Sanctuary · Remix</span>
+          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Remix · Var 2</span>
           <span class="eq-bars"><span></span><span></span><span></span></span>
-          <span class="track-label">Притулок зоряного пилу</span>
+          <span class="track-label">Dawn variations</span>
         </div>
       </div>
       <button class="play-btn" id="btn-4" onclick="togglePlay(4)"><i class="fas fa-play"></i></button>
@@ -635,17 +529,17 @@
     </div>
   </div>
 
-  <!-- Track 6 -->
+  <!-- 06 -->
   <div class="track-card c5" id="card-5">
     <div class="track-top">
       <span class="track-num">06</span>
-      <div class="track-cover"><i class="fas fa-tree"></i></div>
+      <div class="track-cover"><i class="fas fa-gem"></i></div>
       <div class="track-info">
-        <div class="track-title">The Hidden Grove</div>
+        <div class="track-title">Stardust Sanctuary — Remix</div>
         <div class="track-meta">
-          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Grove</span>
+          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Remix · Sanctuary</span>
           <span class="eq-bars"><span></span><span></span><span></span></span>
-          <span class="track-label">Прихований гай</span>
+          <span class="track-label">A place between stars</span>
         </div>
       </div>
       <button class="play-btn" id="btn-5" onclick="togglePlay(5)"><i class="fas fa-play"></i></button>
@@ -657,35 +551,91 @@
     </div>
   </div>
 
+  <!-- 07 -->
+  <div class="track-card c6" id="card-6">
+    <div class="track-top">
+      <span class="track-num">07</span>
+      <div class="track-cover"><i class="fas fa-tree"></i></div>
+      <div class="track-info">
+        <div class="track-title">The Hidden Grove</div>
+        <div class="track-meta">
+          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Nature · Ambient</span>
+          <span class="eq-bars"><span></span><span></span><span></span></span>
+          <span class="track-label">Deep forest secrets</span>
+        </div>
+      </div>
+      <button class="play-btn" id="btn-6" onclick="togglePlay(6)"><i class="fas fa-play"></i></button>
+    </div>
+    <div class="wave-wrap">
+      <div id="wave-6" class="wave-inner"></div>
+      <span class="cur-label" id="cur-6">00:00</span>
+      <span class="time-label" id="dur-6">--:--</span>
+    </div>
+  </div>
+
+  <!-- 08 -->
+  <div class="track-card c7" id="card-7">
+    <div class="track-top">
+      <span class="track-num">08</span>
+      <div class="track-cover"><i class="fas fa-feather-alt"></i></div>
+      <div class="track-info">
+        <div class="track-title">Whispers of the Fae</div>
+        <div class="track-meta">
+          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Fae · Ethereal</span>
+          <span class="eq-bars"><span></span><span></span><span></span></span>
+          <span class="track-label">Voices beyond the veil</span>
+        </div>
+      </div>
+      <button class="play-btn" id="btn-7" onclick="togglePlay(7)"><i class="fas fa-play"></i></button>
+    </div>
+    <div class="wave-wrap">
+      <div id="wave-7" class="wave-inner"></div>
+      <span class="cur-label" id="cur-7">00:00</span>
+      <span class="time-label" id="dur-7">--:--</span>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <div class="footer-actions">
+      <button class="action-btn" onclick="shareTG()"><i class="fab fa-telegram-plane"></i> Telegram</button>
+      <button class="action-btn" onclick="copyLink()"><i class="fas fa-link"></i> Link</button>
+    </div>
+    <div class="brand-logo">
+      <div class="brand-icon"><i class="fas fa-music"></i></div>
+      <div>
+        <span class="brand-text">LIRIA</span>
+        <span class="brand-sub">ethereal ambient</span>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script type="module">
   import WaveSurfer from 'https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.esm.js';
 
   const tracks = [
-    { src: 'Хваліть Господа (Forest Whispers & Majesty).m4a',             title: 'Forest Whispers & Majesty' },
-    { src: 'Хваліть Господа (Massive Angelic Choir).m4a',                 title: 'Massive Angelic Choir' },
-    { src: 'Хваліть Господа (With Loud Angelic Choir).m4a',               title: 'With Loud Angelic Choir' },
-    { src: 'Хто достойний слави_ (Ambient Instrumental) (Remix).m4a',     title: 'Хто достойний слави?' },
-    { src: 'Я схиляюсь перед Тобою (Ambient Instrumental) Take 2.m4a',    title: 'Я схиляюсь · Take 2' },
-    { src: 'Я схиляюсь перед Тобою (Ambient Instrumental).m4a',           title: 'Я схиляюсь перед Тобою' },
-    { src: 'Сияние Святости (Ambient Electronics).m4a',                   title: 'Сяяння Святості' },
-    { src: 'Слава Творця (Pure Ambient Edit).m4a',                        title: 'Слава Творця' }
+    { src: 'Enchanted Starlight (Remix) (1).m4a', title: 'Enchanted Starlight — Remix I' },
+    { src: 'Enchanted Starlight (Remix) (2).m4a', title: 'Enchanted Starlight — Remix II' },
+    { src: 'Enchanted Starlight (Remix) (3).m4a', title: 'Enchanted Starlight — Remix III' },
+    { src: 'Fairy Tale Epic.m4a',                  title: 'Fairy Tale Epic' },
+    { src: 'Morning Light (Var 2) (Remix).m4a',    title: 'Morning Light — Var 2 Remix' },
+    { src: 'Stardust Sanctuary (Remix).m4a',        title: 'Stardust Sanctuary — Remix' },
+    { src: 'The Hidden Grove.m4a',                  title: 'The Hidden Grove' },
+    { src: 'Whispers of the Fae.m4a',               title: 'Whispers of the Fae' },
   ];
 
-  // Waveform colours per track (dark base + glowing progress)
   const colors = [
-    { wave: '#e8dfc8', progress: '#9a7820' },
-    { wave: '#ccd8e8', progress: '#3a78b0' },
-    { wave: '#d8cce8', progress: '#7050b0' },
-    { wave: '#e8ccd8', progress: '#a04868' },
-    { wave: '#cce0d8', progress: '#408060' },
-    { wave: '#e8dac8', progress: '#a06828' },
-    { wave: '#e8e0b8', progress: '#907010' },
-    { wave: '#dcd0e8', progress: '#7048a0' }
+    { wave: '#b8e8dc', progress: '#2eb89a' },
+    { wave: '#b8ece0', progress: '#38c4a8' },
+    { wave: '#c8ece4', progress: '#4ac8b0' },
+    { wave: '#f0e8a0', progress: '#b0980a' },
+    { wave: '#cce8b0', progress: '#5a9820' },
+    { wave: '#b8ece8', progress: '#20a898' },
+    { wave: '#d8eea0', progress: '#788800' },
+    { wave: '#c0e8d8', progress: '#208870' },
   ];
 
   const fmt = s => new Date(s * 1000).toISOString().substr(14, 5);
-
   let currentPlaying = -1;
 
   const updateNowPlaying = (i) => {
@@ -695,74 +645,53 @@
     if (i >= 0) {
       bar.classList.add('visible');
       title.textContent = tracks[i].title;
-      next.textContent  = i < tracks.length - 1 ? `→ ${tracks[i+1].title}` : '— Кінець плейлисту';
+      next.textContent  = i < tracks.length - 1 ? `→ ${tracks[i+1].title}` : '— End of playlist';
       updateMediaSession(i);
     } else {
       bar.classList.remove('visible');
     }
   };
 
-  // ── AudioContext lock — не дає браузеру заморозити аудіо ──
   let audioCtx = null;
   function unlockAudio() {
     if (audioCtx) return;
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    // Тихий осцилятор — тримає аудіо сесію живою
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
-    gain.gain.value = 0.001; // майже нечутно
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
-    osc.start();
-    // Відновлюємо якщо система призупинила
+    gain.gain.value = 0.001;
+    osc.connect(gain); gain.connect(audioCtx.destination); osc.start();
     document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'visible' && audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
+      if (document.visibilityState === 'visible' && audioCtx.state === 'suspended') audioCtx.resume();
     });
   }
 
-  // ── MediaSession API — реєструє плеєр в системі ──
   function updateMediaSession(i) {
     if (!('mediaSession' in navigator)) return;
     navigator.mediaSession.metadata = new MediaMetadata({
-      title:  tracks[i].title,
-      artist: 'AI Liria 3',
-      album:  'Безмовна Слава',
+      title: tracks[i].title, artist: 'AI Liria 4', album: 'Ethereal Realms',
     });
-    navigator.mediaSession.setActionHandler('play',         () => { if (currentPlaying >= 0) players[currentPlaying].play(); });
-    navigator.mediaSession.setActionHandler('pause',        () => { if (currentPlaying >= 0) players[currentPlaying].pause(); });
-    navigator.mediaSession.setActionHandler('nexttrack',    () => {
-      const next = (currentPlaying >= 0 ? currentPlaying : -1) + 1;
-      if (next < players.length) window.togglePlay(next);
-    });
-    navigator.mediaSession.setActionHandler('previoustrack', () => {
-      const prev = (currentPlaying >= 0 ? currentPlaying : 1) - 1;
-      if (prev >= 0) window.togglePlay(prev);
-    });
+    navigator.mediaSession.setActionHandler('play',          () => { if (currentPlaying >= 0) players[currentPlaying].play(); });
+    navigator.mediaSession.setActionHandler('pause',         () => { if (currentPlaying >= 0) players[currentPlaying].pause(); });
+    navigator.mediaSession.setActionHandler('nexttrack',     () => { const n = (currentPlaying >= 0 ? currentPlaying : -1) + 1; if (n < players.length) window.togglePlay(n); });
+    navigator.mediaSession.setActionHandler('previoustrack', () => { const p = (currentPlaying >= 0 ? currentPlaying : 1) - 1; if (p >= 0) window.togglePlay(p); });
     navigator.mediaSession.playbackState = 'playing';
   }
 
-  // Lazy loading: створюємо інстанції без url, завантажуємо по черзі
+  const loaded = new Array(tracks.length).fill(false);
+
   const players = tracks.map((track, i) => {
     const ws = WaveSurfer.create({
       container:     `#wave-${i}`,
       waveColor:     colors[i].wave,
       progressColor: colors[i].progress,
-      barWidth:  2,
-      barGap:    1,
-      barRadius: 2,
-      height:    34,
-      interact:  true,
-      normalize: true,
-      // url не передаємо — завантажуємо вручну через load()
+      barWidth: 2, barGap: 1, barRadius: 2,
+      height: 34, interact: true, normalize: true,
     });
 
     ws.on('ready', (dur) => {
       document.getElementById(`dur-${i}`).textContent = fmt(dur);
       document.getElementById(`btn-${i}`).disabled = false;
       document.getElementById(`btn-${i}`).style.opacity = '';
-      // Після того як i-й готовий — завантажуємо наступний
       if (i + 1 < tracks.length && !loaded[i + 1]) {
         loaded[i + 1] = true;
         players[i + 1].load(tracks[i + 1].src);
@@ -775,17 +704,15 @@
 
     ws.on('play', () => {
       document.getElementById(`btn-${i}`).innerHTML = '<i class="fas fa-pause"></i>';
-      document.getElementById(`card-${i}`).classList.add('playing');
-      document.getElementById(`card-${i}`).classList.add('selected');
+      document.getElementById(`card-${i}`).classList.add('playing', 'selected');
       players.forEach((p, j) => {
         if (j !== i) {
           if (p.isPlaying()) p.pause();
-          document.getElementById(`card-${j}`).classList.remove('selected');
+          document.getElementById(`card-${j}`).classList.remove('playing', 'selected');
         }
       });
       currentPlaying = i;
       updateNowPlaying(i);
-      // Завантажуємо наступний якщо ще не завантажений
       if (i + 1 < tracks.length && !loaded[i + 1]) {
         loaded[i + 1] = true;
         players[i + 1].load(tracks[i + 1].src);
@@ -796,10 +723,7 @@
       document.getElementById(`btn-${i}`).innerHTML = '<i class="fas fa-play"></i>';
       document.getElementById(`card-${i}`).classList.remove('playing');
       if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'paused';
-      if (currentPlaying === i) {
-        currentPlaying = -1;
-        updateNowPlaying(-1);
-      }
+      if (currentPlaying === i) { currentPlaying = -1; updateNowPlaying(-1); }
     });
 
     ws.on('finish', () => {
@@ -820,22 +744,14 @@
     return ws;
   });
 
-  // Відмічаємо які треки вже завантажені
-  const loaded = new Array(tracks.length).fill(false);
-
-  // Кнопки 2-8 робимо трохи приглушеними поки не завантажились
   for (let i = 1; i < tracks.length; i++) {
-    const btn = document.getElementById(`btn-${i}`);
-    btn.style.opacity = '0.35';
+    document.getElementById(`btn-${i}`).style.opacity = '0.35';
   }
-
-  // Стартуємо завантаження тільки першого треку
   loaded[0] = true;
   players[0].load(tracks[0].src);
 
   window.togglePlay = (i) => {
-    unlockAudio(); // активуємо AudioContext при першому натисканні
-    // Якщо трек ще не завантажений — завантажуємо і чекаємо ready
+    unlockAudio();
     if (!loaded[i]) {
       loaded[i] = true;
       players[i].load(tracks[i].src);
@@ -859,4 +775,3 @@
 </script>
 </body>
 </html>
-
