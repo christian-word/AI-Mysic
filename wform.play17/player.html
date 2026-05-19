@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Liria 3 — Промінь Благодаті</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&family=Syne:wght@300;400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    /* Sacred Ambient — Light Grey Palette */
+    --bg:          #f0eee8;
+    --bg-card:     #f8f6f2;
+    --bg-card2:    #ffffff;
+    --ink:         #2a2420;
+    --ink-soft:    rgba(42,36,32,0.55);
+    --ink-faint:   rgba(42,36,32,0.35);
+    --border:      rgba(160,128,60,0.15);
+    --border-glow: rgba(160,128,60,0.30);
+    --shadow:      0 4px 20px rgba(0,0,0,0.08);
+
+    /* Accent spectrum — небесна блакить */
+    --a0: #2a6090;   /* deep sky */
+    --a1: #4a7fa8;   /* mid blue */
+    --a2: #6a9fc0;   /* soft blue */
+    --a3: #3a70a0;   /* azure */
+    --a4: #5890b8;   /* cornflower */
+    --a5: #2a5878;   /* navy soft */
+    --a6: #3a80b0;   /* heaven */
+    --a7: #5078a0;   /* mist */
+
+    --a0-pale: rgba(42,96,144,0.08);
+    --a1-pale: rgba(74,127,168,0.08);
+    --a2-pale: rgba(106,159,192,0.08);
+    --a3-pale: rgba(58,112,160,0.08);
+    --a4-pale: rgba(88,144,184,0.08);
+    --a5-pale: rgba(42,88,120,0.08);
+    --a6-pale: rgba(58,128,176,0.08);
+    --a7-pale: rgba(80,120,160,0.08);
+  }
+
+  body {
+    font-family: 'Space Grotesk', sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    padding: 12px 8px 24px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Ambient background glow */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% -5%,   rgba(74,127,168,0.12) 0%, transparent 65%),
+      radial-gradient(ellipse 50% 40% at 5% 70%,    rgba(42,96,144,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 50% at 95% 40%,   rgba(106,159,192,0.08) 0%, transparent 65%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Animated grid lines */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(74,127,168,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(74,127,168,0.06) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page-wrap {
+    width: 100%;
+    max-width: 800px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── Header ── */
+  .page-header {
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+
+  .header-eyebrow {
+    font-size: 9.5px;
+    font-weight: 500;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--a0);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .header-eyebrow::before {
+    content: '';
+    display: inline-block;
+    width: 24px; height: 1px;
+    background: var(--a0);
+    opacity: 0.6;
+  }
+
+  .page-header h1 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.6rem;
+    color: var(--ink);
+    letter-spacing: -1px;
+    line-height: 1.1;
+    margin-bottom: 6px;
+  }
+  .page-header h1 span {
+    background: linear-gradient(90deg, #1a4870, #5890b8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .page-header p {
+    font-size: 11.5px;
+    color: var(--ink-faint);
+    font-weight: 300;
+    letter-spacing: 0.3px;
+  }
+
+  /* Auto-play indicator */
+  .autoplay-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    padding: 4px 12px;
+    background: rgba(52,211,153,0.1);
+    border: 1px solid rgba(52,211,153,0.25);
+    border-radius: 20px;
+    font-size: 10px;
+    color: var(--a2);
+    letter-spacing: 0.5px;
+  }
+  .autoplay-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--a0);
+    animation: pulse-dot 1.8s ease-in-out infinite;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.4; transform: scale(0.7); }
+  }
+
+  /* ── Track Card ── */
+  .track-card {
+    background: var(--bg-card);
+    border: 1px solid rgba(120,160,255,0.06);
+    border-radius: 13px;
+    padding: 9px 11px;
+    margin-bottom: 6px;
+    box-shadow: none;
+    transition: border-color 0.25s ease, background 0.25s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* no top decoration */
+  .track-card::before { content: none; }
+
+  .track-card:hover {
+    border-color: rgba(74,127,168,0.22);
+    background: #edf4fa;
+  }
+
+  /* selected = last touched track, stays highlighted after pause/screen-off */
+  .track-card.selected {
+    background: var(--bg-card2);
+    border-color: rgba(74,127,168,0.40);
+  }
+  .track-card.selected .track-num { opacity: 1; }
+  .track-card.selected .track-title { color: #fff; }
+  .track-card.selected::after {
+    content: '';
+    position: absolute;
+    left: 0; top: 6px; bottom: 6px;
+    width: 3px;
+    border-radius: 3px;
+    background: var(--ca, var(--a0));
+    opacity: 0.7;
+  }
+  /* paused indicator in badge */
+  .track-card.selected:not(.playing) .badge::after {
+    content: ' ⏸';
+    font-size: 7px;
+    opacity: 0.55;
+  }
+
+  /* playing = actively playing */
+  .track-card.playing {
+    border-color: rgba(74,127,168,0.60);
+    background: var(--bg-card2);
+  }
+
+  /* Card accent variables */
+  .c0 { --ca: var(--a0); --ca-pale: var(--a0-pale); }
+  .c1 { --ca: var(--a1); --ca-pale: var(--a1-pale); }
+  .c2 { --ca: var(--a2); --ca-pale: var(--a2-pale); }
+  .c3 { --ca: var(--a3); --ca-pale: var(--a3-pale); }
+  .c4 { --ca: var(--a4); --ca-pale: var(--a4-pale); }
+  .c5 { --ca: var(--a5); --ca-pale: var(--a5-pale); }
+  .c6 { --ca: var(--a6); --ca-pale: var(--a6-pale); }
+  .c7 { --ca: var(--a7); --ca-pale: var(--a7-pale); }
+
+  .track-top {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 7px;
+  }
+
+  /* Track number */
+  .track-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: rgba(34,211,238,0.35);
+    min-width: 22px;
+    text-align: right;
+    flex-shrink: 0;
+    letter-spacing: -0.5px;
+  }
+  .track-card.playing .track-num { color: #22d3ee; }
+  .track-card.selected .track-num { color: rgba(34,211,238,0.6); }
+
+  /* Cover */
+  .track-cover {
+    width: 36px; height: 36px;
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-size: 14px;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+    transition: box-shadow 0.3s ease;
+  }
+  .track-cover::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.18), transparent 60%);
+    border-radius: inherit;
+  }
+  .c0 .track-cover { background: linear-gradient(145deg, #0e3058, #2a6090); box-shadow: 0 4px 16px rgba(42,96,144,0.25); }
+  .c1 .track-cover { background: linear-gradient(145deg, #1a4870, #4a7fa8); box-shadow: 0 4px 16px rgba(74,127,168,0.25); }
+  .c2 .track-cover { background: linear-gradient(145deg, #2a5878, #6a9fc0); box-shadow: 0 4px 16px rgba(106,159,192,0.25); }
+  .c3 .track-cover { background: linear-gradient(145deg, #143860, #3a70a0); box-shadow: 0 4px 16px rgba(58,112,160,0.25); }
+  .c4 .track-cover { background: linear-gradient(145deg, #1e5080, #5890b8); box-shadow: 0 4px 16px rgba(88,144,184,0.25); }
+  .c5 .track-cover { background: linear-gradient(145deg, #0a3050, #2a5878); box-shadow: 0 4px 16px rgba(42,88,120,0.25); }
+
+  .track-card.playing .track-cover {
+    box-shadow: 0 0 18px var(--ca, var(--a0));
+    animation: cover-glow 2s ease-in-out infinite;
+  }
+  @keyframes cover-glow {
+    0%, 100% { filter: brightness(1); }
+    50%       { filter: brightness(1.15); }
+  }
+
+  .track-info { flex: 1; min-width: 0; }
+  .track-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    letter-spacing: -0.2px;
+  }
+
+  .track-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+  .badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 8.5px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    border: 1px solid;
+  }
+  .c0 .badge { background: var(--a0-pale); color: var(--a0); border-color: rgba(79,195,247,0.2); }
+  .c1 .badge { background: var(--a1-pale); color: var(--a1); border-color: rgba(129,140,248,0.2); }
+  .c2 .badge { background: var(--a2-pale); color: var(--a2); border-color: rgba(52,211,153,0.2); }
+  .c3 .badge { background: var(--a3-pale); color: var(--a3); border-color: rgba(192,132,252,0.2); }
+  .c4 .badge { background: var(--a4-pale); color: var(--a4); border-color: rgba(56,189,248,0.2); }
+
+  .track-label {
+    font-size: 10px;
+    color: var(--ink-faint);
+    font-weight: 300;
+    letter-spacing: 0.2px;
+  }
+
+  /* EQ bars */
+  .eq-bars { display: inline-flex; align-items: flex-end; gap: 2px; height: 12px; }
+  .eq-bars span {
+    display: block;
+    width: 2.5px;
+    border-radius: 1px;
+    background: var(--ca, var(--a0));
+    opacity: 0.45;
+    height: 30%;
+    transition: height 0.1s;
+  }
+  .playing .eq-bars span { opacity: 1; }
+  .playing .eq-bars span:nth-child(1) { animation: eq1 0.7s ease-in-out infinite; }
+  .playing .eq-bars span:nth-child(2) { animation: eq2 0.9s ease-in-out infinite 0.15s; }
+  .playing .eq-bars span:nth-child(3) { animation: eq1 0.65s ease-in-out infinite 0.3s; }
+  @keyframes eq1 { 0%,100%{height:30%} 50%{height:95%} }
+  @keyframes eq2 { 0%,100%{height:70%} 50%{height:25%} }
+
+  /* Play button — unified teal */
+  .play-btn {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    border: 1.5px solid #22d3ee;
+    background: transparent;
+    font-size: 11px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    color: #22d3ee;
+    position: relative;
+    overflow: hidden;
+    opacity: 0.65;
+  }
+  .play-btn::before {
+    content: '';
+    position: absolute; inset: 0;
+    border-radius: 50%;
+    background: #22d3ee;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .play-btn i { position: relative; z-index: 1; }
+  .play-btn .fa-play { margin-left: 2px; }
+  .play-btn:hover { opacity: 1; transform: scale(1.08); box-shadow: 0 0 14px rgba(34,211,238,0.35); }
+  .play-btn:hover::before { opacity: 0.12; }
+  .playing .play-btn { opacity: 1; border-color: #22d3ee; color: #22d3ee; box-shadow: 0 0 12px rgba(34,211,238,0.3); }
+  .playing .play-btn::before { opacity: 0.1; }
+
+  /* Waveform */
+  .wave-wrap {
+    position: relative;
+    padding-bottom: 13px;
+  }
+  .wave-inner { border-radius: 6px; overflow: hidden; cursor: pointer; }
+  .cur-label, .time-label {
+    position: absolute;
+    bottom: 0;
+    font-size: 9px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.5px;
+    color: var(--ink-faint);
+  }
+  .cur-label { left: 0; }
+  .time-label { right: 0; }
+
+  /* Now playing banner */
+  .now-playing-bar {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    background: rgba(74,127,168,0.07);
+    border: 1px solid rgba(74,127,168,0.22);
+    border-radius: 10px;
+    padding: 8px 14px;
+    margin-bottom: 12px;
+    font-size: 11px;
+    color: var(--ink-soft);
+  }
+  .now-playing-bar.visible { display: flex; }
+  .now-playing-bar .np-label {
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--a0);
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+  .now-playing-bar .np-title {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .np-next {
+    font-size: 9px;
+    color: var(--ink-faint);
+    flex-shrink: 0;
+  }
+
+  /* Footer */
+  .page-footer {
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .footer-actions { display: flex; gap: 8px; }
+  .action-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border-glow);
+    background: rgba(255,255,255,0.03);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.3px;
+  }
+  .action-btn:hover { background: rgba(160,128,60,0.10); border-color: var(--a0); color: var(--a0); }
+
+  .brand-logo {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .brand-icon {
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: linear-gradient(145deg, #1a5f7a, #4fc3f7);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+    color: #fff;
+    box-shadow: 0 2px 10px rgba(79,195,247,0.3);
+  }
+  .brand-text {
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: 1px;
+    display: block;
+  }
+  .brand-sub {
+    font-size: 9px;
+    color: var(--ink-faint);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    display: block;
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: rgba(74,127,168,0.10);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(74,127,168,0.30);
+    color: var(--a1);
+    padding: 9px 20px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 500;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    z-index: 999;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 480px) {
+    .page-header h1 { font-size: 1.5rem; }
+    .track-card { padding: 11px 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="toast" class="toast">🔗 Посилання скопійовано!</div>
+
+<div class="page-wrap">
+  <div class="page-header">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+      <div class="header-eyebrow">Sacred Ambient</div>
+      <div style="font-family:'Space Grotesk',sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;color:#f97316;opacity:0.85;padding-top:1px;text-transform:uppercase;">AI&nbsp;Liria&nbsp;3</div>
+    </div>
+    <h1>Промінь <span>Благодаті</span></h1>
+    <p>Музика світла і небесного спокою — 6 треків</p>
+    <div class="autoplay-badge">
+      <div class="autoplay-dot"></div>
+      Автоперехід увімкнено
+    </div>
+  </div>
+
+  <!-- Now playing bar -->
+  <div class="now-playing-bar" id="now-playing-bar">
+    <span class="np-label">Зараз</span>
+    <span class="np-title" id="np-title">—</span>
+    <span class="np-next" id="np-next"></span>
+  </div>
+
+  <!-- Track 1 -->
+  <div class="track-card c0" id="card-0">
+    <div class="track-top">
+      <span class="track-num">01</span>
+      <div class="track-cover"><i class="fas fa-dove"></i></div>
+      <div class="track-info">
+        <div class="track-title">Enchanted Starlight (Remix 1)</div>
+        <div class="track-meta">
+          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Starlight · Remix 1</span>
+          <span class="eq-bars"><span></span><span></span><span></span></span>
+          <span class="track-label">Зачароване зоряне світло</span>
+        </div>
+      </div>
+      <button class="play-btn" id="btn-0" onclick="togglePlay(0)"><i class="fas fa-play"></i></button>
+    </div>
+    <div class="wave-wrap">
+      <div id="wave-0" class="wave-inner"></div>
+      <span class="cur-label" id="cur-0">00:00</span>
+      <span class="time-label" id="dur-0">--:--</span>
+    </div>
+  </div>
+
+  <!-- Track 2 -->
+  <div class="track-card c1" id="card-1">
+    <div class="track-top">
+      <span class="track-num">02</span>
+      <div class="track-cover"><i class="fas fa-dove"></i></div>
+      <div class="track-info">
+        <div class="track-title">Enchanted Starlight (Remix 2)</div>
+        <div class="track-meta">
+          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Starlight · Remix 2</span>
+          <span class="eq-bars"><span></span><span></span><span></span></span>
+          <span class="track-label">Зачароване зоряне світло</span>
+        </div>
+      </div>
+      <button class="play-btn" id="btn-1" onclick="togglePlay(1)"><i class="fas fa-play"></i></button>
+    </div>
+    <div class="wave-wrap">
+      <div id="wave-1" class="wave-inner"></div>
+      <span class="cur-label" id="cur-1">00:00</span>
+      <span class="time-label" id="dur-1">--:--</span>
+    </div>
+  </div>
+
+  <!-- Track 3 -->
+  <div class="track-card c2" id="card-2">
+    <div class="track-top">
+      <span class="track-num">03</span>
+      <div class="track-cover"><i class="fas fa-dove"></i></div>
+      <div class="track-info">
+        <div class="track-title">Enchanted Starlight (Remix 3)</div>
+        <div class="track-meta">
+          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Starlight · Remix 3</span>
+          <span class="eq-bars"><span></span><span></span><span></span></span>
+          <span class="track-label">Зачароване зоряне світло</span>
+        </div>
+      </div>
+      <button class="play-btn" id="btn-2" onclick="togglePlay(2)"><i class="fas fa-play"></i></button>
+    </div>
+    <div class="wave-wrap">
+      <div id="wave-2" class="wave-inner"></div>
+      <span class="cur-label" id="cur-2">00:00</span>
+      <span class="time-label" id="dur-2">--:--</span>
+    </div>
+  </div>
+
+  <!-- Track 4 -->
+  <div class="track-card c3" id="card-3">
+    <div class="track-top">
+      <span class="track-num">04</span>
+      <div class="track-cover"><i class="fas fa-dragon"></i></div>
+      <div class="track-info">
+        <div class="track-title">Fairy Tale Epic</div>
+        <div class="track-meta">
+          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Epic</span>
+          <span class="eq-bars"><span></span><span></span><span></span></span>
+          <span class="track-label">Казкова епіка</span>
+        </div>
+      </div>
+      <button class="play-btn" id="btn-3" onclick="togglePlay(3)"><i class="fas fa-play"></i></button>
+    </div>
+    <div class="wave-wrap">
+      <div id="wave-3" class="wave-inner"></div>
+      <span class="cur-label" id="cur-3">00:00</span>
+      <span class="time-label" id="dur-3">--:--</span>
+    </div>
+  </div>
+
+  <!-- Track 5 -->
+  <div class="track-card c4" id="card-4">
+    <div class="track-top">
+      <span class="track-num">05</span>
+      <div class="track-cover"><i class="fas fa-moon"></i></div>
+      <div class="track-info">
+        <div class="track-title">Stardust Sanctuary (Remix)</div>
+        <div class="track-meta">
+          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Sanctuary · Remix</span>
+          <span class="eq-bars"><span></span><span></span><span></span></span>
+          <span class="track-label">Притулок зоряного пилу</span>
+        </div>
+      </div>
+      <button class="play-btn" id="btn-4" onclick="togglePlay(4)"><i class="fas fa-play"></i></button>
+    </div>
+    <div class="wave-wrap">
+      <div id="wave-4" class="wave-inner"></div>
+      <span class="cur-label" id="cur-4">00:00</span>
+      <span class="time-label" id="dur-4">--:--</span>
+    </div>
+  </div>
+
+  <!-- Track 6 -->
+  <div class="track-card c5" id="card-5">
+    <div class="track-top">
+      <span class="track-num">06</span>
+      <div class="track-cover"><i class="fas fa-tree"></i></div>
+      <div class="track-info">
+        <div class="track-title">The Hidden Grove</div>
+        <div class="track-meta">
+          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Grove</span>
+          <span class="eq-bars"><span></span><span></span><span></span></span>
+          <span class="track-label">Прихований гай</span>
+        </div>
+      </div>
+      <button class="play-btn" id="btn-5" onclick="togglePlay(5)"><i class="fas fa-play"></i></button>
+    </div>
+    <div class="wave-wrap">
+      <div id="wave-5" class="wave-inner"></div>
+      <span class="cur-label" id="cur-5">00:00</span>
+      <span class="time-label" id="dur-5">--:--</span>
+    </div>
+  </div>
+
+
