@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="uk">
 <head>
 <meta charset="UTF-8">
@@ -287,14 +287,14 @@
   const statusEl = document.getElementById('preload-status');
   const playlistContainer = document.getElementById('playlist-container');
 
-  // 1. Создаем ОДИН контейнер для волны в памяти
+  // 1. Создаем один контейнер для волны в памяти
   const waveContainer = document.createElement('div');
   waveContainer.style.width = '100%';
 
-  // 2. Инициализируем ЕДИНСТВЕННЫЙ экземпляр WaveSurfer, привязав его к нашему аудио-тегу
+  // 2. Инициализируем WaveSurfer с привязкой к нашему тегу
   const ws = WaveSurfer.create({
     container: waveContainer,
-    media: htmlPlayer, // Жесткая привязка к тегу
+    media: htmlPlayer,
     barWidth: 2,
     barGap: 1,
     barRadius: 2,
@@ -304,7 +304,7 @@
     mediaSession: true
   });
 
-  // Генерируем красивый HTML интерфейс
+  // Рендерим интерфейс
   function renderPlaylist() {
     playlistContainer.innerHTML = tracks.map((track, i) => `
       <div class="card" id="card-${i}" onclick="window.handleCardClick(event, ${i})">
@@ -326,12 +326,13 @@
     `).join('');
   }
 
-  // Асинхронный предзагрузчик всех треков в блоб-кэш
+  // Асинхронный предзагрузчик
   async function preloadAllTracks() {
     statusEl.textContent = "Завантаження плейлисту...";
     for (let i = 0; i < tracks.length; i++) {
       try {
         const response = await fetch(tracks[i].src);
+        if (!response.ok) throw new Error();
         const blob = await response.blob();
         audioCache[i] = URL.createObjectURL(blob);
         statusEl.textContent = `Готово: ${i + 1}/${tracks.length}`;
@@ -341,10 +342,10 @@
         return;
       }
     }
+    statusEl.style.color = '#34d399';
     statusEl.textContent = "● Плейлист у пам'яті";
   }
 
-  // Сброс графики для всех карточек
   function resetUI() {
     tracks.forEach((_, i) => {
       document.getElementById(`btn-${i}`).innerHTML = '<i class="fas fa-play"></i>';
@@ -352,12 +353,9 @@
     });
   }
 
-  // Главный обработчик кликов (и переключений)
   window.handleCardClick = async (event, index) => {
-    // Если файлы еще не скачались в кэш — игнорируем клик временного лага
-    if (!audioCache[index]) return;
+    if (!audioCache[index]) return; // Защита, если трек еще не докачался
 
-    // Если кликнули на текущий играющий трек — ставим на паузу / снимаем с паузы
     if (currentIdx === index) {
       if (ws.isPlaying()) {
         ws.pause();
@@ -367,22 +365,18 @@
       return;
     }
 
-    // Включаем НОВЫЙ трек
     resetUI();
     currentIdx = index;
 
     const card = document.getElementById(`card-${index}`);
     const outerWave = document.getElementById(`wave-outer-${index}`);
 
-    // Очищаем старые контейнеры от волны
     tracks.forEach((_, i) => {
       document.getElementById(`wave-outer-${i}`).innerHTML = '';
     });
 
-    // Мгновенно телепортируем блок волны в выбранную карточку
     outerWave.appendChild(waveContainer);
 
-    // Перекрашиваем WaveSurfer под стиль трека
     ws.setOptions({
       waveColor: colors[index].wave,
       progressColor: colors[index].progress,
@@ -392,7 +386,6 @@
     card.classList.add('selected');
     document.getElementById(`dur-${index}`).textContent = "...";
 
-    // Магия: скармливаем плееру мгновенную Blob-ссылку из оперативки
     await ws.load(audioCache[index]);
     ws.play();
   };
@@ -407,7 +400,8 @@
 
   ws.on('timeupdate', (cur) => {
     if (currentIdx !== -1) {
-      document.getElementById::(`cur-${currentIdx}`).textContent = fmt(cur);
+      // ИСПРАВЛЕНО: убраны лишние двоеточия
+      document.getElementById(`cur-${currentIdx}`).textContent = fmt(cur);
     }
   });
 
@@ -420,7 +414,6 @@
       document.getElementById('np-title').textContent = tracks[currentIdx].title;
       bar.classList.add('visible');
 
-      // Обновляем системные метаданные смартфона
       if ('mediaSession' in navigator) {
         navigator.mediaSession.metadata = new MediaMetadata({
           title: tracks[currentIdx].title,
@@ -438,7 +431,6 @@
     }
   });
 
-  // Автопереход на следующий трек
   ws.on('finish', () => {
     const next = currentIdx + 1;
     if (next < tracks.length) {
@@ -451,7 +443,6 @@
     }
   });
 
-  // Кнопки наушников и экрана блокировки смартфона
   if ('mediaSession' in navigator) {
     navigator.mediaSession.setActionHandler('nexttrack', () => {
       if (currentIdx < tracks.length - 1) window.handleCardClick(null, currentIdx + 1);
@@ -461,7 +452,6 @@
     });
   }
 
-  // Утилиты
   window.shareTG = () => {
     window.open(`https://t.me/share/url?url=${encodeURIComponent(window.location.href)}`, '_blank');
   };
@@ -474,9 +464,9 @@
     });
   };
 
-  // Инициализация приложения
   renderPlaylist();
   preloadAllTracks();
 </script>
+
 </body>
 </html>
