@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nature Ambient — Seamless Edition</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&family=Syne:wght@300;400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:          #090d14;
+    --bg-card:     #0d1220;
+    --bg-card2:    #111827;
+    --ink:         #e2e8f8;
+    --ink-soft:    rgba(226,232,248,0.45);
+    --ink-faint:   rgba(226,232,248,0.18);
+    --border:      rgba(120,160,255,0.10);
+    --border-glow: rgba(120,160,255,0.25);
+    --accent:      #4fc3f7;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Space Grotesk', sans-serif;
+    min-height: 100vh;
+    padding: 40px 20px 120px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: hidden;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 580px;
+  }
+
+  header {
+    margin-bottom: 40px;
+    text-align: left;
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+    background: linear-gradient(135deg, #fff 30%, var(--ink-soft));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .subtitle {
+    font-size: 14px;
+    color: var(--ink-soft);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  #preload-status {
+    font-size: 12px;
+    color: #34d399;
+    font-weight: 500;
+  }
+
+  .playlist {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    cursor: pointer;
+  }
+
+  .card:hover {
+    border-color: rgba(226,232,248,0.2);
+    background: var(--bg-card2);
+  }
+
+  .card.selected {
+    border-color: var(--border-glow);
+    background: var(--bg-card2);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  }
+
+  .card-main {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .track-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .track-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    color: var(--ink-faint);
+    font-weight: 700;
+    width: 20px;
+  }
+
+  .track-title {
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: -0.2px;
+    color: var(--ink);
+  }
+
+  .play-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--ink-faint);
+    border: 1px solid transparent;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .card:hover .play-btn {
+    background: var(--ink);
+    color: var(--bg);
+  }
+
+  .card.playing .play-btn {
+    background: var(--accent);
+    color: var(--bg);
+    box-shadow: 0 0 15px rgba(79,195,247,0.4);
+  }
+
+  .wave-outer {
+    width: 100%;
+    height: 0;
+    overflow: hidden;
+    transition: height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .card.selected .wave-outer {
+    height: 34px;
+    margin-top: 4px;
+  }
+
+  .track-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--ink-soft);
+    font-family: monospace;
+    opacity: 0;
+    height: 0;
+    overflow: hidden;
+    transition: all 0.4s;
+  }
+
+  .card.selected .track-meta {
+    opacity: 1;
+    height: auto;
+    margin-top: 4px;
+  }
+
+  /* Нижняя панель управления */
+  .now-playing-bar {
+    position: fixed;
+    bottom: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 40px);
+    max-width: 580px;
+    background: rgba(13, 18, 32, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    transition: bottom 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 100;
+  }
+
+  .now-playing-bar.visible { bottom: 24px; }
+
+  .np-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .np-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--ink-soft); }
+  .np-title { font-size: 14px; font-weight: 500; color: #fff; }
+
+  .np-actions { display: flex; gap: 12px; }
+  .np-btn { background: none; border: none; color: var(--ink); cursor: pointer; font-size: 14px; padding: 8px; transition: color 0.2s; }
+  .np-btn:hover { color: var(--accent); }
+
+  #toast {
+    position: fixed; top: 24px; background: var(--bg-card2); border: 1px solid var(--border-glow);
+    padding: 12px 24px; border-radius: 30px; font-size: 13px; transform: translateY(-100px);
+    opacity: 0; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); pointer-events: none; z-index: 1000;
+  }
+  #toast.show { transform: translateY(0); opacity: 1; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>Nature Ambient</h1>
+    <div class="subtitle">
+      <span>Electronic Ambient Collection</span>
+      <span id="preload-status">Кешування...</span>
+    </div>
+  </header>
+
+  <div class="playlist" id="playlist-container">
+    </div>
+</div>
+
+<div class="now-playing-bar" id="now-playing-bar">
+  <div class="np-info">
+    <div class="np-label">Зараз грає</div>
+    <div class="np-title" id="np-title">—</div>
+  </div>
+  <div class="np-actions">
+    <button class="np-btn" onclick="window.copyLink()" title="Скопіювати лінк"><i class="fas fa-link"></i></button>
+    <button class="np-btn" onclick="window.shareTG()" title="Поділитись"><i class="fab fa-telegram"></i></button>
+  </div>
+</div>
+
+<div id="toast">Посилання скопійовано</div>
+
+<audio id="hidden-html-player" style="display:none;"></audio>
+
+<script type="module">
+  import WaveSurfer from 'https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.esm.js';
+
+  const tracks = [
+    { src: 'Nature Ambient (Atmospheric Version).m4a',              title: 'Atmospheric Version' },
+    { src: 'Nature Ambient (Ethereal Version) (Remix).m4a',         title: 'Ethereal Version (Remix)' },
+    { src: 'Nature Ambient (Atmospheric Version) (Remix).m4a',      title: 'Atmospheric Version (Remix)' },
+    { src: 'Nature Ambient (Ethereal Version) (Remix2).m4a',        title: 'Ethereal Version (Remix 2)' },
+    { src: 'Nature Ambient (Ethereal Version) (Remix3).m4a',        title: 'Ethereal Version (Remix 3)' }
+  ];
+
+  const colors = [
+    { wave: '#0d2a35', progress: '#4fc3f7' },
+    { wave: '#13103e', progress: '#818cf8' },
+    { wave: '#072820', progress: '#34d399' },
+    { wave: '#1e0a35', progress: '#c084fc' },
+    { wave: '#0a1f35', progress: '#38bdf8' }
+  ];
+
+  const fmt = s => new Date(s * 1000).toISOString().substr(14, 5);
+
+  const audioCache = [];
+  let currentIdx = -1;
+
+  const htmlPlayer = document.getElementById('hidden-html-player');
+  const statusEl = document.getElementById('preload-status');
+  const playlistContainer = document.getElementById('playlist-container');
+
+  // 1. Создаем ОДИН контейнер для волны в памяти
+  const waveContainer = document.createElement('div');
+  waveContainer.style.width = '100%';
+
+  // 2. Инициализируем ЕДИНСТВЕННЫЙ экземпляр WaveSurfer, привязав его к нашему аудио-тегу
+  const ws = WaveSurfer.create({
+    container: waveContainer,
+    media: htmlPlayer, // Жесткая привязка к тегу
+    barWidth: 2,
+    barGap: 1,
+    barRadius: 2,
+    height: 34,
+    interact: true,
+    normalize: true,
+    mediaSession: true
+  });
+
+  // Генерируем красивый HTML интерфейс
+  function renderPlaylist() {
+    playlistContainer.innerHTML = tracks.map((track, i) => `
+      <div class="card" id="card-${i}" onclick="window.handleCardClick(event, ${i})">
+        <div class="card-main">
+          <div class="track-info">
+            <div class="track-num">${String(i + 1).padStart(2, '0')}</div>
+            <div class="track-title">${track.title}</div>
+          </div>
+          <button class="play-btn" id="btn-${i}">
+            <i class="fas fa-play"></i>
+          </button>
+        </div>
+        <div class="wave-outer" id="wave-outer-${i}"></div>
+        <div class="track-meta">
+          <span id="cur-${i}">00:00</span>
+          <span id="dur-${i}">00:00</span>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // Асинхронный предзагрузчик всех треков в блоб-кэш
+  async function preloadAllTracks() {
+    statusEl.textContent = "Завантаження плейлисту...";
+    for (let i = 0; i < tracks.length; i++) {
+      try {
+        const response = await fetch(tracks[i].src);
+        const blob = await response.blob();
+        audioCache[i] = URL.createObjectURL(blob);
+        statusEl.textContent = `Готово: ${i + 1}/${tracks.length}`;
+      } catch (e) {
+        statusEl.style.color = '#ef4444';
+        statusEl.textContent = `Помилка мережі`;
+        return;
+      }
+    }
+    statusEl.textContent = "● Плейлист у пам'яті";
+  }
+
+  // Сброс графики для всех карточек
+  function resetUI() {
+    tracks.forEach((_, i) => {
+      document.getElementById(`btn-${i}`).innerHTML = '<i class="fas fa-play"></i>';
+      document.getElementById(`card-${i}`).classList.remove('playing', 'selected');
+    });
+  }
+
+  // Главный обработчик кликов (и переключений)
+  window.handleCardClick = async (event, index) => {
+    // Если файлы еще не скачались в кэш — игнорируем клик временного лага
+    if (!audioCache[index]) return;
+
+    // Если кликнули на текущий играющий трек — ставим на паузу / снимаем с паузы
+    if (currentIdx === index) {
+      if (ws.isPlaying()) {
+        ws.pause();
+      } else {
+        ws.play();
+      }
+      return;
+    }
+
+    // Включаем НОВЫЙ трек
+    resetUI();
+    currentIdx = index;
+
+    const card = document.getElementById(`card-${index}`);
+    const outerWave = document.getElementById(`wave-outer-${index}`);
+
+    // Очищаем старые контейнеры от волны
+    tracks.forEach((_, i) => {
+      document.getElementById(`wave-outer-${i}`).innerHTML = '';
+    });
+
+    // Мгновенно телепортируем блок волны в выбранную карточку
+    outerWave.appendChild(waveContainer);
+
+    // Перекрашиваем WaveSurfer под стиль трека
+    ws.setOptions({
+      waveColor: colors[index].wave,
+      progressColor: colors[index].progress,
+      cursorColor: colors[index].progress
+    });
+
+    card.classList.add('selected');
+    document.getElementById(`dur-${index}`).textContent = "...";
+
+    // Магия: скармливаем плееру мгновенную Blob-ссылку из оперативки
+    await ws.load(audioCache[index]);
+    ws.play();
+  };
+
+  // ── НАСТРОЙКА СОБЫТИЙ WAVESURFER ──
+
+  ws.on('ready', (dur) => {
+    if (currentIdx !== -1) {
+      document.getElementById(`dur-${currentIdx}`).textContent = fmt(dur);
+    }
+  });
+
+  ws.on('timeupdate', (cur) => {
+    if (currentIdx !== -1) {
+      document.getElementById::(`cur-${currentIdx}`).textContent = fmt(cur);
+    }
+  });
+
+  ws.on('play', () => {
+    if (currentIdx !== -1) {
+      document.getElementById(`btn-${currentIdx}`).innerHTML = '<i class="fas fa-pause"></i>';
+      document.getElementById(`card-${currentIdx}`).classList.add('playing');
+      
+      const bar = document.getElementById('now-playing-bar');
+      document.getElementById('np-title').textContent = tracks[currentIdx].title;
+      bar.classList.add('visible');
+
+      // Обновляем системные метаданные смартфона
+      if ('mediaSession' in navigator) {
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: tracks[currentIdx].title,
+          artist: 'Nature Ambient',
+          album: 'Electronic Ambient Collection'
+        });
+      }
+    }
+  });
+
+  ws.on('pause', () => {
+    if (currentIdx !== -1) {
+      document.getElementById(`btn-${currentIdx}`).innerHTML = '<i class="fas fa-play"></i>';
+      document.getElementById(`card-${currentIdx}`).classList.remove('playing');
+    }
+  });
+
+  // Автопереход на следующий трек
+  ws.on('finish', () => {
+    const next = currentIdx + 1;
+    if (next < tracks.length) {
+      window.handleCardClick(null, next);
+      document.getElementById(`card-${next}`).scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    } else {
+      resetUI();
+      currentIdx = -1;
+      document.getElementById('now-playing-bar').classList.remove('visible');
+    }
+  });
+
+  // Кнопки наушников и экрана блокировки смартфона
+  if ('mediaSession' in navigator) {
+    navigator.mediaSession.setActionHandler('nexttrack', () => {
+      if (currentIdx < tracks.length - 1) window.handleCardClick(null, currentIdx + 1);
+    });
+    navigator.mediaSession.setActionHandler('previoustrack', () => {
+      if (currentIdx > 0) window.handleCardClick(null, currentIdx - 1);
+    });
+  }
+
+  // Утилиты
+  window.shareTG = () => {
+    window.open(`https://t.me/share/url?url=${encodeURIComponent(window.location.href)}`, '_blank');
+  };
+
+  window.copyLink = () => {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      const t = document.getElementById('toast');
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2200);
+    });
+  };
+
+  // Инициализация приложения
+  renderPlaylist();
+  preloadAllTracks();
+</script>
+</body>
+</html>
