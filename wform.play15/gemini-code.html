@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Bridge Test</title>
+    <style>
+        body { background: #0b0f19; color: #e2e8f8; font-family: sans-serif; padding: 30px; text-align: center; }
+        button { background: #22d3ee; border: none; padding: 12px 24px; color: #000; font-weight: bold; border-radius: 6px; cursor: pointer; margin: 10px; }
+        button:disabled { background: #334155; color: #94a3b8; }
+        #status { margin: 20px; color: #34d399; font-size: 14px; }
+        .track-node { padding: 10px; margin: 5px; border: 1px solid #1e293b; border-radius: 4px; }
+        .active { border-color: #22d3ee; background: #0f172a; }
+    </style>
+</head>
+<body>
+
+    <h2>Тест бесшовного автоперехода</h2>
+    <p style="color: #94a3b8; font-size: 13px;">Один тег Audio, предзагрузка в память</p>
+
+    <audio id="main-player" controls style="margin: 20px auto; display: block;"></audio>
+
+    <div id="status">Ожидание запуска...</div>
+
+    <div id="playlist">
+        <div class="track-node" id="t-0">Трек 1 (1.mp3)</div>
+        <div class="track-node" id="t-1">Трек 2 (2.mp3)</div>
+        <div class="track-node" id="t-2">Трек 3 (3.mp3)</div>
+    </div>
+
+    <button id="start-btn">1. ЗАПУСТИТЬ ТЕСТ ПЛЕЙЛИСТА</button>
+
+<script>
+    // Массив твоих файлов (замени на реальные имена для теста, например '1.mp3', '2.mp3')
+    const trackFiles = [
+        'Nature Ambient (Atmospheric Version).m4a',
+        'Nature Ambient (Ethereal Version) (Remix).m4a',
+        'Nature Ambient (Atmospheric Version) (Remix).m4a'
+    ];
+
+    const audioBufferCache = [];
+    let currentTrackIdx = 0;
+
+    const player = document.getElementById('main-player');
+    const startBtn = document.getElementById('start-btn');
+    const statusDiv = document.getElementById('status');
+
+    // Кэшируем треки в оперативку сразу при загрузке страницы, чтобы не было задержек сети
+    async function preloadTracks() {
+        statusDiv.textContent = "Кэширование треков в память...";
+        startBtn.disabled = true;
+
+        for (let i = 0; i < trackFiles.length; i++) {
+            try {
+                const response = await fetch(trackFiles[i]);
+                const blob = await response.blob();
+                // Создаем локальную blob-ссылку, которая открывается мгновенно (мегабайты в секунду)
+                audioBufferCache[i] = URL.createObjectURL(blob);
+                statusDiv.textContent = `Загружено файлов: ${i + 1} из ${trackFiles.length}`;
+            } catch (e) {
+                statusDiv.textContent = `Ошибка загрузки файла ${trackFiles[i]}`;
+                return;
+            }
+        }
+
+        statusDiv.textContent = "Все треки в памяти. Нажмите кнопку Начать.";
+        startBtn.disabled = false;
+    }
+
+    // Функция переключения
+    function playTrack(index) {
+        if (index >= trackFiles.length) {
+            statusDiv.textContent = "Плейлист окончен.";
+            document.querySelectorAll('.track-node').forEach(el => el.classList.remove('active'));
+            return;
+        }
+
+        currentTrackIdx = index;
+        
+        // Подсвечиваем UI
+        document.querySelectorAll('.track-node').forEach((el, i) => {
+            el.classList.toggle('active', i === index);
+        });
+
+        statusDiv.textContent = `Играет трек ${index + 1}: ${trackFiles[index]}`;
+
+        // МГНОВЕННАЯ подмена источника (без ожидания сети)
+        player.src = audioBufferCache[index];
+        player.play().catch(err => {
+            statusDiv.textContent = `Браузер заблокировал: ${err.message}`;
+        });
+    }
+
+    // По первому легальному клику запускаем цепочку
+    startBtn.addEventListener('click', () => {
+        playTrack(0);
+    });
+
+    // Ловим финиш трека и БЕЗ задержек (без setTimeout) включаем следующий
+    player.addEventListener('ended', () => {
+        const next = currentTrackIdx + 1;
+        playTrack(next);
+    });
+
+    // Запуск предзагрузки
+    preloadTracks();
+</script>
+</body>
+</html>
