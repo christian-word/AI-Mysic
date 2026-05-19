@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сканер аудиофайлов</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            padding: 20px;
+            margin: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .upload-btn-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        .btn {
+            border: 2px solid #1db954;
+            color: #1db954;
+            background-color: transparent;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            background-color: #1db954;
+            color: #fff;
+        }
+        .upload-btn-wrapper input[type=file] {
+            font-size: 100px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+        .stats {
+            margin-bottom: 15px;
+            color: #b3b3b3;
+            font-size: 14px;
+        }
+        ol {
+            background: #181818;
+            padding: 10px 20px 10px 40px;
+            border-radius: 8px;
+            border: 1px solid #282828;
+        }
+        li {
+            padding: 8px 0;
+            border-bottom: 1px solid #282828;
+            font-size: 15px;
+            word-break: break-all;
+        }
+        li:last-child {
+            border-bottom: none;
+        }
+        li:hover {
+            color: #fff;
+            background-color: #202020;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Локальный сканер аудиофайлов</h2>
+    
+    <div class="upload-btn-wrapper">
+        <button class="btn">Выбрать папку с аудио</button>
+        <!-- Атрибуты webkitdirectory и directory позволяют выбирать папки -->
+        <input type="file" id="folderInput" webkitdirectory directory multiple accept="audio/*">
+    </div>
+
+    <div class="stats" id="stats">Папка не выбрана</div>
+    <ol id="fileList"></ol>
+</div>
+
+<script>
+    document.getElementById('folderInput').addEventListener('change', function(event) {
+        const files = event.target.files;
+        const fileList = document.getElementById('fileList');
+        const stats = document.getElementById('stats');
+        
+        // Очищаем предыдущий результат
+        fileList.innerHTML = '';
+        
+        // Список поддерживаемых аудио-расширений
+        const audioExtensions = ['.mp3', '.wav', '.ogg', '.flac', '.m4a', '.aac', '.wma'];
+        
+        // Фильтруем файлы (оставляем только аудио)
+        const audioFiles = Array.from(files).filter(file => {
+            const fileName = file.name.toLowerCase();
+            return audioExtensions.some(ext => fileName.endsWith(ext));
+        });
+
+        // Сортируем по алфавиту
+        audioFiles.sort((a, b) => a.name.localeCompare(b.name, undefined, {numeric: true, sensitivity: 'base'}));
+
+        // Вывод статистики
+        if (audioFiles.length === 0) {
+            stats.textContent = 'Аудиофайлы в выбранной директории не найдены.';
+            return;
+        }
+        
+        stats.textContent = `Найдено аудиофайлов: ${audioFiles.length}`;
+
+        // Создаем список элементов
+        audioFiles.forEach(file => {
+            const li = document.createElement('li');
+            li.textContent = file.name;
+            // При желании можно сохранить относительный путь: file.webkitRelativePath
+            fileList.appendChild(li);
+        });
+    });
+</script>
+
+</body>
+</html>
