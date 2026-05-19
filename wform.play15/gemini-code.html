@@ -1,41 +1,48 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="uk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Audio Bridge Test</title>
+    <title>Audio Bridge Test — Full Playlist</title>
     <style>
-        body { background: #0b0f19; color: #e2e8f8; font-family: sans-serif; padding: 30px; text-align: center; }
-        button { background: #22d3ee; border: none; padding: 12px 24px; color: #000; font-weight: bold; border-radius: 6px; cursor: pointer; margin: 10px; }
-        button:disabled { background: #334155; color: #94a3b8; }
-        #status { margin: 20px; color: #34d399; font-size: 14px; }
-        .track-node { padding: 10px; margin: 5px; border: 1px solid #1e293b; border-radius: 4px; }
-        .active { border-color: #22d3ee; background: #0f172a; }
+        body { background: #0b0f19; color: #e2e8f8; font-family: sans-serif; padding: 20px; text-align: center; }
+        h2 { color: #fff; margin-bottom: 5px; }
+        button { background: #22d3ee; border: none; padding: 14px 28px; color: #000; font-weight: bold; border-radius: 8px; cursor: pointer; margin: 20px 0; font-size: 14px; transition: all 0.2s; }
+        button:disabled { background: #1e293b; color: #64748b; cursor: not-allowed; }
+        #status { margin: 15px; color: #34d399; font-size: 13px; font-weight: 500; min-height: 18px; }
+        #playlist { max-width: 500px; margin: 0 auto; text-align: left; }
+        .track-node { padding: 12px 16px; margin: 6px 0; border: 1px solid #1e293b; border-radius: 6px; font-size: 13px; color: #94a3b8; display: flex; justify-content: space-between; }
+        .track-node span { font-weight: bold; color: #38bdf8; margin-right: 10px; }
+        .active { border-color: #22d3ee; background: #0f172a; color: #fff; box-shadow: 0 0 10px rgba(34,211,238,0.15); }
     </style>
 </head>
 <body>
 
-    <h2>Тест бесшовного автоперехода</h2>
-    <p style="color: #94a3b8; font-size: 13px;">Один тег Audio, предзагрузка в память</p>
+    <h2>Тест автопереходу (Всі 5 треків)</h2>
+    <p style="color: #64748b; font-size: 12px; margin-top: 0;">Один аудіо-потік + повна предзагрузка в пам'ять</p>
 
-    <audio id="main-player" controls style="margin: 20px auto; display: block;"></audio>
+    <audio id="main-player" controls style="margin: 15px auto; display: block; width: 100%; max-width: 500px;"></audio>
 
-    <div id="status">Ожидание запуска...</div>
+    <div id="status">Очікування ініціалізації...</div>
+
+    <button id="start-btn" disabled>Завантаження треків...</button>
 
     <div id="playlist">
-        <div class="track-node" id="t-0">Трек 1 (1.mp3)</div>
-        <div class="track-node" id="t-1">Трек 2 (2.mp3)</div>
-        <div class="track-node" id="t-2">Трек 3 (3.mp3)</div>
+        <div class="track-node" id="t-0"><div><span>01</span> Atmospheric Version</div></div>
+        <div class="track-node" id="t-1"><div><span>02</span> Ethereal Version (Remix)</div></div>
+        <div class="track-node" id="t-2"><div><span>03</span> Atmospheric Version (Remix)</div></div>
+        <div class="track-node" id="t-3"><div><span>04</span> Ethereal Version (Remix 2)</div></div>
+        <div class="track-node" id="t-4"><div><span>05</span> Ethereal Version (Remix 3)</div></div>
     </div>
 
-    <button id="start-btn">1. ЗАПУСТИТЬ ТЕСТ ПЛЕЙЛИСТА</button>
-
 <script>
-    // Массив твоих файлов (замени на реальные имена для теста, например '1.mp3', '2.mp3')
+    // Масив з усіма твоїми 5 файлами
     const trackFiles = [
         'Nature Ambient (Atmospheric Version).m4a',
         'Nature Ambient (Ethereal Version) (Remix).m4a',
-        'Nature Ambient (Atmospheric Version) (Remix).m4a'
+        'Nature Ambient (Atmospheric Version) (Remix).m4a',
+        'Nature Ambient (Ethereal Version) (Remix2).m4a',
+        'Nature Ambient (Ethereal Version) (Remix3).m4a'
     ];
 
     const audioBufferCache = [];
@@ -45,64 +52,73 @@
     const startBtn = document.getElementById('start-btn');
     const statusDiv = document.getElementById('status');
 
-    // Кэшируем треки в оперативку сразу при загрузке страницы, чтобы не было задержек сети
+    // Кешуємо абсолютно всі файли в оперативну пам'ять відразу
     async function preloadTracks() {
-        statusDiv.textContent = "Кэширование треков в память...";
+        statusDiv.textContent = "Завантаження плейлисту в пам'ять пристрою...";
         startBtn.disabled = true;
 
         for (let i = 0; i < trackFiles.length; i++) {
             try {
                 const response = await fetch(trackFiles[i]);
+                if (!response.ok) throw new Error(`Помилка мережі: ${response.status}`);
+                
                 const blob = await response.blob();
-                // Создаем локальную blob-ссылку, которая открывается мгновенно (мегабайты в секунду)
+                // Створюємо моментальне Blob-посилання
                 audioBufferCache[i] = URL.createObjectURL(blob);
-                statusDiv.textContent = `Загружено файлов: ${i + 1} из ${trackFiles.length}`;
+                statusDiv.textContent = `Завантажено треків: ${i + 1} з ${trackFiles.length}`;
             } catch (e) {
-                statusDiv.textContent = `Ошибка загрузки файла ${trackFiles[i]}`;
+                statusDiv.style.color = '#ef4444';
+                statusDiv.textContent = `Помилка завантаження файлу "${trackFiles[i]}". Перевірте назву файлу.`;
+                console.error(e);
                 return;
             }
         }
 
-        statusDiv.textContent = "Все треки в памяти. Нажмите кнопку Начать.";
+        statusDiv.style.color = '#34d399';
+        statusDiv.textContent = "Усі 5 треків готові у пам'яті! Натисніть кнопку нижче.";
+        startBtn.textContent = "ЗАПУСТИТЬ ТЕСТ ПЛЕЙЛИСТА";
         startBtn.disabled = false;
     }
 
-    // Функция переключения
+    // Логіка перемикання
     function playTrack(index) {
         if (index >= trackFiles.length) {
-            statusDiv.textContent = "Плейлист окончен.";
+            statusDiv.textContent = "Плейлист завершено.";
             document.querySelectorAll('.track-node').forEach(el => el.classList.remove('active'));
             return;
         }
 
         currentTrackIdx = index;
         
-        // Подсвечиваем UI
+        // Оновлюємо класи інтерфейсу
         document.querySelectorAll('.track-node').forEach((el, i) => {
             el.classList.toggle('active', i === index);
         });
 
-        statusDiv.textContent = `Играет трек ${index + 1}: ${trackFiles[index]}`;
+        statusDiv.textContent = `Грає трек ${index + 1} з ${trackFiles.length}`;
 
-        // МГНОВЕННАЯ подмена источника (без ожидания сети)
+        // Підміняємо аудіо-ресурс без звернення до мережі
         player.src = audioBufferCache[index];
+        
+        // Запускаємо відтворення
         player.play().catch(err => {
-            statusDiv.textContent = `Браузер заблокировал: ${err.message}`;
+            statusDiv.style.color = '#ef4444';
+            statusDiv.textContent = `Браузер заблокував автоперехід: ${err.message}`;
         });
     }
 
-    // По первому легальному клику запускаем цепочку
+    // Старт ланцюжка по першому кліку
     startBtn.addEventListener('click', () => {
         playTrack(0);
     });
 
-    // Ловим финиш трека и БЕЗ задержек (без setTimeout) включаем следующий
+    // Миттєвий перехід на наступний без таймаутів
     player.addEventListener('ended', () => {
         const next = currentTrackIdx + 1;
         playTrack(next);
     });
 
-    // Запуск предзагрузки
+    // Запускаємо кешування при завантаженні сторінки
     preloadTracks();
 </script>
 </body>
