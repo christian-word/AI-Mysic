@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="uk">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Liria 3 — Безмовна Слава</title>
+<title>AI Liria 3 — Wings of Dawn</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&family=Syne:wght@300;400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -22,24 +22,24 @@
     --border-glow: rgba(160,128,60,0.30);
     --shadow:      0 4px 20px rgba(0,0,0,0.08);
 
-    /* Accent spectrum — sacred tones */
-    --a0: #c9a84c;   /* gold */
-    --a1: #7ba7d4;   /* heaven blue */
-    --a2: #a78bd4;   /* sacred violet */
-    --a3: #c07090;   /* rose */
-    --a4: #8ab8a0;   /* jade */
-    --a5: #d4a878;   /* amber */
-    --a6: #e2c97e;   /* light gold */
-    --a7: #c8b8e8;   /* pearl */
+    /* Accent spectrum — небесна блакить */
+    --a0: #2a6090;   /* deep sky */
+    --a1: #4a7fa8;   /* mid blue */
+    --a2: #6a9fc0;   /* soft blue */
+    --a3: #3a70a0;   /* azure */
+    --a4: #5890b8;   /* cornflower */
+    --a5: #2a5878;   /* navy soft */
+    --a6: #3a80b0;   /* heaven */
+    --a7: #5078a0;   /* mist */
 
-    --a0-pale: rgba(201,168,76,0.08);
-    --a1-pale: rgba(123,167,212,0.08);
-    --a2-pale: rgba(167,139,212,0.08);
-    --a3-pale: rgba(192,112,144,0.08);
-    --a4-pale: rgba(138,184,160,0.08);
-    --a5-pale: rgba(212,168,120,0.08);
-    --a6-pale: rgba(226,201,126,0.08);
-    --a7-pale: rgba(200,184,232,0.08);
+    --a0-pale: rgba(42,96,144,0.08);
+    --a1-pale: rgba(74,127,168,0.08);
+    --a2-pale: rgba(106,159,192,0.08);
+    --a3-pale: rgba(58,112,160,0.08);
+    --a4-pale: rgba(88,144,184,0.08);
+    --a5-pale: rgba(42,88,120,0.08);
+    --a6-pale: rgba(58,128,176,0.08);
+    --a7-pale: rgba(80,120,160,0.08);
   }
 
   body {
@@ -60,9 +60,9 @@
     position: fixed;
     inset: 0;
     background:
-      radial-gradient(ellipse 70% 50% at 50% -5%,   rgba(201,168,76,0.10) 0%, transparent 65%),
-      radial-gradient(ellipse 50% 40% at 10% 80%,   rgba(123,167,212,0.07) 0%, transparent 60%),
-      radial-gradient(ellipse 40% 50% at 90% 50%,   rgba(167,139,212,0.07) 0%, transparent 65%);
+      radial-gradient(ellipse 80% 50% at 50% -5%,   rgba(74,127,168,0.12) 0%, transparent 65%),
+      radial-gradient(ellipse 50% 40% at 5% 70%,    rgba(42,96,144,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 50% at 95% 40%,   rgba(106,159,192,0.08) 0%, transparent 65%);
     pointer-events: none;
     z-index: 0;
   }
@@ -73,8 +73,8 @@
     position: fixed;
     inset: 0;
     background-image:
-      linear-gradient(rgba(160,128,60,0.06) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(160,128,60,0.06) 1px, transparent 1px);
+      linear-gradient(rgba(74,127,168,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(74,127,168,0.06) 1px, transparent 1px);
     background-size: 60px 60px;
     pointer-events: none;
     z-index: 0;
@@ -124,7 +124,7 @@
     margin-bottom: 6px;
   }
   .page-header h1 span {
-    background: linear-gradient(90deg, #8a6010, #1e5080);
+    background: linear-gradient(90deg, #1a4870, #5890b8);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -179,14 +179,14 @@
   .track-card::before { content: none; }
 
   .track-card:hover {
-    border-color: rgba(160,128,60,0.22);
-    background: #f2efe8;
+    border-color: rgba(74,127,168,0.22);
+    background: #edf4fa;
   }
 
   /* selected = last touched track, stays highlighted after pause/screen-off */
   .track-card.selected {
     background: var(--bg-card2);
-    border-color: rgba(160,128,60,0.35);
+    border-color: rgba(74,127,168,0.40);
   }
   .track-card.selected .track-num { opacity: 1; }
   .track-card.selected .track-title { color: #fff; }
@@ -208,7 +208,7 @@
 
   /* playing = actively playing */
   .track-card.playing {
-    border-color: rgba(160,128,60,0.55);
+    border-color: rgba(74,127,168,0.60);
     background: var(--bg-card2);
   }
 
@@ -261,14 +261,12 @@
     background: linear-gradient(135deg, rgba(255,255,255,0.18), transparent 60%);
     border-radius: inherit;
   }
-  .c0 .track-cover { background: linear-gradient(145deg, #7a5a10, #c9a84c); box-shadow: 0 4px 16px rgba(201,168,76,0.25); }
-  .c1 .track-cover { background: linear-gradient(145deg, #1e4878, #7ba7d4); box-shadow: 0 4px 16px rgba(123,167,212,0.25); }
-  .c2 .track-cover { background: linear-gradient(145deg, #4a3080, #a78bd4); box-shadow: 0 4px 16px rgba(167,139,212,0.25); }
-  .c3 .track-cover { background: linear-gradient(145deg, #7a2848, #c07090); box-shadow: 0 4px 16px rgba(192,112,144,0.25); }
-  .c4 .track-cover { background: linear-gradient(145deg, #1e5838, #8ab8a0); box-shadow: 0 4px 16px rgba(138,184,160,0.25); }
-  .c5 .track-cover { background: linear-gradient(145deg, #7a4820, #d4a878); box-shadow: 0 4px 16px rgba(212,168,120,0.25); }
-  .c6 .track-cover { background: linear-gradient(145deg, #7a6800, #c9a84c); box-shadow: 0 4px 16px rgba(226,201,126,0.25); }
-  .c7 .track-cover { background: linear-gradient(145deg, #483070, #c8b8e8); box-shadow: 0 4px 16px rgba(200,184,232,0.25); }
+  .c0 .track-cover { background: linear-gradient(145deg, #0e3058, #2a6090); box-shadow: 0 4px 16px rgba(42,96,144,0.25); }
+  .c1 .track-cover { background: linear-gradient(145deg, #1a4870, #4a7fa8); box-shadow: 0 4px 16px rgba(74,127,168,0.25); }
+  .c2 .track-cover { background: linear-gradient(145deg, #2a5878, #6a9fc0); box-shadow: 0 4px 16px rgba(106,159,192,0.25); }
+  .c3 .track-cover { background: linear-gradient(145deg, #143860, #3a70a0); box-shadow: 0 4px 16px rgba(58,112,160,0.25); }
+  .c4 .track-cover { background: linear-gradient(145deg, #1e5080, #5890b8); box-shadow: 0 4px 16px rgba(88,144,184,0.25); }
+  .c5 .track-cover { background: linear-gradient(145deg, #0a3050, #2a5878); box-shadow: 0 4px 16px rgba(42,88,120,0.25); }
 
   .track-card.playing .track-cover {
     box-shadow: 0 0 18px var(--ca, var(--a0));
@@ -389,8 +387,8 @@
     display: none;
     align-items: center;
     gap: 10px;
-    background: rgba(201,168,76,0.08);
-    border: 1px solid rgba(160,128,60,0.25);
+    background: rgba(74,127,168,0.07);
+    border: 1px solid rgba(74,127,168,0.22);
     border-radius: 10px;
     padding: 8px 14px;
     margin-bottom: 12px;
@@ -481,10 +479,10 @@
     position: fixed;
     bottom: 24px; left: 50%;
     transform: translateX(-50%) translateY(20px);
-    background: rgba(201,168,76,0.10);
+    background: rgba(74,127,168,0.10);
     backdrop-filter: blur(12px);
-    border: 1px solid rgba(201,168,76,0.3);
-    color: var(--a6);
+    border: 1px solid rgba(74,127,168,0.30);
+    color: var(--a1);
     padding: 9px 20px;
     border-radius: 10px;
     font-size: 12px;
@@ -512,8 +510,8 @@
       <div class="header-eyebrow">Sacred Ambient</div>
       <div style="font-family:'Space Grotesk',sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;color:#f97316;opacity:0.85;padding-top:1px;text-transform:uppercase;">AI&nbsp;Liria&nbsp;3</div>
     </div>
-    <h1>Безмовна <span>Слава</span></h1>
-    <p>Де слова закінчуються — там починається музика</p>
+    <h1>Wings <span>of Dawn </span></h1>
+    <p>Музика світла і небесного спокою — 6 треків</p>
     <div class="autoplay-badge">
       <div class="autoplay-dot"></div>
       Автоперехід увімкнено
@@ -531,13 +529,13 @@
   <div class="track-card c0" id="card-0">
     <div class="track-top">
       <span class="track-num">01</span>
-      <div class="track-cover"><i class="fas fa-tree"></i></div>
+      <div class="track-cover"><i class="fas fa-star"></i></div>
       <div class="track-info">
-        <div class="track-title">Хваліть Господа — Forest Whispers & Majesty</div>
+        <div class="track-title">Enchanted Starlight (Remix 1)</div>
         <div class="track-meta">
-          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Forest Whispers</span>
+          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Starlight · Remix 1</span>
           <span class="eq-bars"><span></span><span></span><span></span></span>
-          <span class="track-label">Ліс і величність</span>
+          <span class="track-label">Зачароване зоряне світло</span>
         </div>
       </div>
       <button class="play-btn" id="btn-0" onclick="togglePlay(0)"><i class="fas fa-play"></i></button>
@@ -553,13 +551,13 @@
   <div class="track-card c1" id="card-1">
     <div class="track-top">
       <span class="track-num">02</span>
-      <div class="track-cover"><i class="fas fa-users"></i></div>
+      <div class="track-cover"><i class="fas fa-star"></i></div>
       <div class="track-info">
-        <div class="track-title">Хваліть Господа — Massive Angelic Choir</div>
+        <div class="track-title">Enchanted Starlight (Remix 2)</div>
         <div class="track-meta">
-          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Angelic Choir</span>
+          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Starlight · Remix 2</span>
           <span class="eq-bars"><span></span><span></span><span></span></span>
-          <span class="track-label">Масивний ангельський хор</span>
+          <span class="track-label">Зачароване зоряне світло</span>
         </div>
       </div>
       <button class="play-btn" id="btn-1" onclick="togglePlay(1)"><i class="fas fa-play"></i></button>
@@ -575,13 +573,13 @@
   <div class="track-card c2" id="card-2">
     <div class="track-top">
       <span class="track-num">03</span>
-      <div class="track-cover"><i class="fas fa-volume-up"></i></div>
+      <div class="track-cover"><i class="fas fa-star"></i></div>
       <div class="track-info">
-        <div class="track-title">Хваліть Господа — With Loud Angelic Choir</div>
+        <div class="track-title">Enchanted Starlight (Remix 3)</div>
         <div class="track-meta">
-          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Loud Choir</span>
+          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Starlight · Remix 3</span>
           <span class="eq-bars"><span></span><span></span><span></span></span>
-          <span class="track-label">З гучним ангельським хором</span>
+          <span class="track-label">Зачароване зоряне світло</span>
         </div>
       </div>
       <button class="play-btn" id="btn-2" onclick="togglePlay(2)"><i class="fas fa-play"></i></button>
@@ -597,13 +595,13 @@
   <div class="track-card c3" id="card-3">
     <div class="track-top">
       <span class="track-num">04</span>
-      <div class="track-cover"><i class="fas fa-star"></i></div>
+      <div class="track-cover"><i class="fas fa-dragon"></i></div>
       <div class="track-info">
-        <div class="track-title">Хто достойний слави? — Ambient Instrumental (Remix)</div>
+        <div class="track-title">Fairy Tale Epic</div>
         <div class="track-meta">
-          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Instrumental · Remix</span>
+          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Epic</span>
           <span class="eq-bars"><span></span><span></span><span></span></span>
-          <span class="track-label">Амбієнт інструментал</span>
+          <span class="track-label">Казкова епіка</span>
         </div>
       </div>
       <button class="play-btn" id="btn-3" onclick="togglePlay(3)"><i class="fas fa-play"></i></button>
@@ -619,13 +617,13 @@
   <div class="track-card c4" id="card-4">
     <div class="track-top">
       <span class="track-num">05</span>
-      <div class="track-cover"><i class="fas fa-praying-hands"></i></div>
+      <div class="track-cover"><i class="fas fa-moon"></i></div>
       <div class="track-info">
-        <div class="track-title">Я схиляюсь перед Тобою — Ambient Instrumental Take 2</div>
+        <div class="track-title">Stardust Sanctuary (Remix)</div>
         <div class="track-meta">
-          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Instrumental · Take 2</span>
+          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Sanctuary · Remix</span>
           <span class="eq-bars"><span></span><span></span><span></span></span>
-          <span class="track-label">Поклоніння — дубль 2</span>
+          <span class="track-label">Притулок зоряного пилу</span>
         </div>
       </div>
       <button class="play-btn" id="btn-4" onclick="togglePlay(4)"><i class="fas fa-play"></i></button>
@@ -641,13 +639,13 @@
   <div class="track-card c5" id="card-5">
     <div class="track-top">
       <span class="track-num">06</span>
-      <div class="track-cover"><i class="fas fa-praying-hands"></i></div>
+      <div class="track-cover"><i class="fas fa-tree"></i></div>
       <div class="track-info">
-        <div class="track-title">Я схиляюсь перед Тобою — Ambient Instrumental</div>
+        <div class="track-title">The Hidden Grove</div>
         <div class="track-meta">
-          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Instrumental</span>
+          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Grove</span>
           <span class="eq-bars"><span></span><span></span><span></span></span>
-          <span class="track-label">Поклоніння — оригінал</span>
+          <span class="track-label">Прихований гай</span>
         </div>
       </div>
       <button class="play-btn" id="btn-5" onclick="togglePlay(5)"><i class="fas fa-play"></i></button>
@@ -659,264 +657,4 @@
     </div>
   </div>
 
-  <!-- Track 7 (was #0) -->
-  <div class="track-card c6" id="card-6">
-    <div class="track-top">
-      <span class="track-num">07</span>
-      <div class="track-cover"><i class="fas fa-sun"></i></div>
-      <div class="track-info">
-        <div class="track-title">Сяяння Святості — Ambient Electronics</div>
-        <div class="track-meta">
-          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Ambient Electronics</span>
-          <span class="eq-bars"><span></span><span></span><span></span></span>
-          <span class="track-label">Електронний амбієнт</span>
-        </div>
-      </div>
-      <button class="play-btn" id="btn-6" onclick="togglePlay(6)"><i class="fas fa-play"></i></button>
-    </div>
-    <div class="wave-wrap">
-      <div id="wave-6" class="wave-inner"></div>
-      <span class="cur-label" id="cur-6">00:00</span>
-      <span class="time-label" id="dur-6">--:--</span>
-    </div>
-  </div>
 
-  <!-- Track 8 (was #1) -->
-  <div class="track-card c7" id="card-7">
-    <div class="track-top">
-      <span class="track-num">08</span>
-      <div class="track-cover"><i class="fas fa-dove"></i></div>
-      <div class="track-info">
-        <div class="track-title">Слава Творця — Pure Ambient Edit</div>
-        <div class="track-meta">
-          <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Pure Ambient</span>
-          <span class="eq-bars"><span></span><span></span><span></span></span>
-          <span class="track-label">Чистий амбієнт</span>
-        </div>
-      </div>
-      <button class="play-btn" id="btn-7" onclick="togglePlay(7)"><i class="fas fa-play"></i></button>
-    </div>
-    <div class="wave-wrap">
-      <div id="wave-7" class="wave-inner"></div>
-      <span class="cur-label" id="cur-7">00:00</span>
-      <span class="time-label" id="dur-7">--:--</span>
-    </div>
-  </div>
-
-  <div class="page-footer">
-    <div class="footer-actions">
-      <button class="action-btn" onclick="shareTG()"><i class="fab fa-telegram-plane"></i> Telegram</button>
-      <button class="action-btn" onclick="copyLink()"><i class="fas fa-link"></i> Посилання</button>
-    </div>
-    <div class="brand-logo">
-      <div class="brand-icon"><i class="fas fa-music"></i></div>
-      <div>
-        <span class="brand-text">LIRIA</span>
-        <span class="brand-sub">sacred ambient</span>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script type="module">
-  import WaveSurfer from 'https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.esm.js';
-
-  const BASE = 'https://christian-word.github.io/AI-Mysic/wform.play17/';
-  const tracks = [
-    { src: BASE + 'Enchanted%20Starlight%20(Remix)%20(1).m4a',      title: 'Enchanted Starlight — Remix 1' },
-    { src: BASE + 'Enchanted%20Starlight%20(Remix)%20(2).m4a',      title: 'Enchanted Starlight — Remix 2' },
-    { src: BASE + 'Enchanted%20Starlight%20(Remix)%20(3).m4a',      title: 'Enchanted Starlight — Remix 3' },
-    { src: BASE + 'Fairy%20Tale%20Epic.m4a',                        title: 'Fairy Tale Epic' },
-    { src: BASE + 'Morning%20Light%20(Var%202)%20(Remix).m4a',      title: 'Morning Light — Remix' },
-    { src: BASE + 'Stardust%20Sanctuary%20(Remix).m4a',             title: 'Stardust Sanctuary' },
-    { src: BASE + 'The%20Hidden%20Grove.m4a',                       title: 'The Hidden Grove' },
-    { src: BASE + 'Whispers%20of%20the%20Fae.m4a',                  title: 'Whispers of the Fae' }
-  ];
-
-  // Waveform colours per track (dark base + glowing progress)
-  const colors = [
-    { wave: '#e8dfc8', progress: '#9a7820' },
-    { wave: '#ccd8e8', progress: '#3a78b0' },
-    { wave: '#d8cce8', progress: '#7050b0' },
-    { wave: '#e8ccd8', progress: '#a04868' },
-    { wave: '#cce0d8', progress: '#408060' },
-    { wave: '#e8dac8', progress: '#a06828' },
-    { wave: '#e8e0b8', progress: '#907010' },
-    { wave: '#dcd0e8', progress: '#7048a0' }
-  ];
-
-  const fmt = s => new Date(s * 1000).toISOString().substr(14, 5);
-
-  let currentPlaying = -1;
-
-  const updateNowPlaying = (i) => {
-    const bar   = document.getElementById('now-playing-bar');
-    const title = document.getElementById('np-title');
-    const next  = document.getElementById('np-next');
-    if (i >= 0) {
-      bar.classList.add('visible');
-      title.textContent = tracks[i].title;
-      next.textContent  = i < tracks.length - 1 ? `→ ${tracks[i+1].title}` : '— Кінець плейлисту';
-      updateMediaSession(i);
-    } else {
-      bar.classList.remove('visible');
-    }
-  };
-
-  // ── AudioContext lock — не дає браузеру заморозити аудіо ──
-  let audioCtx = null;
-  function unlockAudio() {
-    if (audioCtx) return;
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    // Тихий осцилятор — тримає аудіо сесію живою
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    gain.gain.value = 0.001; // майже нечутно
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
-    osc.start();
-    // Відновлюємо якщо система призупинила
-    document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'visible' && audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
-    });
-  }
-
-  // ── MediaSession API — реєструє плеєр в системі ──
-  function updateMediaSession(i) {
-    if (!('mediaSession' in navigator)) return;
-    navigator.mediaSession.metadata = new MediaMetadata({
-      title:  tracks[i].title,
-      artist: 'AI Liria 3',
-      album:  'Безмовна Слава',
-    });
-    navigator.mediaSession.setActionHandler('play',         () => { if (currentPlaying >= 0) players[currentPlaying].play(); });
-    navigator.mediaSession.setActionHandler('pause',        () => { if (currentPlaying >= 0) players[currentPlaying].pause(); });
-    navigator.mediaSession.setActionHandler('nexttrack',    () => {
-      const next = (currentPlaying >= 0 ? currentPlaying : -1) + 1;
-      if (next < players.length) window.togglePlay(next);
-    });
-    navigator.mediaSession.setActionHandler('previoustrack', () => {
-      const prev = (currentPlaying >= 0 ? currentPlaying : 1) - 1;
-      if (prev >= 0) window.togglePlay(prev);
-    });
-    navigator.mediaSession.playbackState = 'playing';
-  }
-
-  // Lazy loading: створюємо інстанції без url, завантажуємо по черзі
-  const players = tracks.map((track, i) => {
-    const ws = WaveSurfer.create({
-      container:     `#wave-${i}`,
-      waveColor:     colors[i].wave,
-      progressColor: colors[i].progress,
-      barWidth:  2,
-      barGap:    1,
-      barRadius: 2,
-      height:    34,
-      interact:  true,
-      normalize: true,
-      // url не передаємо — завантажуємо вручну через load()
-    });
-
-    ws.on('ready', (dur) => {
-      document.getElementById(`dur-${i}`).textContent = fmt(dur);
-      document.getElementById(`btn-${i}`).disabled = false;
-      document.getElementById(`btn-${i}`).style.opacity = '';
-      // Після того як i-й готовий — завантажуємо наступний
-      if (i + 1 < tracks.length && !loaded[i + 1]) {
-        loaded[i + 1] = true;
-        players[i + 1].load(tracks[i + 1].src);
-      }
-    });
-
-    ws.on('timeupdate', (cur) => {
-      document.getElementById(`cur-${i}`).textContent = fmt(cur);
-    });
-
-    ws.on('play', () => {
-      document.getElementById(`btn-${i}`).innerHTML = '<i class="fas fa-pause"></i>';
-      document.getElementById(`card-${i}`).classList.add('playing');
-      document.getElementById(`card-${i}`).classList.add('selected');
-      players.forEach((p, j) => {
-        if (j !== i) {
-          if (p.isPlaying()) p.pause();
-          document.getElementById(`card-${j}`).classList.remove('selected');
-        }
-      });
-      currentPlaying = i;
-      updateNowPlaying(i);
-      // Завантажуємо наступний якщо ще не завантажений
-      if (i + 1 < tracks.length && !loaded[i + 1]) {
-        loaded[i + 1] = true;
-        players[i + 1].load(tracks[i + 1].src);
-      }
-    });
-
-    ws.on('pause', () => {
-      document.getElementById(`btn-${i}`).innerHTML = '<i class="fas fa-play"></i>';
-      document.getElementById(`card-${i}`).classList.remove('playing');
-      if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'paused';
-      if (currentPlaying === i) {
-        currentPlaying = -1;
-        updateNowPlaying(-1);
-      }
-    });
-
-    ws.on('finish', () => {
-      document.getElementById(`btn-${i}`).innerHTML = '<i class="fas fa-play"></i>';
-      document.getElementById(`card-${i}`).classList.remove('playing');
-      currentPlaying = -1;
-      const next = i + 1;
-      if (next < players.length) {
-        setTimeout(() => {
-          players[next].play();
-          document.getElementById(`card-${next}`).scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }, 600);
-      } else {
-        updateNowPlaying(-1);
-      }
-    });
-
-    return ws;
-  });
-
-  // Відмічаємо які треки вже завантажені
-  const loaded = new Array(tracks.length).fill(false);
-
-  // Кнопки 2-8 робимо трохи приглушеними поки не завантажились
-  for (let i = 1; i < tracks.length; i++) {
-    const btn = document.getElementById(`btn-${i}`);
-    btn.style.opacity = '0.35';
-  }
-
-  // Стартуємо завантаження тільки першого треку
-  loaded[0] = true;
-  players[0].load(tracks[0].src);
-
-  window.togglePlay = (i) => {
-    unlockAudio(); // активуємо AudioContext при першому натисканні
-    // Якщо трек ще не завантажений — завантажуємо і чекаємо ready
-    if (!loaded[i]) {
-      loaded[i] = true;
-      players[i].load(tracks[i].src);
-      players[i].once('ready', () => players[i].play());
-    } else {
-      players[i].playPause();
-    }
-  };
-
-  window.shareTG = () => {
-    window.open(`https://t.me/share/url?url=${encodeURIComponent(window.location.href)}`, '_blank');
-  };
-
-  window.copyLink = () => {
-    navigator.clipboard.writeText(window.location.href).then(() => {
-      const t = document.getElementById('toast');
-      t.classList.add('show');
-      setTimeout(() => t.classList.remove('show'), 2200);
-    });
-  };
-</script>
-</body>
-</html>
