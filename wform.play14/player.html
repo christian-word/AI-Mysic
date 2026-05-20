@@ -324,6 +324,33 @@
     50%       { height: 14px; }
   }
 
+  /* ── Now Playing bar ── */
+  .now-playing-bar {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    background: rgba(107,159,212,0.07);
+    border: 1px solid rgba(107,159,212,0.20);
+    border-radius: 10px;
+    padding: 8px 14px;
+    margin-bottom: 10px;
+    font-size: 11px;
+    color: rgba(220,216,240,0.6);
+    animation: fadein 0.3s ease;
+  }
+  .now-playing-bar.visible { display: flex; }
+  @keyframes fadein { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+  .np-label {
+    font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+    color: #6b9fd4; font-weight: 600; flex-shrink: 0;
+  }
+  .np-title {
+    flex: 1; white-space: nowrap; overflow: hidden;
+    text-overflow: ellipsis; color: var(--ink); font-weight: 500;
+    font-family: 'Cormorant Garamond', serif; font-size: 13px;
+  }
+  .np-next { font-size: 9px; color: rgba(220,216,240,0.30); flex-shrink: 0; }
+
   @keyframes pulse-ring {
     0%   { box-shadow: 0 0 0 0px var(--card-accent, var(--amber)); }
     70%  { box-shadow: 0 0 0 8px transparent; }
@@ -341,6 +368,13 @@
     <div class="header-eyebrow">Worship Collection</div>
     <h1>Промінь Надії</h1>
     <p>Від літнього світла до живої акустики — 5 версій</p>
+  </div>
+
+  <!-- Now Playing bar -->
+  <div class="now-playing-bar" id="now-playing-bar">
+    <span class="np-label">Now</span>
+    <span class="np-title" id="np-title">—</span>
+    <span class="np-next" id="np-next"></span>
   </div>
 
   <!-- Track 1 – early summer light -->
@@ -467,11 +501,11 @@
   import WaveSurfer from 'https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.esm.js';
 
   const tracks = [
-    { src: 'Свет раннего лета.m4a' },
-    { src: 'Golden Hour Grace (Forest Evolution).m4a' },
-    { src: 'Meadows of Hope.m4a' },
-    { src: 'Radiant Horizon.m4a' },
-    { src: 'Осенняя Благодать(ак.гит.) (Remix).m4a' }
+    { src: 'Свет раннего лета.m4a',                    title: 'Світло Раннього Літа'              },
+    { src: 'Golden Hour Grace (Forest Evolution).m4a',  title: 'Живе Світло (Forest Evolution)'    },
+    { src: 'Meadows of Hope.m4a',                       title: 'Meadows of Hope'                   },
+    { src: 'Radiant Horizon.m4a',                       title: 'Radiant Horizon'                   },
+    { src: 'Осенняя Благодать(ак.гит.) (Remix).m4a',   title: 'Живе Світло — Акустична гітара'    }
   ];
 
   const colors = [
@@ -483,42 +517,115 @@
   ];
 
   const fmt = s => new Date(s * 1000).toISOString().substr(14, 5);
+  let currentPlaying = -1;
+  const loaded = new Array(tracks.length).fill(false);
 
+  /* ── Now Playing bar ── */
+  const npBar   = document.getElementById('now-playing-bar');
+  const npTitle = document.getElementById('np-title');
+  const npNext  = document.getElementById('np-next');
+
+  function showNowPlaying(i) {
+    npTitle.textContent = tracks[i].title;
+    npNext.textContent  = i < tracks.length - 1 ? '→ ' + tracks[i + 1].title : '— кінець плейлисту';
+    npBar.classList.add('visible');
+  }
+  function hideNowPlaying() { npBar.classList.remove('visible'); }
+
+  /* ── MediaSession ── */
+  function setMediaSession(i) {
+    if (!('mediaSession' in navigator)) return;
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: tracks[i].title, artist: 'МЕЛОДІЯ', album: 'Промінь Надії'
+    });
+    navigator.mediaSession.setActionHandler('play',          () => { if (currentPlaying >= 0) players[currentPlaying].play(); });
+    navigator.mediaSession.setActionHandler('pause',         () => { if (currentPlaying >= 0) players[currentPlaying].pause(); });
+    navigator.mediaSession.setActionHandler('nexttrack',     () => { const n = currentPlaying + 1; if (n < players.length) window.togglePlay(n); });
+    navigator.mediaSession.setActionHandler('previoustrack', () => { const p = currentPlaying - 1; if (p >= 0) window.togglePlay(p); });
+    navigator.mediaSession.playbackState = 'playing';
+  }
+
+  /* ── Build players ── */
   const players = tracks.map((track, i) => {
     const ws = WaveSurfer.create({
       container: `#wave-${i}`,
       waveColor: colors[i].wave,
       progressColor: colors[i].progress,
-      barWidth: 1,
-      barGap: 0.5,
-      barRadius: 1,
-      height: 44,
-      interact: true,
-      normalize: true,
-      volume: 1,
-      url: track.src,
+      barWidth: 1, barGap: 0.5, barRadius: 1,
+      height: 44, interact: true, normalize: true,
     });
 
-    const btn = document.getElementById(`btn-${i}`);
+    const btn  = document.getElementById(`btn-${i}`);
+    const card = document.getElementById(`card-${i}`);
 
-    ws.on('ready', (dur) => document.getElementById(`dur-${i}`).textContent = fmt(dur));
-    ws.on('timeupdate', (cur) => document.getElementById(`cur-${i}`).textContent = fmt(cur));
+    ws.on('ready', dur => {
+      document.getElementById(`dur-${i}`).textContent = fmt(dur);
+      /* pre-load next track when current is ready */
+      if (i + 1 < tracks.length && !loaded[i + 1]) {
+        loaded[i + 1] = true;
+        players[i + 1].load(tracks[i + 1].src);
+      }
+    });
+
+    ws.on('timeupdate', cur => document.getElementById(`cur-${i}`).textContent = fmt(cur));
 
     ws.on('play', () => {
       btn.innerHTML = '<i class="fas fa-pause"></i>';
-      document.getElementById(`card-${i}`).classList.add('playing');
-      players.forEach((p, j) => { if (j !== i && p.isPlaying()) p.pause(); });
+      card.classList.add('playing');
+      /* pause all others */
+      players.forEach((p, j) => {
+        if (j !== i) {
+          if (p.isPlaying()) p.pause();
+          document.getElementById(`card-${j}`).classList.remove('playing');
+          document.getElementById(`btn-${j}`).innerHTML = '<i class="fas fa-play"></i>';
+        }
+      });
+      currentPlaying = i;
+      showNowPlaying(i);
+      setMediaSession(i);
     });
 
     ws.on('pause', () => {
       btn.innerHTML = '<i class="fas fa-play"></i>';
-      document.getElementById(`card-${i}`).classList.remove('playing');
+      card.classList.remove('playing');
+      if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'paused';
+      if (currentPlaying === i) { currentPlaying = -1; hideNowPlaying(); }
+    });
+
+    /* ── AUTO-ADVANCE ── */
+    ws.on('finish', () => {
+      btn.innerHTML = '<i class="fas fa-play"></i>';
+      card.classList.remove('playing');
+      currentPlaying = -1;
+      const next = i + 1;
+      if (next < players.length) {
+        setTimeout(() => {
+          window.togglePlay(next);
+          document.getElementById(`card-${next}`)
+            .scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 700);
+      } else {
+        hideNowPlaying();
+      }
     });
 
     return ws;
   });
 
-  window.togglePlay = (i) => players[i].playPause();
+  /* Load only the first track initially */
+  loaded[0] = true;
+  players[0].load(tracks[0].src);
+
+  /* togglePlay with lazy loading */
+  window.togglePlay = (i) => {
+    if (!loaded[i]) {
+      loaded[i] = true;
+      players[i].load(tracks[i].src);
+      players[i].once('ready', () => players[i].play());
+    } else {
+      players[i].playPause();
+    }
+  };
 
   window.shareTG = () => {
     window.open(`https://t.me/share/url?url=${encodeURIComponent(window.location.href)}`, '_blank');
