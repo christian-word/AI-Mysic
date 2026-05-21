@@ -951,15 +951,45 @@ body::after {
     }
 
     loaded[0] = true;
-    players[0].load(tracks[0].src);
+// Сюда пропишем одну общую функцию отправки в Google
+    const sendToGoogle = (eventText) => {
+      const googleScriptUrl = "https://script.google.com/macros/s/AKfycbzRYOrisD1SsnKU9a0Iv0UTYvUkikmLnTp6SZsT5PON5mU6XRL-xjlXvmsK1uL-s5EmRg/exec";
+      
+      const payload = {
+        album: eventText, // Передаем либо заголовок плеера, либо название трека
+        ua: navigator.userAgent
+      };
 
+      // Отправляем как простой текст (text/plain) — это на 100% обходит защиту CORS в браузерах
+      fetch(googleScriptUrl, {
+        method: "POST",
+        mode: "no-cors",
+        cache: "no-cache",
+        headers: { "Content-Type": "text/plain" },
+        body: JSON.stringify(payload)
+      }).catch(err => console.log("Ошибка статистики:", err));
+    };
+
+    // 1. Срабатывает СРАЗУ при открытии страницы плеера
+    loaded[0] = true;
+    players[0].load(tracks[0].src);
+    sendToGoogle(`Открытие плеера: ${document.title}`);
+
+    // 2. Модифицируем запуск треков (сработает при клике на Play)
     window.togglePlay = i => {
       unlockAudio();
       if (!loaded[i]) {
         loaded[i] = true;
         players[i].load(tracks[i].src);
-        players[i].once('ready', () => players[i].play());
+        players[i].once('ready', () => {
+          players[i].play();
+          sendToGoogle(`Включение трека: ${tracks[i].title}`);
+        });
       } else {
+        // Проверяем, запускается трек или ставится на паузу
+        if (!players[i].isPlaying()) {
+          sendToGoogle(`Включение трека: ${tracks[i].title}`);
+        }
         players[i].playPause();
       }
     };
