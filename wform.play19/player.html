@@ -931,17 +931,22 @@ body::after {
 const sendToGoogle = (eventText) => {
       const googleScriptUrl = "https://script.google.com/macros/s/AKfycbw_njI0VBBu12L3qt5i3M73YM3jhEI5qhUGK0cyL-c5ISlG889ZUHPgh_irYWYE1dJ04w/exec";
       
+      // Коротко определяем: мобилка или ПК
+      const isMobile = /Mobi|Android|iPhone/i.test(navigator.userAgent) ? "Моб" : "ПК";
+      // Берем короткий код языка (например, "ru" или "uk")
+      const lang = navigator.language.split('-')[0]; 
+      
       const payload = {
         album: eventText,
-        ua: navigator.userAgent
+        ua: `${isMobile} (${lang})` // Вместо мусора будет, например: "Моб (ru)"
       };
 
       fetch(googleScriptUrl, {
         method: "POST",
         mode: "no-cors",
         cache: "no-cache",
-        headers: { "Content-Type": "text/plain" }, // Оставляем text/plain для CORS
-        body: JSON.stringify(payload) // Передаем строку
+        headers: { "Content-Type": "text/plain" },
+        body: JSON.stringify(payload)
       }).catch(err => console.log("Ошибка статистики:", err));
     };
 
