@@ -776,7 +776,7 @@ body::after {
     </div>
   </div>
 
-  <script type="module">
+<script type="module">
     import WaveSurfer from 'https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.esm.js';
 
     const tracks = [
@@ -803,6 +803,55 @@ body::after {
 
     const fmt = s => new Date(s * 1000).toISOString().substr(14, 5);
     let currentPlaying = -1;
+
+    // Генерируем случайный ID сессии (например, User-K3X9A), чтобы отличать пользователей друг от друга
+    const sessionId = 'User-' + Math.random().toString(36).substr(2, 5).toUpperCase();
+    
+    // Объект, в котором будем засекать время старта треков
+    const trackTimers = {};
+
+    // Единая функция отправки статистики в Google Таблицу
+    const sendToGoogle = (title, action, seconds = 0) => {
+      const googleScriptUrl = "https://script.google.com/macros/s/AKfycbw_njI0VBBu12L3qt5i3M73YM3jhEI5qhUGK0cyL-c5ISlG889ZUHPgh_irYWYE1dJ04w/exec";
+      
+      const isMobile = /Mobi|Android|iPhone/i.test(navigator.userAgent) ? "Моб" : "ПК";
+      const lang = navigator.language.split('-')[0]; 
+      
+      const payload = {
+        userId: sessionId,
+        title: title,
+        action: action,
+        seconds: seconds,
+        info: `${isMobile} (${lang})`
+      };
+
+      fetch(googleScriptUrl, {
+        method: "POST",
+        mode: "no-cors",
+        cache: "no-cache",
+        headers: { "Content-Type": "text/plain" },
+        body: JSON.stringify(payload)
+      }).catch(err => console.log("Ошибка статистики:", err));
+    };
+
+    // Функция фиксации времени: считает, сколько секунд играл трек до паузы/переключения
+    const stopTrackTimer = (i) => {
+      if (trackTimers[i] && trackTimers[i].isPlaying) {
+        const playedSeconds = Math.round((Date.now() - trackTimers[i].startTime) / 1000);
+        if (playedSeconds > 0) {
+          sendToGoogle(tracks[i].title, "Слушал трек (сек)", playedSeconds);
+        }
+        trackTimers[i].isPlaying = false;
+      }
+    };
+
+    // Функция запуска таймера
+    const startTrackTimer = (i) => {
+      trackTimers[i] = {
+        startTime: Date.now(),
+        isPlaying: true
+      };
+    };
 
     const updateNowPlaying = i => {
       const bar = document.getElementById('now-playing-bar');
@@ -926,59 +975,51 @@ body::after {
       document.getElementById(`btn-${i}`).style.opacity = 0.35;
     }
 
-    loaded[0] = true;
-// Сюда пропишем одну общую функцию отправки в Google
-const sendToGoogle = (eventText) => {
-      const googleScriptUrl = "https://script.google.com/macros/s/AKfycbw_njI0VBBu12L3qt5i3M73YM3jhEI5qhUGK0cyL-c5ISlG889ZUHPgh_irYWYE1dJ04w/exec";
-      
-      // Коротко определяем: мобилка или ПК
-      const isMobile = /Mobi|Android|iPhone/i.test(navigator.userAgent) ? "Моб" : "ПК";
-      // Берем короткий код языка (например, "ru" или "uk")
-      const lang = navigator.language.split('-')[0]; 
-      
-      const payload = {
-        album: eventText,
-        ua: `${isMobile} (${lang})` // Вместо мусора будет, например: "Моб (ru)"
-      };
-
-      fetch(googleScriptUrl, {
-        method: "POST",
-        mode: "no-cors",
-        cache: "no-cache",
-        headers: { "Content-Type": "text/plain" },
-        body: JSON.stringify(payload)
-      }).catch(err => console.log("Ошибка статистики:", err));
-    };
-
     // 1. Срабатывает СРАЗУ при открытии страницы плеера
     loaded[0] = true;
     players[0].load(tracks[0].src);
-    sendToGoogle(`Открытие плеера: ${document.title}`);
+    sendToGoogle(document.title, "Открытие плеера");
 
-    // 2. Модифицируем запуск треков (сработает при клике на Play)
+    // 2. Управление треками с подсчетом секунд прослушивания
     window.togglePlay = i => {
       unlockAudio();
+      
+      // Если переключаемся на другой трек, сначала сохраняем секунды старого трека
+      if (currentPlaying !== -1 && currentPlaying !== i) {
+        stopTrackTimer(currentPlaying);
+      }
+
       if (!loaded[i]) {
         loaded[i] = true;
         players[i].load(tracks[i].src);
         players[i].once('ready', () => {
           players[i].play();
-          sendToGoogle(`Включение трека: ${tracks[i].title}`);
+          startTrackTimer(i);
         });
       } else {
-        // Проверяем, запускается трек или ставится на паузу
         if (!players[i].isPlaying()) {
-          sendToGoogle(`Включение трека: ${tracks[i].title}`);
+          startTrackTimer(i);
+        } else {
+          stopTrackTimer(i);
         }
         players[i].playPause();
       }
     };
 
+    // Если человек слушал трек и просто закрыл вкладку или смахнул страницу
+    window.addEventListener('beforeunload', () => {
+      if (currentPlaying !== -1) {
+        stopTrackTimer(currentPlaying);
+      }
+    });
+
     window.shareTG = () => {
+      sendToGoogle(document.title, "Поделился в TG");
       window.open(`https://t.me/share/url?url=${encodeURIComponent(window.location.href)}`, '_blank');
     };
 
     window.copyLink = () => {
+      sendToGoogle(document.title, "Скопировал ссылку");
       navigator.clipboard.writeText(window.location.href).then(() => {
         const t = document.getElementById('toast');
         t.classList.add('show');
