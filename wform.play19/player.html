@@ -804,13 +804,20 @@ body::after {
     const fmt = s => new Date(s * 1000).toISOString().substr(14, 5);
     let currentPlaying = -1;
 
-    // Генерируем случайный ID сессии (например, User-K3X9A), чтобы отличать пользователей друг от друга
-    const sessionId = 'User-' + Math.random().toString(36).substr(2, 5).toUpperCase();
+    // УМНАЯ ИДЕНТИФИКАЦИЯ УСТРОЙСТВА:
+    // Проверяем, есть ли уже сохраненный ID в памяти браузера
+    let sessionId = localStorage.getItem('player_user_id');
+
+    // Если устройство зашло впервые — генерируем ему постоянный ID и сохраняем в память
+    if (!sessionId) {
+      sessionId = 'Device-' + Math.random().toString(36).substr(2, 5).toUpperCase();
+      localStorage.setItem('player_user_id', sessionId);
+    }
     
-    // Объект, в котором будем засекать время старта треков
+    // Объект для таймеров треков
     const trackTimers = {};
 
-    // Единая функция отправки статистики в Google Таблицу
+    // Функция отправки статистики в Google
     const sendToGoogle = (title, action, seconds = 0) => {
       const googleScriptUrl = "https://script.google.com/macros/s/AKfycbw_njI0VBBu12L3qt5i3M73YM3jhEI5qhUGK0cyL-c5ISlG889ZUHPgh_irYWYE1dJ04w/exec";
       
@@ -818,7 +825,7 @@ body::after {
       const lang = navigator.language.split('-')[0]; 
       
       const payload = {
-        userId: sessionId,
+        userId: sessionId, // Передаем наш вечный ID устройства
         title: title,
         action: action,
         seconds: seconds,
@@ -834,7 +841,7 @@ body::after {
       }).catch(err => console.log("Ошибка статистики:", err));
     };
 
-    // Функция фиксации времени: считает, сколько секунд играл трек до паузы/переключения
+    // Фиксация секунд прослушивания
     const stopTrackTimer = (i) => {
       if (trackTimers[i] && trackTimers[i].isPlaying) {
         const playedSeconds = Math.round((Date.now() - trackTimers[i].startTime) / 1000);
@@ -845,7 +852,6 @@ body::after {
       }
     };
 
-    // Функция запуска таймера
     const startTrackTimer = (i) => {
       trackTimers[i] = {
         startTime: Date.now(),
@@ -975,16 +981,15 @@ body::after {
       document.getElementById(`btn-${i}`).style.opacity = 0.35;
     }
 
-    // 1. Срабатывает СРАЗУ при открытии страницы плеера
+    // 1. Открытие страницы плеера
     loaded[0] = true;
     players[0].load(tracks[0].src);
     sendToGoogle(document.title, "Открытие плеера");
 
-    // 2. Управление треками с подсчетом секунд прослушивания
+    // 2. Управление треками
     window.togglePlay = i => {
       unlockAudio();
       
-      // Если переключаемся на другой трек, сначала сохраняем секунды старого трека
       if (currentPlaying !== -1 && currentPlaying !== i) {
         stopTrackTimer(currentPlaying);
       }
@@ -1006,7 +1011,6 @@ body::after {
       }
     };
 
-    // Если человек слушал трек и просто закрыл вкладку или смахнул страницу
     window.addEventListener('beforeunload', () => {
       if (currentPlaying !== -1) {
         stopTrackTimer(currentPlaying);
