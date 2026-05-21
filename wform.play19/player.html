@@ -776,30 +776,6 @@ body::after {
     </div>
   </div>
 
-<script>
-  window.addEventListener('DOMContentLoaded', () => {
-    // Вставь сюда URL веб-приложения, который ты скопировал в Google Apps Script
-    const googleScriptUrl = "https://script.google.com/macros/s/AKfycbzRYOrisD1SsnKU9a0Iv0UTYvUkikmLnTp6SZsT5PON5mU6XRL-xjlXvmsK1uL-s5EmRg/exec";
-    
-    // Собираем данные: заголовок текущей страницы и юзер-агент браузера
-    const payload = {
-      album: document.title, // Автоматически подтянет имя альбома из тега <title>
-      ua: navigator.userAgent
-    };
-
-    // Тихо отправляем данные методом POST
-    fetch(googleScriptUrl, {
-      method: "POST",
-      mode: "no-cors", // Важный параметр для обхода ограничений CORS браузера
-      cache: "no-cache",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(payload)
-    }).catch(err => console.log("Какая-то заминка со статистикой:", err));
-  });
-</script>
-
   <script type="module">
     import WaveSurfer from 'https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.esm.js';
 
@@ -952,21 +928,20 @@ body::after {
 
     loaded[0] = true;
 // Сюда пропишем одну общую функцию отправки в Google
-    const sendToGoogle = (eventText) => {
+const sendToGoogle = (eventText) => {
       const googleScriptUrl = "https://script.google.com/macros/s/AKfycbw_njI0VBBu12L3qt5i3M73YM3jhEI5qhUGK0cyL-c5ISlG889ZUHPgh_irYWYE1dJ04w/exec";
       
       const payload = {
-        album: eventText, // Передаем либо заголовок плеера, либо название трека
+        album: eventText,
         ua: navigator.userAgent
       };
 
-      // Отправляем как простой текст (text/plain) — это на 100% обходит защиту CORS в браузерах
       fetch(googleScriptUrl, {
         method: "POST",
         mode: "no-cors",
         cache: "no-cache",
-        headers: { "Content-Type": "text/plain" },
-        body: JSON.stringify(payload)
+        headers: { "Content-Type": "text/plain" }, // Оставляем text/plain для CORS
+        body: JSON.stringify(payload) // Передаем строку
       }).catch(err => console.log("Ошибка статистики:", err));
     };
 
