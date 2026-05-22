@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -777,56 +777,61 @@ body::after {
     </div>
   </div>
 
-<script type="module">
+  <script type="module">
     import WaveSurfer from 'https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.esm.js';
 
+    // Твой новый обновленный массив треков
     const tracks = [
-      { src: 'Atmospheric Whispers.m4a', title: 'Atmospheric Whispers' },
-      { src: 'Breathy Reflections.m4a', title: 'Breathy Reflections' },
       { src: 'Breathy Reflections (Guitar Solo Remix).m4a', title: 'Breathy Reflections (Guitar Solo Remix)' },
       { src: 'Ethereal Evening (Saxophone Remix).m4a', title: 'Ethereal Evening (Saxophone Remix)' },
       { src: 'Ethereal Evening (Remix).m4a', title: 'Ethereal Evening (Remix)' },
       { src: 'Sunset Vibes Lounge.m4a', title: 'Sunset Vibes Lounge' },
       { src: 'Velvet Sunset Lounge (Saxophone Remix).m4a', title: 'Velvet Sunset Lounge (Saxophone Remix)' },
-      { src: 'Velvet Sunset Lounge (Remix).m4a', title: 'Velvet Sunset Lounge (Remix)' }
+      { src: 'Velvet Sunset Lounge (Remix).m4a', title: 'Velvet Sunset Lounge (Remix)' },
+      { src: 'Atmospheric Whispers.m4a', title: 'Atmospheric Whispers' },
+      { src: 'Breathy Reflections.m4a', title: 'Breathy Reflections' }
     ];
 
+    // Твои новые сине-голубые цветовые схемы для визуализации волн
     const colors = [
-      { wave: '7a3500', progress: 'ff9b42' },
-      { wave: '6b3b00', progress: 'ffc56b' },
-      { wave: '5e2141', progress: 'ff8da1' },
-      { wave: '8b3b1d', progress: 'ffb15c' },
-      { wave: '623460', progress: 'f7a35c' },
-      { wave: '7a2d08', progress: 'ffcf8b' },
-      { wave: '5f1d32', progress: 'ffd9a2' },
-      { wave: '7a3500', progress: 'ff9b42' }
+      { wave: '1e3444', progress: '9abcd0' },
+      { wave: '243848', progress: 'a8c4d8' },
+      { wave: '182c40', progress: '8fb0c8' },
+      { wave: '0e2030', progress: '6d8fa8' },
+      { wave: '283c50', progress: 'b8d0e0' },
+      { wave: '1c2c3a', progress: 'ccdde8' },
+      { wave: '1a2e40', progress: '7a9db8' },
+      { wave: '14243a', progress: '5c7e98' }
     ];
 
     const fmt = s => new Date(s * 1000).toISOString().substr(14, 5);
     let currentPlaying = -1;
 
-    // ����� ������������� ����������:
-    // ���������, ���� �� ��� ����������� ID � ������ ��������
+    // =========================================================================
+    // БЛОК АНАЛИТИКИ И СТАТИСТИКИ (ИДЕНТИФИКАЦИЯ И УМНЫЕ ТАЙМЕРЫ)
+    // =========================================================================
+    
+    // Проверяем сохраненный ID устройства в памяти браузера, чтобы не плодить дубли
     let sessionId = localStorage.getItem('player_user_id');
 
-    // ���� ���������� ����� ������� � ���������� ��� ���������� ID � ��������� � ������
+    // Если устройство зашло впервые — генерируем ему постоянный ID
     if (!sessionId) {
       sessionId = 'Device-' + Math.random().toString(36).substr(2, 5).toUpperCase();
       localStorage.setItem('player_user_id', sessionId);
     }
     
-    // ������ ��� �������� ������
+    // Объект для хранения времени старта треков
     const trackTimers = {};
 
-    // ������� �������� ���������� � Google
+    // Функция отправки данных в Google Таблицу
     const sendToGoogle = (title, action, seconds = 0) => {
       const googleScriptUrl = "https://script.google.com/macros/s/AKfycbw_njI0VBBu12L3qt5i3M73YM3jhEI5qhUGK0cyL-c5ISlG889ZUHPgh_irYWYE1dJ04w/exec";
       
-      const isMobile = /Mobi|Android|iPhone/i.test(navigator.userAgent) ? "MOB" : "PK";
+      const isMobile = /Mobi|Android|iPhone/i.test(navigator.userAgent) ? "Моб" : "ПК";
       const lang = navigator.language.split('-')[0]; 
       
       const payload = {
-        userId: sessionId, // �������� ��� ������ ID ����������
+        userId: sessionId,
         title: title,
         action: action,
         seconds: seconds,
@@ -839,26 +844,43 @@ body::after {
         cache: "no-cache",
         headers: { "Content-Type": "text/plain" },
         body: JSON.stringify(payload)
-      }).catch(err => console.log("State:", err));
+      }).catch(err => console.log("Ошибка статистики:", err));
     };
 
-    // �������� ������ �������������
-    const stopTrackTimer = (i) => {
-      if (trackTimers[i] && trackTimers[i].isPlaying) {
-        const playedSeconds = Math.round((Date.now() - trackTimers[i].startTime) / 1000);
+    // Подсчет секунд от старта до паузы/закрытия
+    const stopTrackTimer = (trackTitle) => {
+      if (trackTimers[trackTitle] && trackTimers[trackTitle].isPlaying) {
+        const playedSeconds = Math.round((Date.now() - trackTimers[trackTitle].startTime) / 1000);
         if (playedSeconds > 0) {
-          sendToGoogle(tracks[i].title, "Time (sec)", playedSeconds);
+          sendToGoogle(trackTitle, "Слушал трек (сек)", playedSeconds);
         }
-        trackTimers[i].isPlaying = false;
+        trackTimers[trackTitle].isPlaying = false;
       }
     };
 
-    const startTrackTimer = (i) => {
-      trackTimers[i] = {
+    // Запуск отсчета времени
+    const startTrackTimer = (trackTitle) => {
+      if (trackTimers[trackTitle] && trackTimers[trackTitle].isPlaying) {
+        stopTrackTimer(trackTitle);
+      }
+      trackTimers[trackTitle] = {
         startTime: Date.now(),
         isPlaying: true
       };
     };
+
+    // Принудительный сброс секунд при уходе пользователя
+    const handleUserLeave = () => {
+      if (currentPlaying !== -1) {
+        stopTrackTimer(tracks[currentPlaying].title);
+        sendToGoogle(document.title, "Закрыл/Свернул плеер");
+        currentPlaying = -1;
+      }
+    };
+
+    // =========================================================================
+    // ИНИЦИАЛИЗАЦИЯ И ЛОГИКА ПЛЕЕРА WAVESURFER
+    // =========================================================================
 
     const updateNowPlaying = i => {
       const bar = document.getElementById('now-playing-bar');
@@ -885,10 +907,6 @@ body::after {
       gain.connect(audioCtx.destination);
       osc.start();
     }
-
-    document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'visible' && audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
-    });
 
     function updateMediaSession(i) {
       if (!('mediaSession' in navigator)) return;
@@ -982,17 +1000,21 @@ body::after {
       document.getElementById(`btn-${i}`).style.opacity = 0.35;
     }
 
-    // 1. �������� �������� ������
+    // =========================================================================
+    // СТАРТ И НАВЕШЕННЫЕ СОБЫТИЯ
+    // =========================================================================
+
+    // 1. Фиксируем открытие плеера
     loaded[0] = true;
     players[0].load(tracks[0].src);
-    sendToGoogle(document.title, "Open player");
+    sendToGoogle(document.title, "Открытие плеера");
 
-    // 2. ���������� �������
+    // 2. Управление кнопками Play/Pause и таймерами аналитики
     window.togglePlay = i => {
       unlockAudio();
       
       if (currentPlaying !== -1 && currentPlaying !== i) {
-        stopTrackTimer(currentPlaying);
+        stopTrackTimer(tracks[currentPlaying].title);
       }
 
       if (!loaded[i]) {
@@ -1000,31 +1022,37 @@ body::after {
         players[i].load(tracks[i].src);
         players[i].once('ready', () => {
           players[i].play();
-          startTrackTimer(i);
+          startTrackTimer(tracks[i].title);
         });
       } else {
         if (!players[i].isPlaying()) {
-          startTrackTimer(i);
+          startTrackTimer(tracks[i].title);
         } else {
-          stopTrackTimer(i);
+          stopTrackTimer(tracks[i].title);
         }
         players[i].playPause();
       }
     };
 
-    window.addEventListener('beforeunload', () => {
-      if (currentPlaying !== -1) {
-        stopTrackTimer(currentPlaying);
+    // Навешиваем слежение за уходом пользователя (ПК + Мобильные)
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') {
+        handleUserLeave();
+      } else if (document.visibilityState === 'visible' && audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
       }
     });
 
+    window.addEventListener('beforeunload', handleUserLeave);
+
+    // Кнопки шеринга
     window.shareTG = () => {
-      sendToGoogle(document.title, "��������� � TG");
+      sendToGoogle(document.title, "Поделился в TG");
       window.open(`https://t.me/share/url?url=${encodeURIComponent(window.location.href)}`, '_blank');
     };
 
     window.copyLink = () => {
-      sendToGoogle(document.title, "���������� ������");
+      sendToGoogle(document.title, "Скопировал ссылку");
       navigator.clipboard.writeText(window.location.href).then(() => {
         const t = document.getElementById('toast');
         t.classList.add('show');
