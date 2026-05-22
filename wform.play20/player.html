@@ -634,121 +634,166 @@
       </div>
     </div>
   </div>
+<script type="module">
+  import WaveSurfer from 'https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.esm.js';
 
-  <script type="module">
-    import WaveSurfer from 'https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.esm.js';
+  const tracks = [
+    { src: 'Оригінал.mp3', title: 'Оригінал', isOriginal: true },
+    { src: '1_Нас чекають небеса.m4a', title: 'Нас чекають небеса (AI 1)' },
+    { src: '2_Нас чекають небеса.m4a', title: 'Нас чекають небеса (AI 2)' }
+  ];
 
-    const tracks = [
-      { src: 'Оригінал.mp3', title: 'Оригінал', isOriginal: true },
-      { src: '1_Нас чекають небеса.m4a', title: 'Нас чекають небеса (AI 1)' },
-      { src: '2_Нас чекають небеса.m4a', title: 'Нас чекають небеса (AI 2)' }
-    ];
+  const colors = [
+    { wave: '1f6b5b', progress: '6ee7c8' },
+    { wave: '154e72', progress: '7dd3fc' }
+  ];
 
-    const colors = [
-      { wave: '1f6b5b', progress: '6ee7c8' },
-      { wave: '154e72', progress: '7dd3fc' }
-    ];
+  const fmt = s => new Date(s * 1000).toISOString().substr(14, 5);
+  let currentPlaying = -1;
+  let audioCtx = null;
 
-    const fmt = s => new Date(s * 1000).toISOString().substr(14, 5);
-    let currentPlaying = -1;
-    let audioCtx = null;
+  const players = [];
+  
+  // Создаем HTMLAudioElement для оригинала (без waveform)
+  const originalAudio = new Audio(tracks[0].src);
+  
+  // Обработчики событий для оригинального трека
+  originalAudio.addEventListener('play', () => {
+    document.getElementById('btn-0').innerHTML = '<i class="fas fa-pause"></i>';
+    document.getElementById('card-0').classList.add('playing');
+    
+    // Останавливаем AI плееры, если они играли
+    players.forEach(p => p && p.pause());
+    
+    currentPlaying = 0;
+    updateNowPlaying(0);
+  });
 
-    const players = [];
+  originalAudio.addEventListener('pause', () => {
+    document.getElementById('btn-0').innerHTML = '<i class="fas fa-play"></i>';
+    document.getElementById('card-0').classList.remove('playing');
+    if (currentPlaying === 0) currentPlaying = -1;
+    updateNowPlaying(-1);
+  });
 
-    // Ініціалізація WaveSurfer тільки для AI треків
-    for (let i = 1; i < tracks.length; i++) {
-      const ws = WaveSurfer.create({
-        container: `#wave-${i}`,
-        waveColor: `#${colors[i-1].wave}`,
-        progressColor: `#${colors[i-1].progress}`,
-        barWidth: 2,
-        barGap: 1,
-        barRadius: 2,
-        height: 34,
-        interact: true,
-        normalize: true
+  originalAudio.addEventListener('ended', () => {
+    document.getElementById('btn-0').innerHTML = '<i class="fas fa-play"></i>';
+    document.getElementById('card-0').classList.remove('playing');
+    currentPlaying = -1;
+    // Автопереход на первый AI трек
+    togglePlay(1);
+  });
+
+  // Ініціалізація WaveSurfer тільки для AI треків (индексы 1 и 2)
+  for (let i = 1; i < tracks.length; i++) {
+    const ws = WaveSurfer.create({
+      container: `#wave-${i}`,
+      waveColor: `#${colors[i-1].wave}`,
+      progressColor: `#${colors[i-1].progress}`,
+      barWidth: 2,
+      barGap: 1,
+      barRadius: 2,
+      height: 34,
+      interact: true,
+      normalize: true
+    });
+
+    ws.on('ready', () => {
+      document.getElementById(`dur-${i}`).textContent = fmt(ws.getDuration());
+    });
+
+    ws.on('timeupdate', (cur) => {
+      document.getElementById(`cur-${i}`).textContent = fmt(cur);
+    });
+
+    ws.on('play', () => {
+      document.getElementById(`btn-${i}`).innerHTML = '<i class="fas fa-pause"></i>';
+      document.getElementById(`card-${i}`).classList.add('playing');
+      
+      // Останавливаем оригинал и другие AI треки
+      if (currentPlaying === 0) originalAudio.pause();
+      players.forEach((p, j) => {
+        if (j !== i && p) p.pause();
       });
+      
+      currentPlaying = i;
+      updateNowPlaying(i);
+    });
 
-      ws.on('ready', () => {
-        document.getElementById(`dur-${i}`).textContent = fmt(ws.getDuration());
-      });
+    ws.on('pause', () => {
+      document.getElementById(`btn-${i}`).innerHTML = '<i class="fas fa-play"></i>';
+      document.getElementById(`card-${i}`).classList.remove('playing');
+      if (currentPlaying === i) currentPlaying = -1;
+      updateNowPlaying(-1);
+    });
 
-      ws.on('timeupdate', (cur) => {
-        document.getElementById(`cur-${i}`).textContent = fmt(cur);
-      });
+    ws.on('finish', () => {
+      document.getElementById(`btn-${i}`).innerHTML = '<i class="fas fa-play"></i>';
+      document.getElementById(`card-${i}`).classList.remove('playing');
+      currentPlaying = -1;
+      // Автопереход к следующему плееру, если он существует
+      if (i + 1 < tracks.length) {
+        togglePlay(i + 1);
+      }
+    });
 
-      ws.on('play', () => {
-        document.getElementById(`btn-${i}`).innerHTML = '<i class="fas fa-pause"></i>';
-        document.getElementById(`card-${i}`).classList.add('playing');
-        players.forEach((p, j) => {
-          if (j !== i && p) p.pause();
-        });
-        currentPlaying = i;
-        updateNowPlaying(i);
-      });
+    players[i] = ws;
+  }
 
-      ws.on('pause', () => {
-        document.getElementById(`btn-${i}`).innerHTML = '<i class="fas fa-play"></i>';
-        document.getElementById(`card-${i}`).classList.remove('playing');
-        if (currentPlaying === i) currentPlaying = -1;
-        updateNowPlaying(-1);
-      });
-
-      ws.on('finish', () => {
-        document.getElementById(`btn-${i}`).innerHTML = '<i class="fas fa-play"></i>';
-        document.getElementById(`card-${i}`).classList.remove('playing');
-        currentPlaying = -1;
-        if (i + 1 < players.length) players[i + 1].play();
-      });
-
-      players[i] = ws;
+  function updateNowPlaying(i) {
+    const bar = document.getElementById('now-playing-bar');
+    const title = document.getElementById('np-title');
+    const next = document.getElementById('np-next');
+    if (i >= 0) {
+      bar.classList.add('visible');
+      title.textContent = tracks[i].title;
+      next.textContent = i < tracks.length - 1 ? `Next: ${tracks[i + 1].title}` : 'Кінець';
+    } else {
+      bar.classList.remove('visible');
     }
+  }
 
-    function updateNowPlaying(i) {
-      const bar = document.getElementById('now-playing-bar');
-      const title = document.getElementById('np-title');
-      const next = document.getElementById('np-next');
-      if (i >= 0) {
-        bar.classList.add('visible');
-        title.textContent = tracks[i].title;
-        next.textContent = i < tracks.length - 1 ? `Next: ${tracks[i + 1].title}` : 'Кінець';
+  function unlockAudio() {
+    if (audioCtx) return;
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+
+  window.togglePlay = (i) => {
+    unlockAudio();
+    
+    // Логика для оригинала
+    if (tracks[i].isOriginal) {
+      if (originalAudio.paused) {
+        originalAudio.play().catch(err => console.log("Playback error:", err));
       } else {
-        bar.classList.remove('visible');
+        originalAudio.pause();
       }
+      return;
     }
-
-    function unlockAudio() {
-      if (audioCtx) return;
-      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    }
-
-    window.togglePlay = (i) => {
-      unlockAudio();
-      if (tracks[i].isOriginal) {
-        alert("🔊 Зараз грає оригінал (без waveform для порівняння)");
-        return;
-      }
-      if (players[i]) {
+    
+    // Логика для AI треков
+    if (players[i]) {
+      // Если файл еще ни разу не загружался в WaveSurfer, загружаем его перед стартом
+      if (!players[i].getDuration()) {
+        players[i].load(tracks[i].src);
+        players[i].once('ready', () => players[i].play());
+      } else {
         players[i].playPause();
       }
-    };
+    }
+  };
 
-    // Завантаження першого AI треку
-    setTimeout(() => {
-      if (players[1]) players[1].load(tracks[1].src);
-    }, 800);
+  window.shareTG = () => {
+    window.open(`https://t.me/share/url?url=${encodeURIComponent(window.location.href)}`, '_blank');
+  };
 
-    window.shareTG = () => {
-      window.open(`https://t.me/share/url?url=${encodeURIComponent(window.location.href)}`, '_blank');
-    };
-
-    window.copyLink = () => {
-      navigator.clipboard.writeText(window.location.href).then(() => {
-        const t = document.getElementById('toast');
-        t.classList.add('show');
-        setTimeout(() => t.classList.remove('show'), 2200);
-      });
-    };
-  </script>
+  window.copyLink = () => {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      const t = document.getElementById('toast');
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2200);
+    });
+  };
+</script>
 </body>
 </html>
