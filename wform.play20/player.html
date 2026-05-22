@@ -653,6 +653,87 @@
   let audioCtx = null;
 
   const players = [];
+
+  // =========================================================================
+  // БЛОК АНАЛИТИКИ И СТАТИСТИКИ (ИДЕНТИФИКАЦИЯ И УМНЫЕ ТАЙМЕРЫ)
+  // =========================================================================
+  
+  // Проверяем сохраненный ID устройства в памяти браузера
+  let sessionId = localStorage.getItem('player_user_id');
+
+  // Если устройство зашло впервые — генерируем ему постоянный ID
+  if (!sessionId) {
+    sessionId = 'Device-' + Math.random().toString(36).substr(2, 5).toUpperCase();
+    localStorage.setItem('player_user_id', sessionId);
+  }
+  
+  // Объект для хранения времени старта треков
+  const trackTimers = {};
+
+  // Функция отправки данных в Google Таблицу
+  const sendToGoogle = (title, action, seconds = 0) => {
+    const googleScriptUrl = "https://script.google.com/macros/s/AKfycbw_njI0VBBu12L3qt5i3M73YM3jhEI5qhUGK0cyL-c5ISlG889ZUHPgh_irYWYE1dJ04w/exec";
+    
+    const isMobile = /Mobi|Android|iPhone/i.test(navigator.userAgent) ? "Моб" : "ПК";
+    const lang = navigator.language.split('-')[0]; 
+    
+    const payload = {
+      userId: sessionId,
+      title: title,
+      action: action,
+      seconds: seconds,
+      info: `${isMobile} (${lang})`
+    };
+
+    fetch(googleScriptUrl, {
+      method: "POST",
+      mode: "no-cors",
+      cache: "no-cache",
+      headers: { "Content-Type": "text/plain" },
+      body: JSON.stringify(payload)
+    }).catch(err => console.log("Ошибка статистики:", err));
+  };
+
+  // Подсчет секунд от старта до паузы/закрытия
+  const stopTrackTimer = (trackTitle) => {
+    if (trackTimers[trackTitle] && trackTimers[trackTitle].isPlaying) {
+      const playedSeconds = Math.round((Date.now() - trackTimers[trackTitle].startTime) / 1000);
+      if (playedSeconds > 0) {
+        sendToGoogle(trackTitle, "Слушал трек (сек)", playedSeconds);
+      }
+      trackTimers[trackTitle].isPlaying = false;
+    }
+  };
+
+  // Запуск отсчета времени
+  const startTrackTimer = (trackTitle) => {
+    if (trackTimers[trackTitle] && trackTimers[trackTitle].isPlaying) {
+      stopTrackTimer(trackTitle);
+    }
+    trackTimers[trackTitle] = {
+      startTime: Date.now(),
+      isPlaying: true
+    };
+  };
+
+  // Принудительный сброс секунд при уходе пользователя
+  const handleUserLeave = () => {
+    if (currentPlaying !== -1) {
+      // Записываем время только если играет AI трек (индекс > 0)
+      if (currentPlaying > 0) {
+        stopTrackTimer(tracks[currentPlaying].title);
+      }
+      sendToGoogle(document.title, "Закрыл/Свернул плеер");
+      currentPlaying = -1;
+    }
+  };
+  
+  // Фиксируем открытие плеера пользователем
+  sendToGoogle(document.title, "Открытие плеера");
+
+  // =========================================================================
+  // ИНИЦИАЛИЗАЦИЯ И ЛОГИКА ПЛЕЕРОВ
+  // =========================================================================
   
   // Создаем HTMLAudioElement для оригинала (без waveform)
   const originalAudio = new Audio(tracks[0].src);
@@ -758,8 +839,14 @@
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   }
 
+  // Управление кнопками Play/Pause и таймерами аналитики
   window.togglePlay = (i) => {
     unlockAudio();
+    
+    // Если переключаемся на другой трек — останавливаем таймер предыдущего (только для AI)
+    if (currentPlaying !== -1 && currentPlaying !== i && currentPlaying > 0) {
+      stopTrackTimer(tracks[currentPlaying].title);
+    }
     
     // Логика для оригинала
     if (tracks[i].isOriginal) {
@@ -776,18 +863,41 @@
       // Если файл еще ни разу не загружался в WaveSurfer, загружаем его перед стартом
       if (!players[i].getDuration()) {
         players[i].load(tracks[i].src);
-        players[i].once('ready', () => players[i].play());
+        players[i].once('ready', () => {
+          players[i].play();
+          startTrackTimer(tracks[i].title);
+        });
       } else {
+        // Управление таймером в зависимости от текущего состояния
+        if (!players[i].isPlaying()) {
+          startTrackTimer(tracks[i].title);
+        } else {
+          stopTrackTimer(tracks[i].title);
+        }
         players[i].playPause();
       }
     }
   };
 
+  // Навешиваем слежение за уходом пользователя (ПК + Мобильные)
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') {
+      handleUserLeave();
+    } else if (document.visibilityState === 'visible' && audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+  });
+
+  window.addEventListener('beforeunload', handleUserLeave);
+
+  // Кнопки шеринга и фиксация кликов по ним
   window.shareTG = () => {
+    sendToGoogle(document.title, "Поделился в TG");
     window.open(`https://t.me/share/url?url=${encodeURIComponent(window.location.href)}`, '_blank');
   };
 
   window.copyLink = () => {
+    sendToGoogle(document.title, "Скопировал ссылку");
     navigator.clipboard.writeText(window.location.href).then(() => {
       const t = document.getElementById('toast');
       t.classList.add('show');
