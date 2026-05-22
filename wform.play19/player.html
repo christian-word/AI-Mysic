@@ -1,4 +1,4 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -9,30 +9,30 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
 :root {
-  --bg: #120914;
-  --bg-card: #1b1020;
-  --bg-card2: #251528;
+  --bg: #080b0f;
+  --bg-card: #0f141c;
+  --bg-card2: #151c28;
   --ink: #fff5ee;
   --ink-soft: rgba(255,245,238,0.68);
   --ink-faint: rgba(255,245,238,0.42);
-  --border: rgba(255, 170, 90, 0.16);
-  --border-glow: rgba(255, 145, 60, 0.28);
-  --a0: #ff9b42;
-  --a1: #ffb15c;
-  --a2: #ffcf8b;
-  --a3: #ff7f50;
-  --a4: #ff8da1;
-  --a5: #f7a35c;
-  --a6: #ffc56b;
-  --a7: #ffd9a2;
-  --a0-pale: rgba(255,155,66,0.11);
-  --a1-pale: rgba(255,177,92,0.10);
-  --a2-pale: rgba(255,207,139,0.10);
-  --a3-pale: rgba(255,127,80,0.10);
-  --a4-pale: rgba(255,141,161,0.10);
-  --a5-pale: rgba(247,163,92,0.10);
-  --a6-pale: rgba(255,197,107,0.10);
-  --a7-pale: rgba(255,217,162,0.10);
+  --border: rgba(140, 165, 195, 0.16);
+  --border-glow: rgba(130, 158, 190, 0.28);
+  --a0: #7a9db8;
+  --a1: #8fb0c8;
+  --a2: #b8d0e0;
+  --a3: #5c7e98;
+  --a4: #a8c4d8;
+  --a5: #6d8fa8;
+  --a6: #9abcd0;
+  --a7: #ccdde8;
+  --a0-pale: rgba(122,157,184,0.11);
+  --a1-pale: rgba(143,176,200,0.10);
+  --a2-pale: rgba(184,208,224,0.10);
+  --a3-pale: rgba(92,126,152,0.10);
+  --a4-pale: rgba(168,196,216,0.10);
+  --a5-pale: rgba(109,143,168,0.10);
+  --a6-pale: rgba(154,188,208,0.10);
+  --a7-pale: rgba(204,221,232,0.10);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -55,10 +55,10 @@ body::before {
   position: fixed;
   inset: 0;
   background:
-    radial-gradient(ellipse 70% 46% at 50% 5%, rgba(255,155,66,0.20) 0%, transparent 55%),
-    radial-gradient(ellipse 52% 42% at 18% 78%, rgba(255,141,161,0.11) 0%, transparent 58%),
-    radial-gradient(ellipse 46% 38% at 82% 20%, rgba(255,207,139,0.14) 0%, transparent 58%),
-    radial-gradient(ellipse 62% 34% at 50% 100%, rgba(255,127,80,0.09) 0%, transparent 54%);
+    radial-gradient(ellipse 70% 46% at 50% 5%, rgba(80,110,145,0.18) 0%, transparent 55%),
+    radial-gradient(ellipse 52% 42% at 18% 78%, rgba(100,130,165,0.11) 0%, transparent 58%),
+    radial-gradient(ellipse 46% 38% at 82% 20%, rgba(110,140,175,0.13) 0%, transparent 58%),
+    radial-gradient(ellipse 62% 34% at 50% 100%, rgba(60,85,115,0.09) 0%, transparent 54%);
   pointer-events: none;
   z-index: 0;
 }
@@ -74,9 +74,9 @@ body::after {
     radial-gradient(1px 1px at 58% 79%, rgba(255,255,255,0.30) 0, transparent 100%),
     radial-gradient(1px 1px at 76% 11%, rgba(255,255,255,0.50) 0, transparent 100%),
     radial-gradient(1px 1px at 91% 57%, rgba(255,255,255,0.42) 0, transparent 100%),
-    radial-gradient(1.5px 1.5px at 14% 40%, rgba(255,155,66,0.75) 0, transparent 100%),
-    radial-gradient(1.5px 1.5px at 64% 64%, rgba(255,177,92,0.68) 0, transparent 100%),
-    radial-gradient(1.5px 1.5px at 86% 86%, rgba(255,141,161,0.62) 0, transparent 100%);
+    radial-gradient(1.5px 1.5px at 14% 40%, rgba(122,157,184,0.65) 0, transparent 100%),
+    radial-gradient(1.5px 1.5px at 64% 64%, rgba(143,176,200,0.58) 0, transparent 100%),
+    radial-gradient(1.5px 1.5px at 86% 86%, rgba(168,196,216,0.52) 0, transparent 100%);
   pointer-events: none;
   z-index: 0;
 }
@@ -126,7 +126,7 @@ body::after {
 }
 
 .page-header h1 span {
-  background: linear-gradient(90deg, #ff9b42, #ffcf8b, #ff8da1);
+  background: linear-gradient(90deg, #7a9db8, #b8d0e0, #a8c4d8);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -145,8 +145,8 @@ body::after {
   gap: 6px;
   margin-top: 10px;
   padding: 4px 12px;
-  background: rgba(255,155,66,0.10);
-  border: 1px solid rgba(255,155,66,0.24);
+  background: rgba(122,157,184,0.10);
+  border: 1px solid rgba(122,157,184,0.24);
   border-radius: 20px;
   font-size: 10px;
   color: var(--a1);
@@ -170,8 +170,8 @@ body::after {
   display: none;
   align-items: center;
   gap: 10px;
-  background: rgba(255,155,66,0.08);
-  border: 1px solid rgba(255,155,66,0.22);
+  background: rgba(122,157,184,0.08);
+  border: 1px solid rgba(122,157,184,0.22);
   border-radius: 10px;
   padding: 8px 14px;
   margin-bottom: 12px;
@@ -207,7 +207,7 @@ body::after {
 
 .track-card {
   background: var(--bg-card);
-  border: 1px solid rgba(255,155,66,0.12);
+  border: 1px solid rgba(122,157,184,0.12);
   border-radius: 13px;
   padding: 9px 11px;
   margin-bottom: 6px;
@@ -217,13 +217,13 @@ body::after {
 }
 
 .track-card:hover {
-  border-color: rgba(255,155,66,0.28);
-  background: #231225;
+  border-color: rgba(122,157,184,0.28);
+  background: #131a24;
 }
 
 .track-card.selected {
   background: var(--bg-card2);
-  border-color: rgba(255,155,66,0.42);
+  border-color: rgba(122,157,184,0.42);
 }
 
 .track-card.selected::after {
@@ -239,7 +239,7 @@ body::after {
 }
 
 .track-card.playing {
-  border-color: rgba(255,155,66,0.55);
+  border-color: rgba(122,157,184,0.55);
   background: var(--bg-card2);
 }
 
@@ -254,7 +254,7 @@ body::after {
   font-family: "Syne", sans-serif;
   font-size: 15px;
   font-weight: 700;
-  color: rgba(255,155,66,0.28);
+  color: rgba(122,157,184,0.30);
   min-width: 22px;
   text-align: right;
   flex-shrink: 0;
@@ -288,17 +288,17 @@ body::after {
   border-radius: inherit;
 }
 
-.c0 .track-cover { background: linear-gradient(145deg, #7a3500, #ff9b42); box-shadow: 0 4px 16px rgba(255,155,66,0.30); }
-.c1 .track-cover { background: linear-gradient(145deg, #6b1d12, #ff7f50); box-shadow: 0 4px 16px rgba(255,127,80,0.30); }
-.c2 .track-cover { background: linear-gradient(145deg, #6b3b00, #ffc56b); box-shadow: 0 4px 16px rgba(255,197,107,0.30); }
-.c3 .track-cover { background: linear-gradient(145deg, #5e2141, #ff8da1); box-shadow: 0 4px 16px rgba(255,141,161,0.30); }
-.c4 .track-cover { background: linear-gradient(145deg, #8b3b1d, #ffb15c); box-shadow: 0 4px 16px rgba(255,177,92,0.30); }
-.c5 .track-cover { background: linear-gradient(145deg, #623460, #f7a35c); box-shadow: 0 4px 16px rgba(247,163,92,0.30); }
-.c6 .track-cover { background: linear-gradient(145deg, #7a2d08, #ffcf8b); box-shadow: 0 4px 16px rgba(255,207,139,0.30); }
-.c7 .track-cover { background: linear-gradient(145deg, #5f1d32, #ffd9a2); box-shadow: 0 4px 16px rgba(255,217,162,0.30); }
+.c0 .track-cover { background: linear-gradient(145deg, #1a2e40, #7a9db8); box-shadow: 0 4px 16px rgba(255,155,66,0.30); }
+.c1 .track-cover { background: linear-gradient(145deg, #14243a, #5c7e98); box-shadow: 0 4px 16px rgba(92,126,152,0.28); }
+.c2 .track-cover { background: linear-gradient(145deg, #1e3444, #9abcd0); box-shadow: 0 4px 16px rgba(154,188,208,0.28); }
+.c3 .track-cover { background: linear-gradient(145deg, #243848, #a8c4d8); box-shadow: 0 4px 16px rgba(168,196,216,0.28); }
+.c4 .track-cover { background: linear-gradient(145deg, #182c40, #8fb0c8); box-shadow: 0 4px 16px rgba(143,176,200,0.28); }
+.c5 .track-cover { background: linear-gradient(145deg, #0e2030, #6d8fa8); box-shadow: 0 4px 16px rgba(109,143,168,0.28); }
+.c6 .track-cover { background: linear-gradient(145deg, #283c50, #b8d0e0); box-shadow: 0 4px 16px rgba(184,208,224,0.28); }
+.c7 .track-cover { background: linear-gradient(145deg, #1c2c3a, #ccdde8); box-shadow: 0 4px 16px rgba(204,221,232,0.28); }
 
 .track-card.playing .track-cover {
-  box-shadow: 0 0 22px rgba(255,155,66,0.42);
+  box-shadow: 0 0 22px rgba(122,157,184,0.38);
   animation: cover-glow 2s ease-in-out infinite;
 }
 
@@ -344,7 +344,7 @@ body::after {
   border: 1px solid;
   background: var(--a0-pale);
   color: var(--a1);
-  border-color: rgba(255,155,66,0.25);
+  border-color: rgba(122,157,184,0.25);
 }
 
 .track-label {
@@ -429,14 +429,14 @@ body::after {
 .play-btn:hover {
   opacity: 1;
   transform: scale(1.08);
-  box-shadow: 0 0 16px rgba(255,155,66,0.45);
+  box-shadow: 0 0 16px rgba(122,157,184,0.40);
 }
 
 .play-btn:hover::before { opacity: 0.14; }
 
 .playing .play-btn {
   opacity: 1;
-  box-shadow: 0 0 14px rgba(255,155,66,0.40);
+  box-shadow: 0 0 14px rgba(122,157,184,0.35);
 }
 
 .playing .play-btn::before { opacity: 0.10; }
@@ -499,7 +499,7 @@ body::after {
 }
 
 .action-btn:hover {
-  background: rgba(255,155,66,0.14);
+  background: rgba(122,157,184,0.14);
   border-color: var(--a1);
   color: var(--a1);
 }
@@ -514,13 +514,13 @@ body::after {
   width: 28px;
   height: 28px;
   border-radius: 8px;
-  background: linear-gradient(145deg, #7a3500, #ff9b42);
+  background: linear-gradient(145deg, #1a2e40, #7a9db8);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 11px;
   color: #fff;
-  box-shadow: 0 2px 12px rgba(255,155,66,0.40);
+  box-shadow: 0 2px 12px rgba(122,157,184,0.35);
 }
 
 .brand-text {
@@ -545,9 +545,9 @@ body::after {
   bottom: 24px;
   left: 50%;
   transform: translateX(-50%) translateY(20px);
-  background: rgba(255,155,66,0.15);
+  background: rgba(122,157,184,0.15);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(255,155,66,0.35);
+  border: 1px solid rgba(122,157,184,0.35);
   color: var(--a1);
   padding: 9px 20px;
   border-radius: 10px;
@@ -577,7 +577,7 @@ body::after {
     <div class="page-header">
       <div style="display:flex;justify-content:space-between;align-items:flex-start">
         <div class="header-eyebrow">Lounge Guitar Session</div>
-        <div style="font-family:Space Grotesk,sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;color:#ffb15c;opacity:0.82;padding-top:1px;text-transform:uppercase">Sax & Sunset Edition</div>
+        <div style="font-family:Space Grotesk,sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;color:#8fb0c8;opacity:0.82;padding-top:1px;text-transform:uppercase">Sax & Sunset Edition</div>
       </div>
       <h1><span>Velvet Sunset</span> Lounge</h1>
       <p>Warm lounge scenes with saxophone, electric guitar, and solo instrumental glow.</p>
@@ -596,13 +596,13 @@ body::after {
     <div class="track-card c0" id="card-0">
       <div class="track-top">
         <span class="track-num">01</span>
-        <div class="track-cover"><i class="fas fa-cloud"></i></div>
+        <div class="track-cover"><i class="fas fa-guitar"></i></div>
         <div class="track-info">
-          <div class="track-title">Atmospheric Whispers</div>
+          <div class="track-title">Breathy Reflections (Guitar Solo Remix)</div>
           <div class="track-meta">
-            <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Atmosphere</span>
+            <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Guitar Remix</span>
             <div class="eq-bars"><span></span><span></span><span></span></div>
-            <span class="track-label">Soft opening mist</span>
+            <span class="track-label">Lead guitar spotlight</span>
           </div>
         </div>
         <button class="play-btn" id="btn-0" onclick="togglePlay(0)"><i class="fas fa-play"></i></button>
@@ -614,16 +614,16 @@ body::after {
       </div>
     </div>
 
-    <div class="track-card c2" id="card-1">
+    <div class="track-card c1" id="card-1">
       <div class="track-top">
         <span class="track-num">02</span>
-        <div class="track-cover"><i class="fas fa-guitar"></i></div>
+        <div class="track-cover"><i class="fas fa-saxophone"></i></div>
         <div class="track-info">
-          <div class="track-title">Breathy Reflections</div>
+          <div class="track-title">Ethereal Evening (Saxophone Remix)</div>
           <div class="track-meta">
-            <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Lounge Solo</span>
+            <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Sax Remix</span>
             <div class="eq-bars"><span></span><span></span><span></span></div>
-            <span class="track-label">Electric guitar haze</span>
+            <span class="track-label">Smooth sax glow</span>
           </div>
         </div>
         <button class="play-btn" id="btn-1" onclick="togglePlay(1)"><i class="fas fa-play"></i></button>
@@ -635,16 +635,16 @@ body::after {
       </div>
     </div>
 
-    <div class="track-card c3" id="card-2">
+    <div class="track-card c2" id="card-2">
       <div class="track-top">
         <span class="track-num">03</span>
-        <div class="track-cover"><i class="fas fa-guitar"></i></div>
+        <div class="track-cover"><i class="fas fa-moon"></i></div>
         <div class="track-info">
-          <div class="track-title">Breathy Reflections (Guitar Solo Remix)</div>
+          <div class="track-title">Ethereal Evening (Remix)</div>
           <div class="track-meta">
-            <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Guitar Remix</span>
+            <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Evening Remix</span>
             <div class="eq-bars"><span></span><span></span><span></span></div>
-            <span class="track-label">Lead guitar spotlight</span>
+            <span class="track-label">Late-night shimmer</span>
           </div>
         </div>
         <button class="play-btn" id="btn-2" onclick="togglePlay(2)"><i class="fas fa-play"></i></button>
@@ -656,16 +656,16 @@ body::after {
       </div>
     </div>
 
-    <div class="track-card c4" id="card-3">
+    <div class="track-card c3" id="card-3">
       <div class="track-top">
         <span class="track-num">04</span>
-        <div class="track-cover"><i class="fas fa-saxophone"></i></div>
+        <div class="track-cover"><i class="fas fa-meteor"></i></div>
         <div class="track-info">
-          <div class="track-title">Ethereal Evening (Saxophone Remix)</div>
+          <div class="track-title">Sunset Vibes Lounge</div>
           <div class="track-meta">
-            <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Sax Remix</span>
+            <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Lounge</span>
             <div class="eq-bars"><span></span><span></span><span></span></div>
-            <span class="track-label">Smooth sax glow</span>
+            <span class="track-label">Main lounge pulse</span>
           </div>
         </div>
         <button class="play-btn" id="btn-3" onclick="togglePlay(3)"><i class="fas fa-play"></i></button>
@@ -677,16 +677,16 @@ body::after {
       </div>
     </div>
 
-    <div class="track-card c5" id="card-4">
+    <div class="track-card c4" id="card-4">
       <div class="track-top">
         <span class="track-num">05</span>
-        <div class="track-cover"><i class="fas fa-moon"></i></div>
+        <div class="track-cover"><i class="fas fa-saxophone"></i></div>
         <div class="track-info">
-          <div class="track-title">Ethereal Evening (Remix)</div>
+          <div class="track-title">Velvet Sunset Lounge (Saxophone Remix)</div>
           <div class="track-meta">
-            <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Evening Remix</span>
+            <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Sax Lounge</span>
             <div class="eq-bars"><span></span><span></span><span></span></div>
-            <span class="track-label">Late-night shimmer</span>
+            <span class="track-label">Sax-led finale</span>
           </div>
         </div>
         <button class="play-btn" id="btn-4" onclick="togglePlay(4)"><i class="fas fa-play"></i></button>
@@ -698,16 +698,16 @@ body::after {
       </div>
     </div>
 
-    <div class="track-card c6" id="card-5">
+    <div class="track-card c5" id="card-5">
       <div class="track-top">
         <span class="track-num">06</span>
-        <div class="track-cover"><i class="fas fa-meteor"></i></div>
+        <div class="track-cover"><i class="fas fa-record-vinyl"></i></div>
         <div class="track-info">
-          <div class="track-title">Sunset Vibes Lounge</div>
+          <div class="track-title">Velvet Sunset Lounge (Remix)</div>
           <div class="track-meta">
-            <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Lounge</span>
+            <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Remix</span>
             <div class="eq-bars"><span></span><span></span><span></span></div>
-            <span class="track-label">Main lounge pulse</span>
+            <span class="track-label">Closing sunset mix</span>
           </div>
         </div>
         <button class="play-btn" id="btn-5" onclick="togglePlay(5)"><i class="fas fa-play"></i></button>
@@ -719,16 +719,16 @@ body::after {
       </div>
     </div>
 
-    <div class="track-card c7" id="card-6">
+    <div class="track-card c6" id="card-6">
       <div class="track-top">
         <span class="track-num">07</span>
-        <div class="track-cover"><i class="fas fa-saxophone"></i></div>
+        <div class="track-cover"><i class="fas fa-cloud"></i></div>
         <div class="track-info">
-          <div class="track-title">Velvet Sunset Lounge (Saxophone Remix)</div>
+          <div class="track-title">Atmospheric Whispers</div>
           <div class="track-meta">
-            <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Sax Lounge</span>
+            <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Atmosphere</span>
             <div class="eq-bars"><span></span><span></span><span></span></div>
-            <span class="track-label">Sax-led finale</span>
+            <span class="track-label">Soft opening mist</span>
           </div>
         </div>
         <button class="play-btn" id="btn-6" onclick="togglePlay(6)"><i class="fas fa-play"></i></button>
@@ -740,16 +740,16 @@ body::after {
       </div>
     </div>
 
-    <div class="track-card c0" id="card-7">
+    <div class="track-card c7" id="card-7">
       <div class="track-top">
         <span class="track-num">08</span>
-        <div class="track-cover"><i class="fas fa-record-vinyl"></i></div>
+        <div class="track-cover"><i class="fas fa-guitar"></i></div>
         <div class="track-info">
-          <div class="track-title">Velvet Sunset Lounge (Remix)</div>
+          <div class="track-title">Breathy Reflections</div>
           <div class="track-meta">
-            <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Remix</span>
+            <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Lounge Solo</span>
             <div class="eq-bars"><span></span><span></span><span></span></div>
-            <span class="track-label">Closing sunset mix</span>
+            <span class="track-label">Electric guitar haze</span>
           </div>
         </div>
         <button class="play-btn" id="btn-7" onclick="togglePlay(7)"><i class="fas fa-play"></i></button>
@@ -761,7 +761,8 @@ body::after {
       </div>
     </div>
 
-    <div class="page-footer">
+
+        <div class="page-footer">
       <div class="footer-actions">
         <button class="action-btn" onclick="shareTG()"><i class="fab fa-telegram-plane"></i> Telegram</button>
         <button class="action-btn" onclick="copyLink()"><i class="fas fa-link"></i> Link</button>
@@ -804,28 +805,28 @@ body::after {
     const fmt = s => new Date(s * 1000).toISOString().substr(14, 5);
     let currentPlaying = -1;
 
-    // Ð£ÐœÐÐÐ¯ Ð˜Ð”Ð•ÐÐ¢Ð˜Ð¤Ð˜ÐšÐÐ¦Ð˜Ð¯ Ð£Ð¡Ð¢Ð ÐžÐ™Ð¡Ð¢Ð’Ð:
-    // ÐŸÑ€Ð¾Ð²ÐµÑ€ÑÐµÐ¼, ÐµÑÑ‚ÑŒ Ð»Ð¸ ÑƒÐ¶Ðµ ÑÐ¾Ñ…Ñ€Ð°Ð½ÐµÐ½Ð½Ñ‹Ð¹ ID Ð² Ð¿Ð°Ð¼ÑÑ‚Ð¸ Ð±Ñ€Ð°ÑƒÐ·ÐµÑ€Ð°
+    // ÓÌÍÀß ÈÄÅÍÒÈÔÈÊÀÖÈß ÓÑÒÐÎÉÑÒÂÀ:
+    // Ïðîâåðÿåì, åñòü ëè óæå ñîõðàíåííûé ID â ïàìÿòè áðàóçåðà
     let sessionId = localStorage.getItem('player_user_id');
 
-    // Ð•ÑÐ»Ð¸ ÑƒÑÑ‚Ñ€Ð¾Ð¹ÑÑ‚Ð²Ð¾ Ð·Ð°ÑˆÐ»Ð¾ Ð²Ð¿ÐµÑ€Ð²Ñ‹Ðµ â€” Ð³ÐµÐ½ÐµÑ€Ð¸Ñ€ÑƒÐµÐ¼ ÐµÐ¼Ñƒ Ð¿Ð¾ÑÑ‚Ð¾ÑÐ½Ð½Ñ‹Ð¹ ID Ð¸ ÑÐ¾Ñ…Ñ€Ð°Ð½ÑÐµÐ¼ Ð² Ð¿Ð°Ð¼ÑÑ‚ÑŒ
+    // Åñëè óñòðîéñòâî çàøëî âïåðâûå — ãåíåðèðóåì åìó ïîñòîÿííûé ID è ñîõðàíÿåì â ïàìÿòü
     if (!sessionId) {
       sessionId = 'Device-' + Math.random().toString(36).substr(2, 5).toUpperCase();
       localStorage.setItem('player_user_id', sessionId);
     }
     
-    // ÐžÐ±ÑŠÐµÐºÑ‚ Ð´Ð»Ñ Ñ‚Ð°Ð¹Ð¼ÐµÑ€Ð¾Ð² Ñ‚Ñ€ÐµÐºÐ¾Ð²
+    // Îáúåêò äëÿ òàéìåðîâ òðåêîâ
     const trackTimers = {};
 
-    // Ð¤ÑƒÐ½ÐºÑ†Ð¸Ñ Ð¾Ñ‚Ð¿Ñ€Ð°Ð²ÐºÐ¸ ÑÑ‚Ð°Ñ‚Ð¸ÑÑ‚Ð¸ÐºÐ¸ Ð² Google
+    // Ôóíêöèÿ îòïðàâêè ñòàòèñòèêè â Google
     const sendToGoogle = (title, action, seconds = 0) => {
       const googleScriptUrl = "https://script.google.com/macros/s/AKfycbw_njI0VBBu12L3qt5i3M73YM3jhEI5qhUGK0cyL-c5ISlG889ZUHPgh_irYWYE1dJ04w/exec";
       
-      const isMobile = /Mobi|Android|iPhone/i.test(navigator.userAgent) ? "ÐœÐ¾Ð±" : "ÐŸÐš";
+      const isMobile = /Mobi|Android|iPhone/i.test(navigator.userAgent) ? "Ìîá" : "ÏÊ";
       const lang = navigator.language.split('-')[0]; 
       
       const payload = {
-        userId: sessionId, // ÐŸÐµÑ€ÐµÐ´Ð°ÐµÐ¼ Ð½Ð°Ñˆ Ð²ÐµÑ‡Ð½Ñ‹Ð¹ ID ÑƒÑÑ‚Ñ€Ð¾Ð¹ÑÑ‚Ð²Ð°
+        userId: sessionId, // Ïåðåäàåì íàø âå÷íûé ID óñòðîéñòâà
         title: title,
         action: action,
         seconds: seconds,
@@ -838,15 +839,15 @@ body::after {
         cache: "no-cache",
         headers: { "Content-Type": "text/plain" },
         body: JSON.stringify(payload)
-      }).catch(err => console.log("ÐžÑˆÐ¸Ð±ÐºÐ° ÑÑ‚Ð°Ñ‚Ð¸ÑÑ‚Ð¸ÐºÐ¸:", err));
+      }).catch(err => console.log("Îøèáêà ñòàòèñòèêè:", err));
     };
 
-    // Ð¤Ð¸ÐºÑÐ°Ñ†Ð¸Ñ ÑÐµÐºÑƒÐ½Ð´ Ð¿Ñ€Ð¾ÑÐ»ÑƒÑˆÐ¸Ð²Ð°Ð½Ð¸Ñ
+    // Ôèêñàöèÿ ñåêóíä ïðîñëóøèâàíèÿ
     const stopTrackTimer = (i) => {
       if (trackTimers[i] && trackTimers[i].isPlaying) {
         const playedSeconds = Math.round((Date.now() - trackTimers[i].startTime) / 1000);
         if (playedSeconds > 0) {
-          sendToGoogle(tracks[i].title, "Ð¡Ð»ÑƒÑˆÐ°Ð» Ñ‚Ñ€ÐµÐº (ÑÐµÐº)", playedSeconds);
+          sendToGoogle(tracks[i].title, "Ñëóøàë òðåê (ñåê)", playedSeconds);
         }
         trackTimers[i].isPlaying = false;
       }
@@ -981,12 +982,12 @@ body::after {
       document.getElementById(`btn-${i}`).style.opacity = 0.35;
     }
 
-    // 1. ÐžÑ‚ÐºÑ€Ñ‹Ñ‚Ð¸Ðµ ÑÑ‚Ñ€Ð°Ð½Ð¸Ñ†Ñ‹ Ð¿Ð»ÐµÐµÑ€Ð°
+    // 1. Îòêðûòèå ñòðàíèöû ïëååðà
     loaded[0] = true;
     players[0].load(tracks[0].src);
-    sendToGoogle(document.title, "ÐžÑ‚ÐºÑ€Ñ‹Ñ‚Ð¸Ðµ Ð¿Ð»ÐµÐµÑ€Ð°");
+    sendToGoogle(document.title, "Îòêðûòèå ïëååðà");
 
-    // 2. Ð£Ð¿Ñ€Ð°Ð²Ð»ÐµÐ½Ð¸Ðµ Ñ‚Ñ€ÐµÐºÐ°Ð¼Ð¸
+    // 2. Óïðàâëåíèå òðåêàìè
     window.togglePlay = i => {
       unlockAudio();
       
@@ -1018,12 +1019,12 @@ body::after {
     });
 
     window.shareTG = () => {
-      sendToGoogle(document.title, "ÐŸÐ¾Ð´ÐµÐ»Ð¸Ð»ÑÑ Ð² TG");
+      sendToGoogle(document.title, "Ïîäåëèëñÿ â TG");
       window.open(`https://t.me/share/url?url=${encodeURIComponent(window.location.href)}`, '_blank');
     };
 
     window.copyLink = () => {
-      sendToGoogle(document.title, "Ð¡ÐºÐ¾Ð¿Ð¸Ñ€Ð¾Ð²Ð°Ð» ÑÑÑ‹Ð»ÐºÑƒ");
+      sendToGoogle(document.title, "Ñêîïèðîâàë ññûëêó");
       navigator.clipboard.writeText(window.location.href).then(() => {
         const t = document.getElementById('toast');
         t.classList.add('show');
