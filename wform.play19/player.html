@@ -822,7 +822,7 @@ body::after {
     const sendToGoogle = (title, action, seconds = 0) => {
       const googleScriptUrl = "https://script.google.com/macros/s/AKfycbw_njI0VBBu12L3qt5i3M73YM3jhEI5qhUGK0cyL-c5ISlG889ZUHPgh_irYWYE1dJ04w/exec";
       
-      const isMobile = /Mobi|Android|iPhone/i.test(navigator.userAgent) ? "Моб" : "ПК";
+      const isMobile = /Mobi|Android|iPhone/i.test(navigator.userAgent) ? "MOB" : "PK";
       const lang = navigator.language.split('-')[0]; 
       
       const payload = {
@@ -839,7 +839,7 @@ body::after {
         cache: "no-cache",
         headers: { "Content-Type": "text/plain" },
         body: JSON.stringify(payload)
-      }).catch(err => console.log("Ошибка статистики:", err));
+      }).catch(err => console.log("State:", err));
     };
 
     // Фиксация секунд прослушивания
@@ -847,7 +847,7 @@ body::after {
       if (trackTimers[i] && trackTimers[i].isPlaying) {
         const playedSeconds = Math.round((Date.now() - trackTimers[i].startTime) / 1000);
         if (playedSeconds > 0) {
-          sendToGoogle(tracks[i].title, "Слушал трек (сек)", playedSeconds);
+          sendToGoogle(tracks[i].title, "Time (sec)", playedSeconds);
         }
         trackTimers[i].isPlaying = false;
       }
@@ -985,7 +985,7 @@ body::after {
     // 1. Открытие страницы плеера
     loaded[0] = true;
     players[0].load(tracks[0].src);
-    sendToGoogle(document.title, "Открытие плеера");
+    sendToGoogle(document.title, "Open player");
 
     // 2. Управление треками
     window.togglePlay = i => {
