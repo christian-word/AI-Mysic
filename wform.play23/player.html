@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Инструментальная музыка</title>
+  <title>Cote d'Azur · инструментальная музыка</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&family=Syne:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -33,6 +33,8 @@
       --a5-pale: rgba(90,208,201,0.12);
       --a6-pale: rgba(71,226,218,0.12);
       --a7-pale: rgba(114,242,234,0.12);
+      /* оранжевый цвет для эквалайзера (как в оригинале) */
+      --eq-color: #fca311;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -157,7 +159,7 @@
       width: 6px;
       height: 6px;
       border-radius: 50%;
-      background: #a0f5f0;
+      background: #fca311;
       animation: pulse-dot 1.8s ease-in-out infinite;
     }
 
@@ -288,7 +290,7 @@
       border-radius: inherit;
     }
 
-    /* оригинальные разноцветные обложки (как в первом варианте) */
+    /* оригинальные разноцветные обложки */
     .c0 .track-cover { background: linear-gradient(145deg, #1f6b5b, #6ee7c8); box-shadow: 0 4px 16px rgba(110,231,200,0.30); }
     .c1 .track-cover { background: linear-gradient(145deg, #154e72, #7dd3fc); box-shadow: 0 4px 16px rgba(125,211,252,0.30); }
     .c2 .track-cover { background: linear-gradient(145deg, #5b2a4a, #f9a8d4); box-shadow: 0 4px 16px rgba(249,168,212,0.30); }
@@ -297,7 +299,6 @@
     .c5 .track-cover { background: linear-gradient(145deg, #4d3b86, #c4b5fd); box-shadow: 0 4px 16px rgba(196,181,253,0.30); }
     .c6 .track-cover { background: linear-gradient(145deg, #0d5a7a, #38bdf8); box-shadow: 0 4px 16px rgba(56,189,248,0.30); }
     .c7 .track-cover { background: linear-gradient(145deg, #7b2d3a, #fda4af); box-shadow: 0 4px 16px rgba(253,164,175,0.30); }
-    .c8 .track-cover { background: linear-gradient(145deg, #2b5e6b, #5ce6df); box-shadow: 0 4px 16px rgba(92,230,223,0.30); }
 
     .track-card.playing .track-cover {
       box-shadow: 0 0 22px rgba(95,231,224,0.55);
@@ -356,6 +357,7 @@
       letter-spacing: 0.2px;
     }
 
+    /* ОРАНЖЕВЫЙ ЭКВАЛАЙЗЕР — как в оригинале */
     .eq-bars {
       display: inline-flex;
       align-items: flex-end;
@@ -367,13 +369,16 @@
       display: block;
       width: 2.5px;
       border-radius: 1px;
-      background: var(--a1);
-      opacity: 0.40;
+      background: #fca311;
+      opacity: 0.45;
       height: 30%;
       transition: height 0.1s;
     }
 
-    .playing .eq-bars span { opacity: 1; }
+    .playing .eq-bars span {
+      opacity: 1;
+      background: #fca311;
+    }
 
     .playing .eq-bars span:nth-child(1) { animation: eq1 0.7s ease-in-out infinite; }
     .playing .eq-bars span:nth-child(2) { animation: eq2 0.9s ease-in-out infinite 0.15s; }
@@ -568,11 +573,11 @@
   <div class="page-wrap">
     <div class="page-header">
       <div style="display:flex;justify-content:space-between;align-items:flex-start">
-        <div class="header-eyebrow">Инструментальная музыка</div>
+        <div class="header-eyebrow">Cote d'Azur</div>
         <div style="font-family:Space Grotesk,sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;color:#5fe7e0;opacity:0.9;padding-top:1px;text-transform:uppercase">liria instruments</div>
       </div>
-      <h1>Бирюзовая <span>осень</span></h1>
-      <p>Инструментальные пейзажи: свет истины, глубокая благодать и медитативное спокойствие.</p>
+      <h1>Cote <span>d'Azur</span></h1>
+      <p>Инструментальные пейзажи: свет истины, глубокая гармония и медитативное спокойствие у моря.</p>
       <div class="autoplay-badge">
         <div class="autoplay-dot"></div>
         Автоматическое продолжение
@@ -585,7 +590,7 @@
       <span class="np-next" id="np-next"></span>
     </div>
 
-    <!-- трек-лист (9 треков, разноцветные обложки, бирюзовый акцент) -->
+    <!-- ровно 8 треков, без дублей, первый трек — Осенняя Благодать(Remix).m4a -->
     <div class="track-card c0" id="card-0">
       <div class="track-top">
         <span class="track-num">01</span>
@@ -754,27 +759,6 @@
       </div>
     </div>
 
-    <div class="track-card c8" id="card-8">
-      <div class="track-top">
-        <span class="track-num">09</span>
-        <div class="track-cover"><i class="fas fa-feather-alt"></i></div>
-        <div class="track-info">
-          <div class="track-title">Осенняя Благодать · Pure Meditation</div>
-          <div class="track-meta">
-            <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Meditation Edit</span>
-            <div class="eq-bars"><span></span><span></span><span></span></div>
-            <span class="track-label">финальная благодать</span>
-          </div>
-        </div>
-        <button class="play-btn" id="btn-8" onclick="togglePlay(8)"><i class="fas fa-play"></i></button>
-      </div>
-      <div class="wave-wrap">
-        <div id="wave-8" class="wave-inner"></div>
-        <span class="cur-label" id="cur-8">00:00</span>
-        <span class="time-label" id="dur-8">--:--</span>
-      </div>
-    </div>
-
     <div class="page-footer">
       <div class="footer-actions">
         <button class="action-btn" onclick="shareTG()"><i class="fab fa-telegram-plane"></i> Telegram</button>
@@ -784,7 +768,7 @@
         <div class="brand-icon"><i class="fas fa-feather"></i></div>
         <div>
           <span class="brand-text">LIRIA</span>
-          <span class="brand-sub">бирюзовая осень</span>
+          <span class="brand-sub">лазурный берег</span>
         </div>
       </div>
     </div>
@@ -793,6 +777,7 @@
   <script type="module">
     import WaveSurfer from 'https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.esm.js';
 
+    // ровно 8 треков, без повторов
     const tracks = [
       { src: 'Осенняя Благодать(Remix).m4a', title: 'Осенняя Благодать (Remix)' },
       { src: 'Свет Истины (Ambient Electronics) (Remix).m4a', title: 'Свет Истины (Ambient Electronics)' },
@@ -801,8 +786,7 @@
       { src: 'Осенняя Благодать (Remix) (2).m4a', title: 'Осенняя Благодать (Remix) (2)' },
       { src: 'Autumn Grace Ambient Textures.m4a', title: 'Autumn Grace Ambient Textures' },
       { src: 'Grand Morning Light.m4a', title: 'Grand Morning Light' },
-      { src: 'Свет Истины (Ambient Electronics) (Remix).m4a', title: 'Свет Истины (Ambient Electronics) [Dub]' },
-      { src: 'Осенняя Благодать(Remix).m4a', title: 'Осенняя Благодать · Pure Meditation' }
+      { src: 'Свет Истины (Ambient Electronics) (Remix).m4a', title: 'Свет Истины (Ambient Electronics) [Dub]' }
     ];
 
     const colors = [
@@ -813,8 +797,7 @@
       { wave: '1d786e', progress: 'a0f5f0' },
       { wave: '13605a', progress: '5ad0c9' },
       { wave: '16675e', progress: '47e2da' },
-      { wave: '1c736a', progress: '72f2ea' },
-      { wave: '0d6b60', progress: '5ce6df' }
+      { wave: '1c736a', progress: '72f2ea' }
     ];
 
     const fmt = s => new Date(s * 1000).toISOString().substr(14, 5);
@@ -855,7 +838,7 @@
       navigator.mediaSession.metadata = new MediaMetadata({
         title: tracks[i].title,
         artist: 'LIRIA',
-        album: 'Бирюзовая осень'
+        album: 'Cote d'Azur'
       });
       navigator.mediaSession.setActionHandler('play', () => { if (currentPlaying >= 0) players[currentPlaying].play(); });
       navigator.mediaSession.setActionHandler('pause', () => { if (currentPlaying >= 0) players[currentPlaying].pause(); });
