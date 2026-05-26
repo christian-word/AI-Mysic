@@ -774,182 +774,165 @@
     </div>
   </div>
 
-  <script type="module">
-    import WaveSurfer from 'https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.esm.js';
+<script type="module">
+import WaveSurfer from 'https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.esm.js';
 
-    // ровно 8 треков, без повторов
-    const tracks = [
-      { src: 'Осенняя Благодать(Remix).m4a', title: 'Осенняя Благодать (Remix)' },
-      { src: 'Свет Истины (Ambient Electronics) (Remix).m4a', title: 'Свет Истины (Ambient Electronics)' },
-      { src: 'Глубокий Мир (Ambient) (Remix).m4a', title: 'Глубокий Мир (Ambient)' },
-      { src: 'Мелодія спокою (Remix).m4a', title: 'Мелодія спокою (Remix)' },
-      { src: 'Осенняя Благодать (Remix) (2).m4a', title: 'Осенняя Благодать (Remix) (2)' },
-      { src: 'Autumn Grace Ambient Textures.m4a', title: 'Autumn Grace Ambient Textures' },
-      { src: 'Grand Morning Light.m4a', title: 'Grand Morning Light' },
-      { src: 'Свет Истины (Ambient Electronics) (Remix).m4a', title: 'Свет Истины (Ambient Electronics) [Dub]' }
-    ];
+const tracks = [
+  { src: 'Осенняя Благодать(Remix).m4a', title: 'Осенняя Благодать (Remix)' },
+  { src: 'Свет Истины (Ambient Electronics) (Remix).m4a', title: 'Свет Истины (Ambient Electronics)' },
+  { src: 'Глубокий Мир (Ambient) (Remix).m4a', title: 'Глубокий Мир (Ambient)' },
+  { src: 'Мелодія спокою (Remix).m4a', title: 'Мелодія спокою (Remix)' },
+  { src: 'Осенняя Благодать (Remix) (2).m4a', title: 'Осенняя Благодать (Remix) (2)' },
+  { src: 'Autumn Grace Ambient Textures.m4a', title: 'Autumn Grace Ambient Textures' },
+  { src: 'Grand Morning Light.m4a', title: 'Grand Morning Light' },
+  { src: 'Свет Истины (Ambient Electronics) (Remix).m4a', title: 'Свет Истины (Ambient Electronics) [Dub]' }
+];
 
-    const colors = [
-      { wave: '1a6b5f', progress: '5ce6df' },
-      { wave: '1e5a62', progress: '5fe7e0' },
-      { wave: '1d635a', progress: '4cd6cf' },
-      { wave: '226760', progress: '7ff5ee' },
-      { wave: '1d786e', progress: 'a0f5f0' },
-      { wave: '13605a', progress: '5ad0c9' },
-      { wave: '16675e', progress: '47e2da' },
-      { wave: '1c736a', progress: '72f2ea' }
-    ];
+const colors = [
+  { wave: '1a6b5f', progress: '5ce6df' },
+  { wave: '1e5a62', progress: '5fe7e0' },
+  { wave: '1d635a', progress: '4cd6cf' },
+  { wave: '226760', progress: '7ff5ee' },
+  { wave: '1d786e', progress: 'a0f5f0' },
+  { wave: '13605a', progress: '5ad0c9' },
+  { wave: '16675e', progress: '47e2da' },
+  { wave: '1c736a', progress: '72f2ea' }
+];
 
-    const fmt = s => new Date(s * 1000).toISOString().substr(14, 5);
-    let currentPlaying = -1;
+const fmt = s => new Date(s * 1000).toISOString().substr(14, 5);
+let currentPlaying = -1;
 
-    const updateNowPlaying = i => {
-      const bar = document.getElementById('now-playing-bar');
-      const title = document.getElementById('np-title');
-      const next = document.getElementById('np-next');
-      if (i >= 0) {
-        bar.classList.add('visible');
-        title.textContent = tracks[i].title;
-        next.textContent = i < tracks.length - 1 ? `Далее: ${tracks[i + 1].title}` : 'Конец альбома';
-        updateMediaSession(i);
-      } else {
-        bar.classList.remove('visible');
+const updateNowPlaying = i => {
+  const bar = document.getElementById('now-playing-bar');
+  const title = document.getElementById('np-title');
+  const next = document.getElementById('np-next');
+  if (i >= 0) {
+    bar.classList.add('visible');
+    title.textContent = tracks[i].title;
+    next.textContent = i < tracks.length - 1 ? `Далее: ${tracks[i + 1].title}` : 'Конец альбома';
+    updateMediaSession(i);
+  } else {
+    bar.classList.remove('visible');
+  }
+};
+
+let audioCtx = null;
+function unlockAudio() {
+  if (audioCtx) return;
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  gain.gain.value = 0.001;
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+  osc.start();
+}
+
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+});
+
+function updateMediaSession(i) {
+  if (!('mediaSession' in navigator)) return;
+  navigator.mediaSession.metadata = new MediaMetadata({
+    title: tracks[i].title, artist: 'LIRIA', album: "Cote d'Azur"
+  });
+  navigator.mediaSession.setActionHandler('play', () => currentPlaying >= 0 && players[currentPlaying].play());
+  navigator.mediaSession.setActionHandler('pause', () => currentPlaying >= 0 && players[currentPlaying].pause());
+  navigator.mediaSession.setActionHandler('nexttrack', () => {
+    const n = currentPlaying >= 0 ? currentPlaying + 1 : 0;
+    if (n < players.length) window.togglePlay(n);
+  });
+  navigator.mediaSession.setActionHandler('previoustrack', () => {
+    const p = currentPlaying >= 0 ? currentPlaying - 1 : -1;
+    if (p >= 0) window.togglePlay(p);
+  });
+  navigator.mediaSession.playbackState = 'playing';
+}
+
+const players = tracks.map((track, i) => {
+  const ws = WaveSurfer.create({
+    container: `#wave-${i}`,
+    waveColor: `#${colors[i].wave}`,
+    progressColor: `#${colors[i].progress}`,
+    barWidth: 2, barGap: 1, barRadius: 2, height: 34,
+    interact: true, normalize: true
+  });
+
+  ws.on('ready', () => {
+    console.log(`✅ Трек ${i+1} загружен: ${track.src}`);
+    document.getElementById(`dur-${i}`).textContent = fmt(ws.getDuration());
+    document.getElementById(`btn-${i}`).disabled = false;
+    document.getElementById(`btn-${i}`).style.opacity = '1'; // Убрали блокировку кнопок
+    
+    // Предзагрузка следующего трека
+    if (i + 1 < tracks.length) {
+      players[i + 1].load(tracks[i + 1].src);
+    }
+  });
+
+  ws.on('error', (err) => {
+    console.error(`❌ Ошибка загрузки трека ${i+1} (${track.src}):`, err);
+    document.getElementById(`dur-${i}`).textContent = 'ERROR';
+    document.getElementById(`btn-${i}`).style.opacity = '0.5';
+    document.getElementById(`btn-${i}`).title = 'Файл не найден или заблокирован';
+  });
+
+  ws.on('timeupdate', (cur) => document.getElementById(`cur-${i}`).textContent = fmt(cur));
+  ws.on('play', () => {
+    document.getElementById(`btn-${i}`).innerHTML = '<i class="fas fa-pause"></i>';
+    document.getElementById(`card-${i}`).classList.add('playing');
+    players.forEach((p, j) => {
+      if (j !== i) {
+        if (p.isPlaying()) p.pause();
+        document.getElementById(`card-${j}`).classList.remove('playing');
       }
-    };
-
-    let audioCtx = null;
-    function unlockAudio() {
-      if (audioCtx) return;
-      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      gain.gain.value = 0.001;
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start();
-    }
-
-    document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'visible' && audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
     });
+    currentPlaying = i;
+    updateNowPlaying(i);
+  });
+  ws.on('pause', () => {
+    document.getElementById(`btn-${i}`).innerHTML = '<i class="fas fa-play"></i>';
+    document.getElementById(`card-${i}`).classList.remove('playing');
+    if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'paused';
+    if (currentPlaying === i) currentPlaying = -1;
+    updateNowPlaying(-1);
+  });
+  ws.on('finish', () => {
+    document.getElementById(`btn-${i}`).innerHTML = '<i class="fas fa-play"></i>';
+    document.getElementById(`card-${i}`).classList.remove('playing');
+    currentPlaying = -1;
+    const next = i + 1;
+    if (next < players.length) {
+      setTimeout(() => {
+        players[next].play();
+        document.getElementById(`card-${next}`).scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 600);
+    } else updateNowPlaying(-1);
+  });
 
-    function updateMediaSession(i) {
-      if (!('mediaSession' in navigator)) return;
-      navigator.mediaSession.metadata = new MediaMetadata({
-        title: tracks[i].title,
-        artist: 'LIRIA',
-        album: 'Cote d'Azur'
-      });
-      navigator.mediaSession.setActionHandler('play', () => { if (currentPlaying >= 0) players[currentPlaying].play(); });
-      navigator.mediaSession.setActionHandler('pause', () => { if (currentPlaying >= 0) players[currentPlaying].pause(); });
-      navigator.mediaSession.setActionHandler('nexttrack', () => {
-        const n = currentPlaying >= 0 ? currentPlaying + 1 : 0;
-        if (n < players.length) window.togglePlay(n);
-      });
-      navigator.mediaSession.setActionHandler('previoustrack', () => {
-        const p = currentPlaying >= 0 ? currentPlaying - 1 : -1;
-        if (p >= 0) window.togglePlay(p);
-      });
-      navigator.mediaSession.playbackState = 'playing';
-    }
+  // Загружаем первый трек сразу, остальные по цепочке
+  if (i === 0) ws.load(track.src);
+  return ws;
+});
 
-    const loaded = new Array(tracks.length).fill(false);
+window.togglePlay = i => {
+  unlockAudio();
+  if (!players[i].isLoaded) {
+    console.log(`⏳ Загрузка трека ${i+1}...`);
+    players[i].load(tracks[i].src);
+  }
+  players[i].playPause();
+};
 
-    const players = tracks.map((track, i) => {
-      const ws = WaveSurfer.create({
-        container: `#wave-${i}`,
-        waveColor: `#${colors[i].wave}`,
-        progressColor: `#${colors[i].progress}`,
-        barWidth: 2,
-        barGap: 1,
-        barRadius: 2,
-        height: 34,
-        interact: true,
-        normalize: true
-      });
-
-      ws.on('ready', () => {
-        document.getElementById(`dur-${i}`).textContent = fmt(ws.getDuration());
-        document.getElementById(`btn-${i}`).disabled = false;
-        document.getElementById(`btn-${i}`).style.opacity = (i === 0 || loaded[i-1]) ? 1 : 0.35;
-        if (i + 1 < tracks.length && !loaded[i + 1]) {
-          loaded[i + 1] = true;
-          players[i + 1].load(tracks[i + 1].src);
-        }
-      });
-
-      ws.on('timeupdate', (cur) => {
-        document.getElementById(`cur-${i}`).textContent = fmt(cur);
-      });
-
-      ws.on('play', () => {
-        document.getElementById(`btn-${i}`).innerHTML = '<i class="fas fa-pause"></i>';
-        document.getElementById(`card-${i}`).classList.add('playing');
-        players.forEach((p, j) => {
-          if (j !== i) {
-            if (p.isPlaying()) p.pause();
-            document.getElementById(`card-${j}`).classList.remove('playing');
-          }
-        });
-        currentPlaying = i;
-        updateNowPlaying(i);
-      });
-
-      ws.on('pause', () => {
-        document.getElementById(`btn-${i}`).innerHTML = '<i class="fas fa-play"></i>';
-        document.getElementById(`card-${i}`).classList.remove('playing');
-        if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'paused';
-        if (currentPlaying === i) currentPlaying = -1;
-        updateNowPlaying(-1);
-      });
-
-      ws.on('finish', () => {
-        document.getElementById(`btn-${i}`).innerHTML = '<i class="fas fa-play"></i>';
-        document.getElementById(`card-${i}`).classList.remove('playing');
-        currentPlaying = -1;
-        const next = i + 1;
-        if (next < players.length) {
-          setTimeout(() => {
-            players[next].play();
-            document.getElementById(`card-${next}`).scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-          }, 600);
-        } else {
-          updateNowPlaying(-1);
-        }
-      });
-
-      return ws;
-    });
-
-    for (let i = 1; i < tracks.length; i++) {
-      document.getElementById(`btn-${i}`).style.opacity = 0.35;
-    }
-
-    loaded[0] = true;
-    players[0].load(tracks[0].src);
-
-    window.togglePlay = i => {
-      unlockAudio();
-      if (!loaded[i]) {
-        loaded[i] = true;
-        players[i].load(tracks[i].src);
-        players[i].once('ready', () => players[i].play());
-      } else {
-        players[i].playPause();
-      }
-    };
-
-    window.shareTG = () => {
-      window.open(`https://t.me/share/url?url=${encodeURIComponent(window.location.href)}`, '_blank');
-    };
-
-    window.copyLink = () => {
-      navigator.clipboard.writeText(window.location.href).then(() => {
-        const t = document.getElementById('toast');
-        t.classList.add('show');
-        setTimeout(() => t.classList.remove('show'), 2200);
-      });
-    };
-  </script>
+window.shareTG = () => window.open(`https://t.me/share/url?url=${encodeURIComponent(window.location.href)}`, '_blank');
+window.copyLink = () => {
+  navigator.clipboard.writeText(window.location.href).then(() => {
+    const t = document.getElementById('toast');
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2200);
+  });
+};
+</script>
 </body>
 </html>
