@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>На Краю Вечности | Ambient Collection</title>
+<title>Тихие Пространства | Ambient Collection</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&family=Syne:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -20,6 +20,7 @@
   --border-glow: rgba(90,150,220,0.26);
   --a0: #6ab0ff; --a1: #7dd3fc; --a2: #a78bfa; --a3: #fbbf24;
   --a4: #34d399; --a5: #f472b6; --a6: #38bdf8; --a7: #fb7185;
+  --a8: #94a3b8; --a9: #fdba74; /* Новый цвет для 10 трека */
   --a1-pale: rgba(125,211,252,0.08);
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -106,15 +107,18 @@ body::after {
   flex-shrink: 0; font-size: 14px; color: #fff; position: relative; overflow: hidden; transition: box-shadow 0.3s ease;
 }
 .track-cover::after { content: ""; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255,255,255,0.16), transparent 60%); border-radius: inherit; }
-.c0 .track-cover { background: linear-gradient(145deg, #1a3a6a, #6ab0ff); box-shadow: 0 4px 16px rgba(106,176,255,0.30); }
-.c1 .track-cover { background: linear-gradient(145deg, #154e72, #7dd3fc); box-shadow: 0 4px 16px rgba(125,211,252,0.30); }
-.c2 .track-cover { background: linear-gradient(145deg, #3b2a5b, #a78bfa); box-shadow: 0 4px 16px rgba(167,139,250,0.30); }
-.c3 .track-cover { background: linear-gradient(145deg, #5b2a3a, #f472b6); box-shadow: 0 4px 16px rgba(244,114,182,0.30); }
-.c4 .track-cover { background: linear-gradient(145deg, #234a36, #34d399); box-shadow: 0 4px 16px rgba(52,211,153,0.30); }
-.c5 .track-cover { background: linear-gradient(145deg, #4a3b23, #fbbf24); box-shadow: 0 4px 16px rgba(251,191,36,0.30); }
+/* Цветовые схемы обложек (0-9) */
+.c0 .track-cover { background: linear-gradient(145deg, #4a3b23, #fbbf24); box-shadow: 0 4px 16px rgba(251,191,36,0.30); } /* Autumn Original */
+.c1 .track-cover { background: linear-gradient(145deg, #1a3a6a, #6ab0ff); box-shadow: 0 4px 16px rgba(106,176,255,0.30); }
+.c2 .track-cover { background: linear-gradient(145deg, #154e72, #7dd3fc); box-shadow: 0 4px 16px rgba(125,211,252,0.30); }
+.c3 .track-cover { background: linear-gradient(145deg, #3b2a5b, #a78bfa); box-shadow: 0 4px 16px rgba(167,139,250,0.30); }
+.c4 .track-cover { background: linear-gradient(145deg, #5b2a3a, #f472b6); box-shadow: 0 4px 16px rgba(244,114,182,0.30); }
+.c5 .track-cover { background: linear-gradient(145deg, #234a36, #34d399); box-shadow: 0 4px 16px rgba(52,211,153,0.30); }
 .c6 .track-cover { background: linear-gradient(145deg, #0d4a5a, #38bdf8); box-shadow: 0 4px 16px rgba(56,189,248,0.30); }
 .c7 .track-cover { background: linear-gradient(145deg, #6a2a3a, #fb7185); box-shadow: 0 4px 16px rgba(251,113,133,0.30); }
 .c8 .track-cover { background: linear-gradient(145deg, #1a2a3a, #94a3b8); box-shadow: 0 4px 16px rgba(148,163,184,0.30); }
+.c9 .track-cover { background: linear-gradient(145deg, #7c2d12, #fdba74); box-shadow: 0 4px 16px rgba(253,186,116,0.30); } /* New Pure Harmony */
+
 .track-card.playing .track-cover { box-shadow: 0 0 22px rgba(125,211,252,0.40); animation: cover-glow 2.2s ease-in-out infinite; }
 @keyframes cover-glow { 0%,100%{filter:brightness(1)} 50%{filter:brightness(1.18)} }
 .track-info { flex: 1; min-width: 0; }
@@ -200,7 +204,7 @@ body::after {
       <div class="header-eyebrow">Ambient Collection</div>
       <div style="font-family:Space Grotesk,sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;color:#7dd3fc;opacity:0.82;padding-top:1px;text-transform:uppercase">LIRIA</div>
     </div>
-    <h1>На краю <span>Вечности </span></h1>
+    <h1>Тихие <span>Пространства</span></h1>
     <p>Атмосферные текстуры и ремиксы для глубокого погружения.</p>
     <div class="autoplay-badge"><div class="autoplay-dot"></div> Auto-advance enabled</div>
   </div>
@@ -211,91 +215,91 @@ body::after {
     <span class="np-next" id="np-next"></span>
   </div>
 
-  <!-- 01 -->
+  <!-- 01: Осенняя Благодать(Remix) - Original Mix (Был 06, стал 01) -->
   <div class="track-card c0" id="card-0">
     <div class="track-top">
       <span class="track-num">01</span>
-      <div class="track-cover"><i class="fas fa-cloud-moon"></i></div>
+      <div class="track-cover"><i class="fas fa-wind"></i></div>
       <div class="track-info">
-        <div class="track-title">Свет Истины (Ambient Electronics) (Remix) — I</div>
-        <div class="track-meta"><span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Ambient</span><div class="eq-bars"><span></span><span></span><span></span></div><span class="track-label">Electronics Remix</span></div>
+        <div class="track-title">Осенняя Благодать(Remix)</div>
+        <div class="track-meta"><span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Seasonal</span><div class="eq-bars"><span></span><span></span><span></span></div><span class="track-label">Original Mix</span></div>
       </div>
       <button class="play-btn" id="btn-0" onclick="togglePlay(0)"><i class="fas fa-play"></i></button>
     </div>
     <div class="wave-wrap"><div id="wave-0" class="wave-inner"></div><span class="cur-label" id="cur-0">00:00</span><span class="time-label" id="dur-0">--:--</span></div>
   </div>
 
-  <!-- 02 -->
+  <!-- 02: Свет Истины I -->
   <div class="track-card c1" id="card-1">
     <div class="track-top">
       <span class="track-num">02</span>
-      <div class="track-cover"><i class="fas fa-sun"></i></div>
+      <div class="track-cover"><i class="fas fa-cloud-moon"></i></div>
       <div class="track-info">
-        <div class="track-title">Свет Истины (Ambient Electronics) (Remix) — II</div>
-        <div class="track-meta"><span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Remix</span><div class="eq-bars"><span></span><span></span><span></span></div><span class="track-label">Alternative Mix</span></div>
+        <div class="track-title">Свет Истины (Ambient Electronics) (Remix) — I</div>
+        <div class="track-meta"><span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Ambient</span><div class="eq-bars"><span></span><span></span><span></span></div><span class="track-label">Electronics Remix</span></div>
       </div>
       <button class="play-btn" id="btn-1" onclick="togglePlay(1)"><i class="fas fa-play"></i></button>
     </div>
     <div class="wave-wrap"><div id="wave-1" class="wave-inner"></div><span class="cur-label" id="cur-1">00:00</span><span class="time-label" id="dur-1">--:--</span></div>
   </div>
 
-  <!-- 03 -->
+  <!-- 03: Свет Истины II -->
   <div class="track-card c2" id="card-2">
     <div class="track-top">
       <span class="track-num">03</span>
-      <div class="track-cover"><i class="fas fa-water"></i></div>
+      <div class="track-cover"><i class="fas fa-sun"></i></div>
       <div class="track-info">
-        <div class="track-title">Глубокий Мир (Ambient) (Remix)</div>
-        <div class="track-meta"><span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Deep</span><div class="eq-bars"><span></span><span></span><span></span></div><span class="track-label">Ambient Remix</span></div>
+        <div class="track-title">Свет Истины (Ambient Electronics) (Remix) — II</div>
+        <div class="track-meta"><span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Remix</span><div class="eq-bars"><span></span><span></span><span></span></div><span class="track-label">Alternative Mix</span></div>
       </div>
       <button class="play-btn" id="btn-2" onclick="togglePlay(2)"><i class="fas fa-play"></i></button>
     </div>
     <div class="wave-wrap"><div id="wave-2" class="wave-inner"></div><span class="cur-label" id="cur-2">00:00</span><span class="time-label" id="dur-2">--:--</span></div>
   </div>
 
-  <!-- 04 -->
+  <!-- 04: Глубокий Мир -->
   <div class="track-card c3" id="card-3">
     <div class="track-top">
       <span class="track-num">04</span>
-      <div class="track-cover"><i class="fas fa-music"></i></div>
+      <div class="track-cover"><i class="fas fa-water"></i></div>
       <div class="track-info">
-        <div class="track-title">Мелодія спокою (Remix)</div>
-        <div class="track-meta"><span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Melodic</span><div class="eq-bars"><span></span><span></span><span></span></div><span class="track-label">Calm Remix</span></div>
+        <div class="track-title">Глубокий Мир (Ambient) (Remix)</div>
+        <div class="track-meta"><span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Deep</span><div class="eq-bars"><span></span><span></span><span></span></div><span class="track-label">Ambient Remix</span></div>
       </div>
       <button class="play-btn" id="btn-3" onclick="togglePlay(3)"><i class="fas fa-play"></i></button>
     </div>
     <div class="wave-wrap"><div id="wave-3" class="wave-inner"></div><span class="cur-label" id="cur-3">00:00</span><span class="time-label" id="dur-3">--:--</span></div>
   </div>
 
-  <!-- 05 -->
+  <!-- 05: Мелодія спокою -->
   <div class="track-card c4" id="card-4">
     <div class="track-top">
       <span class="track-num">05</span>
-      <div class="track-cover"><i class="fas fa-leaf"></i></div>
+      <div class="track-cover"><i class="fas fa-music"></i></div>
       <div class="track-info">
-        <div class="track-title">Осенняя Благодать (Remix) (2)</div>
-        <div class="track-meta"><span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Autumn</span><div class="eq-bars"><span></span><span></span><span></span></div><span class="track-label">Part II</span></div>
+        <div class="track-title">Мелодія спокою (Remix)</div>
+        <div class="track-meta"><span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Melodic</span><div class="eq-bars"><span></span><span></span><span></span></div><span class="track-label">Calm Remix</span></div>
       </div>
       <button class="play-btn" id="btn-4" onclick="togglePlay(4)"><i class="fas fa-play"></i></button>
     </div>
     <div class="wave-wrap"><div id="wave-4" class="wave-inner"></div><span class="cur-label" id="cur-4">00:00</span><span class="time-label" id="dur-4">--:--</span></div>
   </div>
 
-  <!-- 06 -->
+  <!-- 06: Осенняя Благодать (2) -->
   <div class="track-card c5" id="card-5">
     <div class="track-top">
       <span class="track-num">06</span>
-      <div class="track-cover"><i class="fas fa-wind"></i></div>
+      <div class="track-cover"><i class="fas fa-leaf"></i></div>
       <div class="track-info">
-        <div class="track-title">Осенняя Благодать(Remix)</div>
-        <div class="track-meta"><span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Seasonal</span><div class="eq-bars"><span></span><span></span><span></span></div><span class="track-label">Original Mix</span></div>
+        <div class="track-title">Осенняя Благодать (Remix) (2)</div>
+        <div class="track-meta"><span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Autumn</span><div class="eq-bars"><span></span><span></span><span></span></div><span class="track-label">Part II</span></div>
       </div>
       <button class="play-btn" id="btn-5" onclick="togglePlay(5)"><i class="fas fa-play"></i></button>
     </div>
     <div class="wave-wrap"><div id="wave-5" class="wave-inner"></div><span class="cur-label" id="cur-5">00:00</span><span class="time-label" id="dur-5">--:--</span></div>
   </div>
 
-  <!-- 07 -->
+  <!-- 07: Свет Истины Extended -->
   <div class="track-card c6" id="card-6">
     <div class="track-top">
       <span class="track-num">07</span>
@@ -309,7 +313,7 @@ body::after {
     <div class="wave-wrap"><div id="wave-6" class="wave-inner"></div><span class="cur-label" id="cur-6">00:00</span><span class="time-label" id="dur-6">--:--</span></div>
   </div>
 
-  <!-- 08 -->
+  <!-- 08: Autumn Grace -->
   <div class="track-card c7" id="card-7">
     <div class="track-top">
       <span class="track-num">08</span>
@@ -323,7 +327,7 @@ body::after {
     <div class="wave-wrap"><div id="wave-7" class="wave-inner"></div><span class="cur-label" id="cur-7">00:00</span><span class="time-label" id="dur-7">--:--</span></div>
   </div>
 
-  <!-- 09 -->
+  <!-- 09: Grand Morning Light -->
   <div class="track-card c8" id="card-8">
     <div class="track-top">
       <span class="track-num">09</span>
@@ -335,6 +339,20 @@ body::after {
       <button class="play-btn" id="btn-8" onclick="togglePlay(8)"><i class="fas fa-play"></i></button>
     </div>
     <div class="wave-wrap"><div id="wave-8" class="wave-inner"></div><span class="cur-label" id="cur-8">00:00</span><span class="time-label" id="dur-8">--:--</span></div>
+  </div>
+
+  <!-- 10: НОВЫЙ ТРЕК -->
+  <div class="track-card c9" id="card-9">
+    <div class="track-top">
+      <span class="track-num">10</span>
+      <div class="track-cover"><i class="fas fa-feather-alt"></i></div>
+      <div class="track-info">
+        <div class="track-title">Осенняя Благодать (Pure Harmony Mix) (Remix)</div>
+        <div class="track-meta"><span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> Harmony</span><div class="eq-bars"><span></span><span></span><span></span></div><span class="track-label">Pure Harmony Mix</span></div>
+      </div>
+      <button class="play-btn" id="btn-9" onclick="togglePlay(9)"><i class="fas fa-play"></i></button>
+    </div>
+    <div class="wave-wrap"><div id="wave-9" class="wave-inner"></div><span class="cur-label" id="cur-9">00:00</span><span class="time-label" id="dur-9">--:--</span></div>
   </div>
 
   <div class="page-footer">
@@ -355,29 +373,31 @@ body::after {
 <script type="module">
 import WaveSurfer from 'https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.esm.js';
 
-// Точные имена файлов как в вашем списке
+// Обновленный список треков с точными именами файлов
 const tracks = [
+  { src: 'Осенняя Благодать(Remix).m4a', title: 'Осенняя Благодать(Remix)' }, // Был 6, стал 1
   { src: '1-Свет Истины (Ambient Electronics) (Remix).m4a', title: 'Свет Истины (Ambient Electronics) (Remix) — I' },
   { src: '2-Свет Истины (Ambient Electronics) (Remix).m4a', title: 'Свет Истины (Ambient Electronics) (Remix) — II' },
   { src: 'Глубокий Мир (Ambient) (Remix).m4a', title: 'Глубокий Мир (Ambient) (Remix)' },
   { src: 'Мелодія спокою (Remix).m4a', title: 'Мелодія спокою (Remix)' },
   { src: 'Осенняя Благодать (Remix) (2).m4a', title: 'Осенняя Благодать (Remix) (2)' },
-  { src: 'Осенняя Благодать(Remix).m4a', title: 'Осенняя Благодать(Remix)' },
   { src: 'Свет Истины (Ambient Electronics) (Remix).m4a', title: 'Свет Истины (Ambient Electronics) (Remix)' },
   { src: 'Autumn Grace Ambient Textures.m4a', title: 'Autumn Grace Ambient Textures' },
-  { src: 'Grand Morning Light.m4a', title: 'Grand Morning Light' }
+  { src: 'Grand Morning Light.m4a', title: 'Grand Morning Light' },
+  { src: 'Осенняя Благодать (Pure Harmony Mix) (Remix).m4a', title: 'Осенняя Благодать (Pure Harmony Mix) (Remix)' } // Новый трек
 ];
 
 const colors = [
-  { wave: '1a3a6a', progress: '6ab0ff' },
-  { wave: '154e72', progress: '7dd3fc' },
-  { wave: '3b2a5b', progress: 'a78bfa' },
-  { wave: '5b2a3a', progress: 'f472b6' },
-  { wave: '234a36', progress: '34d399' },
-  { wave: '4a3b23', progress: 'fbbf24' },
-  { wave: '0d4a5a', progress: '38bdf8' },
-  { wave: '6a2a3a', progress: 'fb7185' },
-  { wave: '1a2a3a', progress: '94a3b8' }
+  { wave: '4a3b23', progress: 'fbbf24' }, // 0: Autumn Original
+  { wave: '1a3a6a', progress: '6ab0ff' }, // 1
+  { wave: '154e72', progress: '7dd3fc' }, // 2
+  { wave: '3b2a5b', progress: 'a78bfa' }, // 3
+  { wave: '5b2a3a', progress: 'f472b6' }, // 4
+  { wave: '234a36', progress: '34d399' }, // 5
+  { wave: '0d4a5a', progress: '38bdf8' }, // 6
+  { wave: '6a2a3a', progress: 'fb7185' }, // 7
+  { wave: '1a2a3a', progress: '94a3b8' }, // 8
+  { wave: '7c2d12', progress: 'fdba74' }  // 9: New Pure Harmony
 ];
 
 const fmt = s => new Date(s * 1000).toISOString().substr(14, 5);
