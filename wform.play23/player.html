@@ -1,0 +1,824 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aurora Ambient — Instrumental Album</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&family=Syne:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="counter.js" async></script>
+<style>
+  :root {
+    --bg: #120b08;
+    --bg-card: #24150f;
+    --bg-card2: #372017;
+    --ink: #fff7f0;
+    --ink-soft: rgba(255, 247, 240, 0.72);
+    --ink-faint: rgba(255, 247, 240, 0.46);
+    --border: rgba(255, 194, 141, 0.16);
+    --border-glow: rgba(255, 160, 92, 0.28);
+    --a0: #ffb36b;
+    --a1: #ffcf8a;
+    --a2: #ff9f7b;
+    --a3: #ffd36a;
+    --a4: #a6d8b3;
+    --a5: #d0b3ff;
+    --a6: #ff7f66;
+    --a7: #f3a86f;
+    --a0-pale: rgba(255, 179, 107, 0.10);
+    --a1-pale: rgba(255, 207, 138, 0.10);
+    --a2-pale: rgba(255, 159, 123, 0.10);
+    --a3-pale: rgba(255, 211, 106, 0.10);
+    --a4-pale: rgba(166, 216, 179, 0.10);
+    --a5-pale: rgba(208, 179, 255, 0.10);
+    --a6-pale: rgba(255, 127, 102, 0.10);
+    --a7-pale: rgba(243, 168, 111, 0.10);
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  body {
+    font-family: 'Space Grotesk', sans-serif;
+    background:
+      radial-gradient(ellipse 75% 50% at 50% 0%, rgba(255, 171, 92, 0.14) 0%, transparent 52%),
+      radial-gradient(ellipse 60% 45% at 18% 78%, rgba(255, 120, 70, 0.10) 0%, transparent 58%),
+      linear-gradient(180deg, #120b08 0%, #0f0907 100%);
+    min-height: 100vh;
+    padding: 12px 8px 24px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    position: relative;
+    overflow-x: hidden;
+    color: var(--ink);
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 72% 48% at 50% 6%, rgba(255,130,60,0.24) 0%, transparent 55%),
+      radial-gradient(ellipse 55% 45% at 18% 76%, rgba(160,105,255,0.10) 0%, transparent 58%),
+      radial-gradient(ellipse 48% 40% at 82% 22%, rgba(255,211,106,0.10) 0%, transparent 58%),
+      radial-gradient(ellipse 60% 35% at 50% 100%, rgba(255,170,95,0.16) 0%, transparent 54%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 8% 14%, rgba(255,255,255,0.42) 0%, transparent 100%),
+      radial-gradient(1px 1px at 24% 68%, rgba(255,255,255,0.26) 0%, transparent 100%),
+      radial-gradient(1px 1px at 39% 23%, rgba(255,255,255,0.40) 0%, transparent 100%),
+      radial-gradient(1px 1px at 58% 79%, rgba(255,255,255,0.22) 0%, transparent 100%),
+      radial-gradient(1px 1px at 76% 11%, rgba(255,255,255,0.35) 0%, transparent 100%),
+      radial-gradient(1px 1px at 91% 57%, rgba(255,255,255,0.28) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page-wrap {
+    width: 100%;
+    max-width: 800px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .page-header {
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .header-eyebrow {
+    font-size: 9.5px;
+    font-weight: 500;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--a1);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .header-eyebrow::before {
+    content: "";
+    display: inline-block;
+    width: 24px;
+    height: 1px;
+    background: var(--a1);
+    opacity: 0.6;
+  }
+
+  .page-header h1 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.6rem;
+    color: var(--ink);
+    letter-spacing: -1px;
+    line-height: 1.1;
+    margin-bottom: 6px;
+  }
+
+  .page-header h1 span {
+    background: linear-gradient(90deg, #ffcf8a, #ffb36b, #ff9f7b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .page-header p {
+    font-size: 11.5px;
+    color: var(--ink-faint);
+    font-weight: 300;
+    letter-spacing: 0.3px;
+    line-height: 1.5;
+  }
+
+  .autoplay-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    padding: 4px 12px;
+    background: rgba(255, 207, 138, 0.10);
+    border: 1px solid rgba(255, 207, 138, 0.24);
+    border-radius: 20px;
+    font-size: 10px;
+    color: var(--a1);
+    letter-spacing: 0.5px;
+  }
+
+  .autoplay-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--a3);
+    animation: pulse-dot 1.8s ease-in-out infinite;
+  }
+
+  @keyframes pulse-dot {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.7); }
+  }
+
+  .now-playing-bar {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 207, 138, 0.08);
+    border: 1px solid rgba(255, 207, 138, 0.22);
+    border-radius: 10px;
+    padding: 8px 14px;
+    margin-bottom: 12px;
+    font-size: 11px;
+    color: var(--ink-soft);
+  }
+
+  .now-playing-bar.visible { display: flex; }
+
+  .np-label {
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--a1);
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  .np-title {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .np-next {
+    font-size: 9px;
+    color: var(--ink-faint);
+    flex-shrink: 0;
+  }
+
+  .track-card {
+    background: var(--bg-card);
+    border: 1px solid rgba(255, 194, 141, 0.12);
+    border-radius: 13px;
+    padding: 9px 11px;
+    margin-bottom: 6px;
+    transition: border-color 0.25s ease, background 0.25s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .track-card:hover {
+    border-color: rgba(255, 207, 138, 0.28);
+    background: #311d15;
+  }
+
+  .track-card.selected {
+    background: var(--bg-card2);
+    border-color: rgba(255, 207, 138, 0.42);
+  }
+
+  .track-card.selected::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 6px;
+    bottom: 6px;
+    width: 3px;
+    border-radius: 3px;
+    background: linear-gradient(180deg, var(--a1), var(--a0));
+    opacity: 0.85;
+  }
+
+  .track-card.playing {
+    border-color: rgba(255, 207, 138, 0.55);
+    background: var(--bg-card2);
+  }
+
+  .track-top {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 7px;
+  }
+
+  .track-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: rgba(255, 207, 138, 0.28);
+    min-width: 22px;
+    text-align: right;
+    flex-shrink: 0;
+    letter-spacing: -0.5px;
+  }
+
+  .track-card.playing .track-num { color: var(--a1); }
+
+  .track-cover {
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 14px;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+    transition: box-shadow 0.3s ease;
+  }
+
+  .track-cover::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.18), transparent 60%);
+    border-radius: inherit;
+  }
+
+  .c0 .track-cover { background: linear-gradient(145deg, #7a3b16, #ffb36b); box-shadow: 0 4px 16px rgba(255,179,107,0.30); }
+  .c1 .track-cover { background: linear-gradient(145deg, #6b2f14, #ffcf8a); box-shadow: 0 4px 16px rgba(255,207,138,0.30); }
+  .c2 .track-cover { background: linear-gradient(145deg, #5c241b, #ff9f7b); box-shadow: 0 4px 16px rgba(255,159,123,0.30); }
+  .c3 .track-cover { background: linear-gradient(145deg, #2f3f4f, #98c8ff); box-shadow: 0 4px 16px rgba(152,200,255,0.22); }
+  .c4 .track-cover { background: linear-gradient(145deg, #214b3a, #a6d8b3); box-shadow: 0 4px 16px rgba(166,216,179,0.28); }
+  .c5 .track-cover { background: linear-gradient(145deg, #46376e, #d0b3ff); box-shadow: 0 4px 16px rgba(208,179,255,0.28); }
+  .c6 .track-cover { background: linear-gradient(145deg, #7a2c2a, #ff7f66); box-shadow: 0 4px 16px rgba(255,127,102,0.28); }
+  .c7 .track-cover { background: linear-gradient(145deg, #8c5a24, #ffd36a); box-shadow: 0 4px 16px rgba(255,211,106,0.28); }
+
+  .track-card.playing .track-cover {
+    box-shadow: 0 0 22px rgba(255,207,138,0.36);
+    animation: cover-glow 2s ease-in-out infinite;
+  }
+
+  @keyframes cover-glow {
+    0%,100% { filter: brightness(1); }
+    50% { filter: brightness(1.18); }
+  }
+
+  .track-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .track-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    letter-spacing: -0.2px;
+  }
+
+  .track-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 8.5px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    border: 1px solid;
+    background: var(--a1-pale);
+    color: var(--a1);
+    border-color: rgba(255,207,138,0.25);
+  }
+
+  .track-label {
+    font-size: 10px;
+    color: var(--ink-faint);
+    font-weight: 300;
+    letter-spacing: 0.2px;
+  }
+
+  .eq-bars {
+    display: inline-flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 12px;
+  }
+
+  .eq-bars span {
+    display: block;
+    width: 2.5px;
+    border-radius: 1px;
+    background: #ff8c00;
+    opacity: 0.55;
+    height: 30%;
+    transition: height 0.1s;
+  }
+
+  .playing .eq-bars span {
+    opacity: 1;
+    background: #ff8c00;
+  }
+
+  .playing .eq-bars span:nth-child(1) { animation: eq1 0.7s ease-in-out infinite; }
+  .playing .eq-bars span:nth-child(2) { animation: eq2 0.9s ease-in-out infinite 0.15s; }
+  .playing .eq-bars span:nth-child(3) { animation: eq1 0.65s ease-in-out infinite 0.3s; }
+
+  @keyframes eq1 {
+    0%,100% { height: 30%; }
+    50% { height: 95%; }
+  }
+
+  @keyframes eq2 {
+    0%,100% { height: 70%; }
+    50% { height: 25%; }
+  }
+
+  .play-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1.5px solid var(--a1);
+    background: transparent;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    color: var(--a1);
+    position: relative;
+    overflow: hidden;
+    opacity: 0.60;
+  }
+
+  .play-btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: var(--a1);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .play-btn i {
+    position: relative;
+    z-index: 1;
+  }
+
+  .play-btn .fa-play { margin-left: 2px; }
+
+  .play-btn:hover {
+    opacity: 1;
+    transform: scale(1.08);
+    box-shadow: 0 0 16px rgba(255,207,138,0.34);
+  }
+
+  .play-btn:hover::before { opacity: 0.14; }
+
+  .playing .play-btn {
+    opacity: 1;
+    box-shadow: 0 0 14px rgba(255,207,138,0.30);
+  }
+
+  .playing .play-btn::before { opacity: 0.10; }
+
+  .wave-wrap {
+    position: relative;
+    padding-bottom: 13px;
+  }
+
+  .wave-inner {
+    border-radius: 6px;
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  .cur-label, .time-label {
+    position: absolute;
+    bottom: 0;
+    font-size: 9px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.5px;
+    color: var(--ink-faint);
+  }
+
+  .cur-label { left: 0; }
+  .time-label { right: 0; }
+
+  .page-footer {
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .footer-actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  .action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border-glow);
+    background: rgba(255,255,255,0.03);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.3px;
+  }
+
+  .action-btn:hover {
+    background: rgba(255,207,138,0.14);
+    border-color: var(--a1);
+    color: var(--a1);
+  }
+
+  .brand-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .brand-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: linear-gradient(145deg, #7a3b16, #ffcf8a);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: #fff;
+    box-shadow: 0 2px 12px rgba(255,207,138,0.30);
+  }
+
+  .brand-text {
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--a1);
+    letter-spacing: 1px;
+    display: block;
+  }
+
+  .brand-sub {
+    font-size: 9px;
+    color: var(--ink-faint);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    display: block;
+  }
+
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: rgba(255,207,138,0.15);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,207,138,0.35);
+    color: var(--a1);
+    padding: 9px 20px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 500;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    z-index: 999;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  @media (max-width: 480px) {
+    .page-header h1 { font-size: 1.5rem; }
+    .track-card { padding: 11px 12px; }
+  }
+</style>
+</head>
+<body>
+  <div id="toast" class="toast">Link copied!</div>
+
+  <div class="page-wrap">
+    <div class="page-header">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
+        <div>
+          <div class="header-eyebrow">
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;color:#7dd3fc;opacity:0.82;padding-top:1px;text-transform:uppercase;">AURORA AMBIENT</div>
+          </div>
+          <h1><span>Осенняя Благодать</span></h1>
+          <p>Instrumental ambient album — calm textures, warm motion, and cinematic depth.</p>
+          <div class="autoplay-badge">
+            <div class="autoplay-dot"></div>
+            Auto-advance enabled
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="now-playing-bar" id="now-playing-bar">
+      <span class="np-label">Now</span>
+      <span class="np-title" id="np-title"></span>
+      <span class="np-next" id="np-next"></span>
+    </div>
+
+    <div id="tracks"></div>
+
+    <div class="page-footer">
+      <div class="footer-actions">
+        <button class="action-btn" onclick="shareTG()"><i class="fab fa-telegram-plane"></i> Telegram</button>
+        <button class="action-btn" onclick="copyLink()"><i class="fas fa-link"></i> Link</button>
+      </div>
+      <div class="brand-logo">
+        <div class="brand-icon"><i class="fas fa-moon"></i></div>
+        <div>
+          <span class="brand-text">AURORA</span>
+          <span class="brand-sub">ambient album</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import WaveSurfer from 'https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.esm.js';
+
+    const tracks = [
+      { src: '1. Осенняя Благодать(Remix).m4a', title: 'Осенняя Благодать I', label: 'Instrumental', badge: 'Ambient', icon: 'fa-leaf' },
+      { src: '2. Осенняя Благодать (Remix) (2).m4a', title: 'Осенняя Благодать II', label: 'Instrumental', badge: 'Ambient', icon: 'fa-wind' },
+      { src: '3. Осенняя Благодать (Remix) (3).m4a', title: 'Осенняя Благодать III', label: 'Instrumental', badge: 'Ambient', icon: 'fa-cloud-moon' },
+      { src: 'Свет Истины (Ambient Electronics) (Remix).m4a', title: 'Свет Истины', label: 'Ambient Electronics', badge: 'Instrumental', icon: 'fa-sun' },
+      { src: '2-Свет Истины (Ambient Electronics) (Remix).m4a', title: 'Свет Истины II', label: 'Ambient Electronics', badge: 'Instrumental', icon: 'fa-bolt' },
+      { src: 'Глубокий Мир (Ambient) (Remix).m4a', title: 'Глубокий Мир', label: 'Deep Ambient', badge: 'Instrumental', icon: 'fa-water' },
+      { src: 'Мелодія спокою (Remix).m4a', title: 'Мелодія спокою', label: 'Peaceful Ambient', badge: 'Instrumental', icon: 'fa-feather' },
+      { src: 'Autumn Grace Ambient Textures.m4a', title: 'Autumn Grace Ambient Textures', label: 'Ambient Textures', badge: 'Instrumental', icon: 'fa-layer-group' },
+      { src: 'Grand Morning Light.m4a', title: 'Grand Morning Light', label: 'Morning Ambient', badge: 'Instrumental', icon: 'fa-sparkles' },
+      { src: '1-Свет Истины (Ambient Electronics) (Remix).m4a', title: 'Свет Истины I', label: 'Ambient Electronics', badge: 'Instrumental', icon: 'fa-circle-nodes' }
+    ];
+
+    const colors = [
+      { wave: '#4d3b86', progress: '#c4b5fd' },
+      { wave: '#3a3a4a', progress: '#d4d8e2' },
+      { wave: '#154e72', progress: '#7dd3fc' },
+      { wave: '#1a4a7a', progress: '#7ab8ff' },
+      { wave: '#0d5a7a', progress: '#38bdf8' },
+      { wave: '#235f36', progress: '#86efac' },
+      { wave: '#5b2a4a', progress: '#f9a8d4' },
+      { wave: '#7b2d3a', progress: '#fda4af' },
+      { wave: '#1a4a7a', progress: '#7ab8ff' },
+      { wave: '#154e72', progress: '#7dd3fc' }
+    ];
+
+    const fmt = s => new Date(s * 1000).toISOString().substr(14, 5);
+    let currentPlaying = -1;
+    let audioCtx = null;
+
+    function unlockAudio() {
+      if (audioCtx) return;
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      gain.gain.value = 0.001;
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.01);
+    }
+
+    function updateNowPlaying(i) {
+      const bar = document.getElementById('now-playing-bar');
+      const title = document.getElementById('np-title');
+      const next = document.getElementById('np-next');
+
+      if (i >= 0) {
+        bar.classList.add('visible');
+        title.textContent = tracks[i].title;
+        next.textContent = i < tracks.length - 1 ? `Next: ${tracks[i + 1].title}` : 'End of playlist';
+        updateMediaSession(i);
+      } else {
+        bar.classList.remove('visible');
+      }
+    }
+
+    function updateMediaSession(i) {
+      if (!('mediaSession' in navigator)) return;
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: tracks[i].title,
+        artist: 'Aurora Ambient',
+        album: 'Осенняя Благодать'
+      });
+      navigator.mediaSession.setActionHandler('play', () => {
+        if (currentPlaying >= 0) players[currentPlaying].play();
+      });
+      navigator.mediaSession.setActionHandler('pause', () => {
+        if (currentPlaying >= 0) players[currentPlaying].pause();
+      });
+      navigator.mediaSession.setActionHandler('nexttrack', () => {
+        const n = currentPlaying < 0 ? 0 : currentPlaying + 1;
+        if (n < players.length) window.togglePlay(n);
+      });
+      navigator.mediaSession.setActionHandler('previoustrack', () => {
+        const p = currentPlaying > 0 ? currentPlaying - 1 : 0;
+        if (p >= 0) window.togglePlay(p);
+      });
+      navigator.mediaSession.playbackState = 'playing';
+    }
+
+    const loaded = new Array(tracks.length).fill(false);
+    const players = tracks.map((track, i) => {
+      const card = document.createElement('div');
+      card.className = `track-card c${i % 8}`;
+      card.id = `card-${i}`;
+      card.innerHTML = `
+        <div class="track-top">
+          <span class="track-num">${String(i + 1).padStart(2, '0')}</span>
+          <div class="track-cover"><i class="fas ${track.icon || 'fa-music'}"></i></div>
+          <div class="track-info">
+            <div class="track-title">${track.title}</div>
+            <div class="track-meta">
+              <span class="badge"><i class="fas fa-circle" style="font-size:6px"></i> ${track.badge}</span>
+              <span class="track-label">${track.label}</span>
+            </div>
+          </div>
+          <button class="play-btn" id="btn-${i}" onclick="togglePlay(${i})"><i class="fas fa-play"></i></button>
+        </div>
+        <div class="wave-wrap">
+          <div id="wave-${i}" class="wave-inner"></div>
+          <span class="cur-label" id="cur-${i}">00:00</span>
+          <span class="time-label" id="dur-${i}">--:--</span>
+        </div>
+      `;
+      document.getElementById('tracks').appendChild(card);
+
+      const ws = WaveSurfer.create({
+        container: `#wave-${i}`,
+        waveColor: colors[i].wave,
+        progressColor: colors[i].progress,
+        barWidth: 2,
+        barGap: 1,
+        barRadius: 2,
+        height: 34,
+        interact: true,
+        normalize: true
+      });
+
+      ws.on('ready', () => {
+        document.getElementById(`dur-${i}`).textContent = fmt(ws.getDuration());
+        document.getElementById(`btn-${i}`).disabled = false;
+        document.getElementById(`btn-${i}`).style.opacity = i === 0 ? 1 : 0.35;
+        loaded[i] = true;
+        if (i + 1 < tracks.length && !loaded[i + 1]) {
+          loaded[i + 1] = true;
+          players[i + 1].load(tracks[i + 1].src);
+        }
+      });
+
+      ws.on('timeupdate', () => {
+        document.getElementById(`cur-${i}`).textContent = fmt(ws.getCurrentTime());
+      });
+
+      ws.on('play', () => {
+        document.getElementById(`btn-${i}`).innerHTML = '<i class="fas fa-pause"></i>';
+        document.getElementById(`card-${i}`).classList.add('playing');
+        players.forEach((p, j) => {
+          if (j !== i && p.isPlaying()) p.pause();
+          document.getElementById(`card-${j}`).classList.remove('playing');
+        });
+        currentPlaying = i;
+        updateNowPlaying(i);
+      });
+
+      ws.on('pause', () => {
+        document.getElementById(`btn-${i}`).innerHTML = '<i class="fas fa-play"></i>';
+        document.getElementById(`card-${i}`).classList.remove('playing');
+        if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'paused';
+        if (currentPlaying === i) currentPlaying = -1;
+        updateNowPlaying(-1);
+      });
+
+      ws.on('finish', () => {
+        document.getElementById(`btn-${i}`).innerHTML = '<i class="fas fa-play"></i>';
+        document.getElementById(`card-${i}`).classList.remove('playing');
+        currentPlaying = -1;
+        const next = i + 1;
+        if (next < players.length) {
+          setTimeout(() => {
+            players[next].play();
+            document.getElementById(`card-${next}`).scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }, 600);
+        } else {
+          updateNowPlaying(-1);
+        }
+      });
+
+      return ws;
+    });
+
+    for (let i = 1; i < tracks.length; i++) {
+      document.getElementById(`btn-${i}`).style.opacity = 0.35;
+    }
+
+    loaded[0] = true;
+    players[0].load(tracks[0].src);
+
+    window.togglePlay = function(i) {
+      unlockAudio();
+      if (!loaded[i]) {
+        loaded[i] = true;
+        players[i].load(tracks[i].src);
+        players[i].once('ready', () => players[i].play());
+      } else {
+        players[i].playPause();
+      }
+    };
+
+    window.shareTG = function() {
+      window.open(`https://t.me/share/url?url=${encodeURIComponent(window.location.href)}`, '_blank');
+    };
+
+    window.copyLink = function() {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        const t = document.getElementById('toast');
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 2200);
+      });
+    };
+  </script>
+</body>
+</html>
