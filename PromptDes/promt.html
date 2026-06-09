@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
@@ -478,10 +478,16 @@ function clearAll() {
 function loadPreset(name) {
   clearAll();
   if (!PRESETS[name]) return;
+  
   PRESETS[name].forEach(v => {
+    // Ищем чекбокс по его значению (value)
     const cb = document.querySelector(`input[type=checkbox][value="${CSS.escape(v)}"]`);
-    if (cb) cb.checked = true;
+    if (cb) {
+      cb.checked = true;
+    }
   });
+  
+  // Принудительно запускаем сборку сработавших правил оптимизации
   buildPrompt();
 }
 
