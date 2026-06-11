@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Виртуальное Пианино с Авто-MIDI</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <script src="https://unpkg.com/@tonejs/midi"></script>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #1e1e24;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            color: #fff;
+        }
+
+        h1 { margin-bottom: 5px; }
+
+        .status {
+            margin-bottom: 15px;
+            font-style: italic;
+            color: #aaa;
+            text-align: center;
+            max-width: 500px;
+        }
+
+        /* Панель управления */
+        .controls {
+            margin-bottom: 25px;
+            background: #2a2a32;
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .controls input[type="file"] {
+            color: #ccc;
+        }
+
+        .btn {
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        .btn:disabled { background: #555; cursor: not-allowed; }
+        .btn:hover:not(:disabled) { background: #45a049; }
+        .btn.stop { background: #f44336; }
+        .btn.stop:hover { background: #da190b; }
+
+        /* Контейнер для клавиш */
+        .piano-container {
+            position: relative;
+            display: flex;
+            background: #111;
+            padding: 20px 10px;
+            border-radius: 10px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+        }
+
+        /* Клавиши */
+        .key {
+            cursor: pointer;
+            user-select: none;
+            transition: background-color 0.1s ease;
+        }
+
+        .white-key {
+            width: 45px;
+            height: 200px;
+            background-color: #fcfcfc;
+            border: 1px solid #ccc;
+            border-radius: 0 0 5px 5px;
+            z-index: 1;
+        }
+
+        .white-key:active, .white-key.active {
+            background-color: #e0e0e0;
+            border-bottom: 4px solid #b3b3b3;
+            height: 196px;
+        }
+
+        .black-key {
+            width: 28px;
+            height: 120px;
+            background-color: #222;
+            border-radius: 0 0 3px 3px;
+            position: absolute;
+            z-index: 2;
+            margin-left: -14px; 
+            box-shadow: 0 4px 4px rgba(0,0,0,0.4);
+        }
+
+        .black-key:active, .black-key.active {
+            background-color: #555;
+            height: 118px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Grand Piano + Auto MIDI</h1>
+    <div class="status" id="status">Загрузка аудио-сэмплов пианино...</div>
+
+    <div class="controls">
+        <button class="btn" id="play-btn" disabled>Играть MIDI</button>
+        <span style="color: #888;">или загрузить свой:</span>
+        <input type="file" id="midi-file" accept=".mid,.midi" disabled />
+    </div>
+
+    <div class="piano-container" id="piano">
+        <div class="key white-key" data-note="C4"></div>
+        <div class="key black-key" data-note="C#4" style="left: 65px;"></div>
+        <div class="key white-key" data-note="D4"></div>
+        <div class="key black-key" data-note="D#4" style="left: 110px;"></div>
+        <div class="key white-key" data-note="E4"></div>
+        <div class="key white-key" data-note="F4"></div>
+        <div class="key black-key" data-note="F#4" style="left: 200px;"></div>
+        <div class="key white-key" data-note="G4"></div>
+        <div class="key black-key" data-note="G#4" style="left: 245px;"></div>
+        <div class="key white-key" data-note="A4"></div>
+        <div class="key black-key" data-note="A#4" style="left: 290px;"></div>
+        <div class="key white-key" data-note="B4"></div>
+
+        <div class="key white-key" data-note="C5"></div>
+        <div class="key black-key" data-note="C#5" style="left: 380px;"></div>
+        <div class="key white-key" data-note="D5"></div>
+        <div class="key black-key" data-note="D#5" style="left: 425px;"></div>
+        <div class="key white-key" data-note="E5"></div>
+        <div class="key white-key" data-note="F5"></div>
+        <div class="key black-key" data-note="F#5" style="left: 515px;"></div>
+        <div class="key white-key" data-note="G5"></div>
+        <div class="key black-key" data-note="G#5" style="left: 560px;"></div>
+        <div class="key white-key" data-note="A5"></div>
+        <div class="key black-key" data-note="A#5" style="left: 605px;"></div>
+        <div class="key white-key" data-note="B5"></div>
+        
+        <div class="key white-key" data-note="C6"></div>
+    </div>
+
+    <script>
+        let currentMidi = null;
+        let isPlaying = false;
+        const midiUrl = "In_Christ_Alone.mid"; // Имя файла в вашем репозитории
+
+        // 1. Инициализация сэмплера
+        const sampler = new Tone.Sampler({
+            urls: {
+                A0: "A0.mp3", C1: "C1.mp3", "D#1": "Ds1.mp3", "F#1": "Fs1.mp3",
+                A1: "A1.mp3", C2: "C2.mp3", "D#2": "Ds2.mp3", "F#2": "Fs2.mp3",
+                A2: "A2.mp3", C3: "C3.mp3", "D#3": "Ds3.mp3", "F#3": "Fs3.mp3",
+                A3: "A3.mp3", C4: "C4.mp3", "D#4": "Ds4.mp3", "F#4": "Fs4.mp3",
+                A4: "A4.mp3", C5: "C5.mp3", "D#5": "Ds5.mp3", "F#5": "Fs5.mp3",
+                A5: "A5.mp3", C6: "C6.mp3", "D#6": "Ds6.mp3", "F#6": "Fs6.mp3",
+                A6: "A6.mp3", C7: "C7.mp3", "D#7": "Ds7.mp3", "F#7": "Fs7.mp3",
+                A7: "A7.mp3", C8: "C8.mp3"
+            },
+            baseUrl: "https://tonejs.github.io/audio/salamander/",
+            onload: () => {
+                document.getElementById('status').innerText = "Сэмплы загружены. Скачиваем встроенный MIDI-файл...";
+                document.getElementById('midi-file').disabled = false;
+                loadAutoplayMidi(); // Как только загрузился звук, качаем MIDI
+            }
+        }).toDestination();
+
+        // 2. Функция автозагрузки MIDI из репозитория
+        async function loadAutoplayMidi() {
+            try {
+                // Скачиваем и парсим MIDI по ссылке
+                currentMidi = await Midi.fromUrl(midiUrl);
+                document.getElementById('play-btn').disabled = false;
+                document.getElementById('status').innerText = `Файл "${midiUrl}" успешно загружен и готов к игре!`;
+            } catch (error) {
+                console.error("Ошибка загрузки встроенного MIDI:", error);
+                document.getElementById('status').innerText = `Не удалось автоматически загрузить ${midiUrl}. Вы можете загрузить свой файл вручную.`;
+            }
+        }
+
+        // Воспроизведение одиночной ноты вручную
+        async function playNote(note) {
+            if (Tone.context.state !== 'running') await Tone.start();
+            sampler.triggerAttackRelease(note, "2n");
+        }
+
+        // 3. Ручная загрузка альтернативного MIDI-файла через input
+        document.getElementById('midi-file').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            // Если что-то играло — останавливаем
+            if (isPlaying) stopMidiPlayback();
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                currentMidi = new Midi(e.target.result);
+                document.getElementById('play-btn').disabled = false;
+                document.getElementById('status').innerText = `Файл "${file.name}" успешно загружен пользователем!`;
+            };
+            reader.readAsArrayBuffer(file);
+        });
+
+        // 4. Управление запуском / остановкой
+        document.getElementById('play-btn').addEventListener('click', async () => {
+            if (Tone.context.state !== 'running') await Tone.start();
+
+            if (isPlaying) {
+                stopMidiPlayback();
+            } else {
+                if (!currentMidi) return;
+                startMidiPlayback();
+            }
+        });
+
+        function startMidiPlayback() {
+            setPlayState(true);
+            
+            // Выставляем темп композиции
+            Tone.Transport.bpm.value = currentMidi.header.tempos[0]?.bpm || 120;
+
+            // Планируем ноты трека
+            currentMidi.tracks.forEach(track => {
+                track.notes.forEach(note => {
+                    // Звук
+                    Tone.Transport.schedule((time) => {
+                        sampler.triggerAttackRelease(note.name, note.duration, time, note.velocity);
+                    }, note.time);
+
+                    // Включение подсветки клавиши
+                    Tone.Transport.schedule((time) => {
+                        Tone.Draw.schedule(() => highlightKey(note.name, true), time);
+                    }, note.time);
+
+                    // Выключение подсветки клавиши
+                    Tone.Transport.schedule((time) => {
+                        Tone.Draw.schedule(() => highlightKey(note.name, false), time);
+                    }, note.time + note.duration);
+                });
+            });
+
+            // Автоматическое завершение по окончании трека
+            Tone.Transport.schedule(() => {
+                Tone.Draw.schedule(() => setPlayState(false), Tone.now());
+            }, currentMidi.duration);
+
+            Tone.Transport.start();
+        }
+
+        function stopMidiPlayback() {
+            Tone.Transport.stop();
+            Tone.Transport.cancel(); // Очищаем всю запланированную очередь нот
+            stopAllKeys();
+            setPlayState(false);
+        }
+
+        // Изменение состояния интерфейса кнопки
+        function setPlayState(playing) {
+            isPlaying = playing;
+            const btn = document.getElementById('play-btn');
+            if (playing) {
+                btn.innerText = "Стоп";
+                btn.classList.add('stop');
+                document.getElementById('status').innerText = "Воспроизведение трека...";
+            } else {
+                btn.innerText = "Играть MIDI";
+                btn.classList.remove('stop');
+                document.getElementById('status').innerText = "Готово.";
+            }
+        }
+
+        function highlightKey(noteName, activate) {
+            const keyDOM = document.querySelector(`[data-note="${noteName}"]`);
+            if (keyDOM) {
+                if (activate) keyDOM.classList.add('active');
+                else keyDOM.classList.remove('active');
+            }
+        }
+
+        function stopAllKeys() {
+            document.querySelectorAll('.key').forEach(k => k.classList.remove('active'));
+        }
+
+        // Нажатия мыши / тачскрина
+        const keys = document.querySelectorAll('.key');
+        keys.forEach(key => {
+            const note = key.getAttribute('data-note');
+            key.addEventListener('mousedown', (e) => { e.preventDefault(); playNote(note); });
+            key.addEventListener('touchstart', (e) => { e.preventDefault(); playNote(note); });
+        });
+    </script>
+</body>
+</html>
