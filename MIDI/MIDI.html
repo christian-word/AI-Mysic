@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -119,54 +119,31 @@
             height: 118px;
         }
 
-        
-/* АВТОМАТИЧЕСКИЙ ПЕРЕВОРТ ДЛЯ ВЕРТИКАЛЬНЫХ ЭКРАНОВ (МОБИЛЬНЫЕ) */
+        /* АВТОМАТИЧЕСКИЙ ПЕРЕВОРТ ДЛЯ ВЕРТИКАЛЬНЫХ ЭКРАНОВ (МОБИЛЬНЫЕ) */
         @media screen and (max-aspect-ratio: 13/9) and (max-width: 767px) {
             body {
                 justify-content: flex-start;
-                padding-top: 10px;
-                position: relative;
+                padding-top: 20px;
             }
 
-            h1 { font-size: 15px; margin: 0 5px 2px 5px; }
-            .status { font-size: 11px; margin-bottom: 2px; }
-            
+            h1 { font-size: 16px; margin: 0 5px; }
+            .status { font-size: 11px; margin-bottom: 5px; }
             .controls { 
-                padding: 6px; 
-                gap: 5px; 
-                font-size: 11px; 
-                margin-bottom: 0px;
+                padding: 8px; 
+                gap: 8px; 
+                font-size: 12px; 
+                margin-bottom: 10px;
                 flex-wrap: wrap;
                 justify-content: center;
-                width: 90%;
             }
-            .controls input[type="file"] { width: 130px; font-size: 10px; }
-            .btn { padding: 5px 8px; font-size: 11px; }
+            .controls input[type="file"] { width: 150px; font-size: 11px; }
+            .btn { padding: 6px 12px; font-size: 12px; }
 
-            /* Абсолютное и точное позиционирование повернутого пианино */
+            /* Разворачиваем пианино боком и масштабируем, чтобы влезло */
             .piano-container {
-                position: absolute;
-                
-                /* Точка вращения — левый верхний угол контейнера */
-                transform-origin: left top; 
-                
-                /* Поворачиваем и подгоняем размер под ширину экрана смартфона */
-                transform: rotate(90deg) scale(0.85); 
-                
-                /* Четкие координаты: отступ сверху от кнопок и центровка по экрану */
-                top: 10px; 
-                left: calc(50% + 100px); /* Смещение вправо, чтобы после поворота оно встало по центру */
-                
-                margin: 0;
-            }
-        }
-
-        /* Коррекция для совсем узких экранов (например, iPhone SE) */
-        @media screen and (max-width: 380px) and (max-aspect-ratio: 13/9) {
-            .piano-container {
-                transform: rotate(90deg) scale(0.72);
-                top: 130px;
-                left: calc(50% + 85px);
+                transform: rotate(90deg) scale(0.85);
+                transform-origin: center center;
+                margin-top: 140px; /* Сдвиг, чтобы не перекрывало управление */
             }
         }
 
