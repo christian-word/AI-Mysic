@@ -1,19 +1,15 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<meta property="og:title" content="Виртуальное Пианино — Лише в Христі надія є!" />
-
-<meta property="og:description" content="Играйте на пианино прямо в браузере или запустите встроенный MIDI-трек." />
-
-<meta property="og:image" content="https://ваш-домен.com/path-to-your-icon.png" />
-
-<meta property="og:type" content="website" />
-
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Виртуальное Пианино с Авто-MIDI</title>
+    
+    <meta property="og:title" content="Виртуальное Пианино — Лише в Христі надія є!" />
+    <meta property="og:description" content="Играйте на пианино прямо в браузере или запустите встроенный MIDI-трек." />
+    <meta property="og:image" content="https://cdn-icons-png.flaticon.com/512/3233/3233497.png" />
+    <meta property="og:type" content="website" />
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
     <script src="https://unpkg.com/@tonejs/midi"></script>
     <style>
@@ -22,14 +18,16 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
+            min-height: 100vh;
             background-color: #1e1e24;
             font-family: Arial, sans-serif;
             margin: 0;
             color: #fff;
+            overflow: hidden; /* Убираем прокрутку на мобильных */
+            touch-action: manipulation; /* Убирает задержку клика на смартфонах */
         }
 
-        h1 { margin-bottom: 5px; }
+        h1 { margin-bottom: 5px; text-align: center; font-size: 24px; }
 
         .status {
             margin-bottom: 15px;
@@ -37,6 +35,7 @@
             color: #aaa;
             text-align: center;
             max-width: 500px;
+            font-size: 14px;
         }
 
         /* Панель управления */
@@ -49,6 +48,7 @@
             gap: 15px;
             align-items: center;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            z-index: 10;
         }
 
         .controls input[type="file"] {
@@ -78,6 +78,7 @@
             padding: 20px 10px;
             border-radius: 10px;
             box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+            transition: transform 0.3s ease;
         }
 
         /* Клавиши */
@@ -117,6 +118,42 @@
             background-color: #555;
             height: 118px;
         }
+
+        /* АВТОМАТИЧЕСКИЙ ПЕРЕВОРТ ДЛЯ ВЕРТИКАЛЬНЫХ ЭКРАНОВ (МОБИЛЬНЫЕ) */
+        @media screen and (max-aspect-ratio: 13/9) and (max-width: 767px) {
+            body {
+                justify-content: flex-start;
+                padding-top: 20px;
+            }
+
+            h1 { font-size: 16px; margin: 0 5px; }
+            .status { font-size: 11px; margin-bottom: 5px; }
+            .controls { 
+                padding: 8px; 
+                gap: 8px; 
+                font-size: 12px; 
+                margin-bottom: 10px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .controls input[type="file"] { width: 150px; font-size: 11px; }
+            .btn { padding: 6px 12px; font-size: 12px; }
+
+            /* Разворачиваем пианино боком и масштабируем, чтобы влезло */
+            .piano-container {
+                transform: rotate(90deg) scale(0.85);
+                transform-origin: center center;
+                margin-top: 140px; /* Сдвиг, чтобы не перекрывало управление */
+            }
+        }
+
+        /* Если телефон совсем узкий, чуть уменьшаем масштаб */
+        @media screen and (max-width: 380px) and (max-aspect-ratio: 13/9) {
+            .piano-container {
+                transform: rotate(90deg) scale(0.72);
+                margin-top: 100px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -126,7 +163,7 @@
 
     <div class="controls">
         <button class="btn" id="play-btn" disabled>Проиграть MIDI файл</button>
-        <span style="color: #888;">или загрузить свой:</span>
+        <span style="color: #888;">или свой:</span>
         <input type="file" id="midi-file" accept=".mid,.midi" disabled />
     </div>
 
@@ -163,9 +200,8 @@
     <script>
         let currentMidi = null;
         let isPlaying = false;
-        const midiUrl = "In_Christ_Alone.mid"; // Имя файла в вашем репозитории
+        const midiUrl = "In_Christ_Alone.mid"; 
 
-        // 1. Инициализация сэмплера
         const sampler = new Tone.Sampler({
             urls: {
                 A0: "A0.mp3", C1: "C1.mp3", "D#1": "Ds1.mp3", "F#1": "Fs1.mp3",
@@ -181,85 +217,65 @@
             onload: () => {
                 document.getElementById('status').innerText = "Сэмплы загружены. Скачиваем встроенный MIDI-файл...";
                 document.getElementById('midi-file').disabled = false;
-                loadAutoplayMidi(); // Как только загрузился звук, качаем MIDI
+                loadAutoplayMidi(); 
             }
         }).toDestination();
 
-        // 2. Функция автозагрузки MIDI из репозитория
         async function loadAutoplayMidi() {
             try {
-                // Скачиваем и парсим MIDI по ссылке
                 currentMidi = await Midi.fromUrl(midiUrl);
                 document.getElementById('play-btn').disabled = false;
-                document.getElementById('status').innerText = `Файл "${midiUrl}" успешно загружен и готов к игре!`;
+                document.getElementById('status').innerText = `Файл "${midiUrl}" готов!`;
             } catch (error) {
                 console.error("Ошибка загрузки встроенного MIDI:", error);
-                document.getElementById('status').innerText = `Не удалось автоматически загрузить ${midiUrl}. Вы можете загрузить свой файл вручную.`;
+                document.getElementById('status').innerText = `Не удалось загрузить ${midiUrl}. Выберите файл вручную.`;
             }
         }
 
-        // Воспроизведение одиночной ноты вручную
         async function playNote(note) {
             if (Tone.context.state !== 'running') await Tone.start();
             sampler.triggerAttackRelease(note, "2n");
         }
 
-        // 3. Ручная загрузка альтернативного MIDI-файла через input
         document.getElementById('midi-file').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (!file) return;
-
-            // Если что-то играло — останавливаем
             if (isPlaying) stopMidiPlayback();
 
             const reader = new FileReader();
             reader.onload = function(e) {
                 currentMidi = new Midi(e.target.result);
                 document.getElementById('play-btn').disabled = false;
-                document.getElementById('status').innerText = `Файл "${file.name}" успешно загружен пользователем!`;
+                document.getElementById('status').innerText = `Файл "${file.name}" загружен!`;
             };
             reader.readAsArrayBuffer(file);
         });
 
-        // 4. Управление запуском / остановкой
         document.getElementById('play-btn').addEventListener('click', async () => {
             if (Tone.context.state !== 'running') await Tone.start();
-
-            if (isPlaying) {
-                stopMidiPlayback();
-            } else {
-                if (!currentMidi) return;
-                startMidiPlayback();
-            }
+            if (isPlaying) { stopMidiPlayback(); } else { if (!currentMidi) return; startMidiPlayback(); }
         });
 
         function startMidiPlayback() {
             setPlayState(true);
-            
-            // Выставляем темп композиции
             Tone.Transport.bpm.value = currentMidi.header.tempos[0]?.bpm || 120;
 
-            // Планируем ноты трека
             currentMidi.tracks.forEach(track => {
                 track.notes.forEach(note => {
-                    // Звук
                     Tone.Transport.schedule((time) => {
                         sampler.triggerAttackRelease(note.name, note.duration, time, note.velocity);
                     }, note.time);
 
-                    // Включение подсветки клавиши
                     Tone.Transport.schedule((time) => {
                         Tone.Draw.schedule(() => highlightKey(note.name, true), time);
                     }, note.time);
 
-                    // Выключение подсветки клавиши
                     Tone.Transport.schedule((time) => {
                         Tone.Draw.schedule(() => highlightKey(note.name, false), time);
                     }, note.time + note.duration);
                 });
             });
 
-            // Автоматическое завершение по окончании трека
             Tone.Transport.schedule(() => {
                 Tone.Draw.schedule(() => setPlayState(false), Tone.now());
             }, currentMidi.duration);
@@ -269,19 +285,18 @@
 
         function stopMidiPlayback() {
             Tone.Transport.stop();
-            Tone.Transport.cancel(); // Очищаем всю запланированную очередь нот
+            Tone.Transport.cancel(); 
             stopAllKeys();
             setPlayState(false);
         }
 
-        // Изменение состояния интерфейса кнопки
         function setPlayState(playing) {
             isPlaying = playing;
             const btn = document.getElementById('play-btn');
             if (playing) {
                 btn.innerText = "Стоп";
                 btn.classList.add('stop');
-                document.getElementById('status').innerText = "Воспроизведение трека...";
+                document.getElementById('status').innerText = "Воспроизведение...";
             } else {
                 btn.innerText = "Играть MIDI";
                 btn.classList.remove('stop');
@@ -301,15 +316,21 @@
             document.querySelectorAll('.key').forEach(k => k.classList.remove('active'));
         }
 
-        // Нажатия мыши / тачскрина
+        // Обработка тач-событий (исправлено для точного попадания при развороте)
         const keys = document.querySelectorAll('.key');
         keys.forEach(key => {
             const note = key.getAttribute('data-note');
-            key.addEventListener('mousedown', (e) => { e.preventDefault(); playNote(note); });
-            key.addEventListener('touchstart', (e) => { e.preventDefault(); playNote(note); });
+            
+            // Функция активации звука
+            const handlePress = (e) => {
+                e.preventDefault(); 
+                playNote(note);
+            };
+
+            key.addEventListener('mousedown', handlePress);
+            key.addEventListener('touchstart', handlePress, {passive: false});
         });
     </script>
-<script src="counter.js" async></script>
-
+    <script src="counter.js" async></script>
 </body>
 </html>
