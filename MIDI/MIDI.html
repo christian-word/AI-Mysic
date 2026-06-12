@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -119,31 +119,44 @@
             height: 118px;
         }
 
-        /* АВТОМАТИЧЕСКИЙ ПЕРЕВОРТ ДЛЯ ВЕРТИКАЛЬНЫХ ЭКРАНОВ (МОБИЛЬНЫЕ) */
+        
+/* АВТОМАТИЧЕСКИЙ ПЕРЕВОРТ ДЛЯ ВЕРТИКАЛЬНЫХ ЭКРАНОВ (МОБИЛЬНЫЕ) */
         @media screen and (max-aspect-ratio: 13/9) and (max-width: 767px) {
             body {
                 justify-content: flex-start;
-                padding-top: 20px;
+                padding-top: 15px;
             }
 
-            h1 { font-size: 16px; margin: 0 5px; }
-            .status { font-size: 11px; margin-bottom: 5px; }
+            h1 { font-size: 16px; margin: 0 5px 3px 5px; }
+            .status { font-size: 11px; margin-bottom: 3px; }
+            
+            /* Делаем панель управления еще компактнее, чтобы освободить место */
             .controls { 
-                padding: 8px; 
-                gap: 8px; 
-                font-size: 12px; 
-                margin-bottom: 10px;
+                padding: 6px 10px; 
+                gap: 6px; 
+                font-size: 11px; 
+                margin-bottom: 5px;
                 flex-wrap: wrap;
                 justify-content: center;
             }
-            .controls input[type="file"] { width: 150px; font-size: 11px; }
-            .btn { padding: 6px 12px; font-size: 12px; }
+            .controls input[type="file"] { width: 140px; font-size: 11px; }
+            .btn { padding: 5px 10px; font-size: 11px; }
 
-            /* Разворачиваем пианино боком и масштабируем, чтобы влезло */
+            /* Разворачиваем пианино боком и делаем надежный отступ */
             .piano-container {
-                transform: rotate(90deg) scale(0.85);
+                transform: rotate(90deg) scale(0.82);
                 transform-origin: center center;
-                margin-top: 140px; /* Сдвиг, чтобы не перекрывало управление */
+                
+                /* Увеличили отступ сверху, чтобы клавиши гарантированно съехали ниже кнопок */
+                margin-top: 175px; 
+            }
+        }
+
+        /* Дополнительная подстройка для совсем маленьких или узких экранов */
+        @media screen and (max-width: 380px) and (max-aspect-ratio: 13/9) {
+            .piano-container {
+                transform: rotate(90deg) scale(0.70);
+                margin-top: 145px; /* Коррекция отступа для мелкого масштаба */
             }
         }
 
