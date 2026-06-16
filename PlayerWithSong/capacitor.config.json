@@ -1,0 +1,6 @@
+{
+  "appId": "com.aeon.musicplayer",
+  "appName": "ÆON Player",
+  "webDir": ".",
+  "bundledWebRuntime": false
+}
