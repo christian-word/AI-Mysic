@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -38,7 +38,6 @@
             overflow: hidden;
         }
 
-        /* Цветная анимация фона */
         .player::before {
             content: '';
             position: absolute;
@@ -116,7 +115,6 @@
             box-shadow: 0 0 30px rgba(255, 215, 0, 0.05);
         }
 
-        /* Мини-винил как декоративный элемент */
         .mini-vinyl {
             display: flex;
             align-items: center;
@@ -652,7 +650,6 @@
         <span class="badge">✦ github</span>
     </div>
 
-    <!-- Мини-винил с текущим треком -->
     <div class="mini-vinyl" id="miniVinyl">
         <div class="mini-disc" id="miniDisc"></div>
         <div class="mini-info">
@@ -1061,9 +1058,10 @@
 
         fetchTracks();
     })();
-
-
-<script src="counter.js" async></script>
 </script>
+
+<!-- ===== СЧЁТЧИК — ВСТАВЛЯЕМ СЮДА ===== -->
+<script src="counter.js" async></script>
+
 </body>
 </html>
