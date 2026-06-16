@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>ÆON · аудиоплеер</title>
     <style>
         * {
@@ -18,7 +18,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 1.5rem;
+            padding: 0; /* убрали отступы */
+            margin: 0;
         }
 
         .player {
@@ -27,15 +28,26 @@
             background: linear-gradient(160deg, #141a24, #1a222e, #0f141c);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border-radius: 3rem;
-            padding: 2rem 2rem 2.2rem;
-            box-shadow: 
-                0 30px 80px -15px rgba(0, 0, 0, 0.9),
-                inset 0 1px 0 rgba(255, 255, 255, 0.06),
-                inset 0 -1px 0 rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 0; /* полностью убрали скругление, чтобы занять весь экран */
+            padding: 1.2rem 1.2rem 1rem; /* уменьшили внутренние отступы */
+            box-shadow: none; /* убрали тень, чтобы не было визуальных границ */
+            border: none; /* убрали рамку */
             position: relative;
             overflow: hidden;
+            min-height: 100vh; /* растягиваем на всю высоту */
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* на небольших экранах убираем все лишнее */
+        @media (max-width: 620px) {
+            .player {
+                padding: 0.8rem 0.8rem 0.6rem;
+                border-radius: 0;
+                box-shadow: none;
+                border: none;
+                min-height: 100dvh;
+            }
         }
 
         .player::before {
@@ -62,12 +74,13 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 1.8rem;
+            margin-bottom: 1rem;
             color: #b0b8c0;
             font-weight: 400;
             letter-spacing: 0.02em;
             position: relative;
             z-index: 1;
+            flex-shrink: 0;
         }
 
         .header span {
@@ -75,9 +88,9 @@
             align-items: center;
             gap: 10px;
             background: rgba(255, 255, 255, 0.04);
-            padding: 0.35rem 1.2rem 0.35rem 1rem;
+            padding: 0.25rem 1rem 0.25rem 0.8rem;
             border-radius: 40px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: #bcc6d0;
             border: 1px solid rgba(255, 255, 255, 0.03);
         }
@@ -99,14 +112,15 @@
 
         .badge {
             background: linear-gradient(135deg, rgba(255, 107, 107, 0.15), rgba(255, 215, 0, 0.15));
-            padding: 0.25rem 1.2rem;
+            padding: 0.2rem 1rem;
             border-radius: 30px;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             font-weight: 500;
             color: #ffd93d;
             border: 1px solid rgba(255, 215, 0, 0.15);
             transition: all 0.3s ease;
             cursor: pointer;
+            flex-shrink: 0;
         }
 
         .badge:hover {
@@ -118,20 +132,21 @@
         .mini-vinyl {
             display: flex;
             align-items: center;
-            gap: 1.2rem;
-            margin-bottom: 1.2rem;
-            padding: 0.6rem 1rem;
+            gap: 0.8rem;
+            margin-bottom: 0.8rem;
+            padding: 0.4rem 0.8rem;
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
             border-radius: 1.5rem;
             border: 1px solid rgba(255, 255, 255, 0.04);
             position: relative;
             z-index: 1;
             backdrop-filter: blur(10px);
+            flex-shrink: 0;
         }
 
         .mini-disc {
-            width: 48px;
-            height: 48px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             background: radial-gradient(circle at 35% 35%, #2a3745, #0d1217);
             box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.1), 0 8px 20px -8px black;
@@ -144,7 +159,7 @@
         .mini-disc::before {
             content: '';
             position: absolute;
-            inset: 8px;
+            inset: 7px;
             border-radius: 50%;
             background: radial-gradient(circle at 40% 30%, #2a3745, #0b1015);
             border: 1px solid rgba(255, 255, 255, 0.03);
@@ -153,7 +168,7 @@
         .mini-disc::after {
             content: '';
             position: absolute;
-            inset: 14px;
+            inset: 12px;
             border-radius: 50%;
             background: #141b22;
             border: 1px solid rgba(255, 255, 255, 0.04);
@@ -174,7 +189,7 @@
         }
 
         .mini-info .title {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 500;
             background: linear-gradient(135deg, #e8eef6 60%, #ffd93d);
             -webkit-background-clip: text;
@@ -186,14 +201,14 @@
         }
 
         .mini-info .artist {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: #7a8a9a;
             margin-top: 1px;
         }
 
         .now-playing-badge {
-            font-size: 0.6rem;
-            padding: 0.2rem 0.8rem;
+            font-size: 0.55rem;
+            padding: 0.15rem 0.6rem;
             border-radius: 20px;
             flex-shrink: 0;
             border: 1px solid rgba(255, 215, 0, 0.1);
@@ -219,14 +234,15 @@
         }
 
         .track-info {
-            margin-bottom: 0.8rem;
+            margin-bottom: 0.5rem;
             padding: 0 0.2rem;
             position: relative;
             z-index: 1;
+            flex-shrink: 0;
         }
 
         .track-title {
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             font-weight: 700;
             letter-spacing: -0.02em;
             white-space: nowrap;
@@ -246,12 +262,13 @@
         }
 
         .track-artist {
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             color: #8d99a6;
             margin-top: 2px;
             display: flex;
             align-items: center;
             gap: 8px;
+            flex-wrap: wrap;
         }
 
         .track-artist .artist-dot {
@@ -269,8 +286,8 @@
         }
 
         .track-artist .track-quality {
-            font-size: 0.65rem;
-            padding: 0.1rem 0.6rem;
+            font-size: 0.6rem;
+            padding: 0.1rem 0.5rem;
             border-radius: 12px;
             background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 107, 107, 0.1));
             color: #ffd93d;
@@ -281,17 +298,18 @@
         .progress-area {
             display: flex;
             align-items: center;
-            gap: 0.8rem;
-            margin: 1rem 0 1.2rem;
+            gap: 0.6rem;
+            margin: 0.4rem 0 0.6rem;
             position: relative;
             z-index: 1;
+            flex-shrink: 0;
         }
 
         .time {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: 450;
             color: #85909c;
-            min-width: 40px;
+            min-width: 36px;
             letter-spacing: 0.02em;
             font-variant-numeric: tabular-nums;
         }
@@ -345,23 +363,24 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.6rem;
-            margin: 0.6rem 0 0.8rem;
+            gap: 0.4rem;
+            margin: 0.2rem 0 0.4rem;
             position: relative;
             z-index: 1;
+            flex-shrink: 0;
         }
 
         .ctrl-btn {
             background: transparent;
             border: none;
             color: #bcc8d6;
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 46px;
-            height: 46px;
+            width: 40px;
+            height: 40px;
             border-radius: 60px;
             transition: all 0.25s ease;
             background: rgba(255, 255, 255, 0.02);
@@ -398,9 +417,9 @@
         .ctrl-btn.play-btn {
             background: linear-gradient(145deg, #ffd93d, #f0c020);
             color: #141b22;
-            width: 68px;
-            height: 68px;
-            font-size: 2.4rem;
+            width: 60px;
+            height: 60px;
+            font-size: 2rem;
             box-shadow: 0 12px 40px -8px rgba(255, 215, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.4);
             border: 1px solid rgba(255, 215, 0, 0.2);
         }
@@ -416,9 +435,9 @@
         }
 
         .ctrl-btn.shuffle {
-            font-size: 1.1rem;
+            font-size: 1rem;
             letter-spacing: 0.05em;
-            width: 44px;
+            width: 38px;
             background: rgba(255, 255, 255, 0.02);
         }
 
@@ -440,9 +459,11 @@
             z-index: 1;
         }
 
+        /* ===== ПЛЕЙЛИСТ — МАКСИМУМ ПРОСТРАНСТВА ===== */
         .playlist {
-            margin-top: 1.4rem;
-            max-height: 200px;
+            margin-top: 0.6rem;
+            flex: 1 1 auto;           /* занимает всё доступное место */
+            min-height: 0;            /* разрешаем сжатие */
             overflow-y: auto;
             padding-right: 4px;
             scrollbar-width: thin;
@@ -450,7 +471,8 @@
             position: relative;
             z-index: 1;
             border-top: 1px solid rgba(255, 255, 255, 0.03);
-            padding-top: 1rem;
+            padding-top: 0.6rem;
+            /* убираем фиксированную высоту — теперь flex управляет */
         }
 
         .playlist::-webkit-scrollbar {
@@ -468,11 +490,12 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 0.2rem 0.6rem;
-            font-size: 0.65rem;
+            padding: 0 0.2rem 0.4rem;
+            font-size: 0.6rem;
             color: #5a6a7a;
             letter-spacing: 0.05em;
             text-transform: uppercase;
+            flex-shrink: 0;
         }
 
         .playlist-header .count {
@@ -483,14 +506,14 @@
         .playlist-item {
             display: flex;
             align-items: center;
-            padding: 0.55rem 0.8rem;
-            border-radius: 1rem;
+            padding: 0.5rem 0.6rem;
+            border-radius: 0.8rem;
             margin-bottom: 2px;
             transition: all 0.2s ease;
             cursor: pointer;
             color: #b0bac6;
             border: 1px solid transparent;
-            gap: 10px;
+            gap: 8px;
             position: relative;
         }
 
@@ -498,7 +521,7 @@
             content: '';
             position: absolute;
             inset: 0;
-            border-radius: 1rem;
+            border-radius: 0.8rem;
             background: linear-gradient(135deg, rgba(255, 215, 0, 0.03), rgba(255, 107, 107, 0.03));
             opacity: 0;
             transition: opacity 0.3s ease;
@@ -510,14 +533,14 @@
 
         .playlist-item:hover {
             color: #dae2ec;
-            transform: translateX(6px);
+            transform: translateX(4px);
         }
 
         .playlist-item.active {
             background: linear-gradient(135deg, rgba(255, 215, 0, 0.08), rgba(255, 107, 107, 0.05));
             color: #e8f0fe;
             border-left: 3px solid #ffd93d;
-            border-radius: 0 1rem 1rem 0;
+            border-radius: 0 0.8rem 0.8rem 0;
         }
 
         .playlist-item.active .pl-index {
@@ -526,9 +549,9 @@
         }
 
         .pl-index {
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             opacity: 0.3;
-            min-width: 22px;
+            min-width: 20px;
             font-weight: 500;
             font-variant-numeric: tabular-nums;
             position: relative;
@@ -537,7 +560,7 @@
 
         .pl-name {
             flex: 1;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -547,46 +570,51 @@
         }
 
         .pl-type {
-            font-size: 0.6rem;
+            font-size: 0.55rem;
             opacity: 0.3;
-            margin-left: 6px;
+            margin-left: 4px;
             position: relative;
             z-index: 1;
+            flex-shrink: 0;
         }
 
         .pl-duration {
-            font-size: 0.6rem;
+            font-size: 0.55rem;
             opacity: 0.3;
             font-variant-numeric: tabular-nums;
             position: relative;
             z-index: 1;
+            flex-shrink: 0;
+            min-width: 32px;
+            text-align: right;
         }
 
         .empty-playlist {
             color: #5f6b79;
             text-align: center;
             padding: 1.5rem 0;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
         }
 
         .footer-meta {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 0.8rem;
-            font-size: 0.65rem;
+            margin-top: 0.6rem;
+            font-size: 0.6rem;
             color: #3a4755;
             letter-spacing: 0.02em;
             position: relative;
             z-index: 1;
-            padding-top: 0.5rem;
+            padding-top: 0.4rem;
             border-top: 1px solid rgba(255, 255, 255, 0.02);
+            flex-shrink: 0;
         }
 
         .footer-meta .status {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
 
         .footer-meta .status .dot {
@@ -627,15 +655,128 @@
             display: none;
         }
 
+        /* Мобильные оптимизации */
         @media (max-width: 520px) {
-            .player { padding: 1.5rem; border-radius: 2rem; }
-            .track-title { font-size: 1.4rem; }
-            .ctrl-btn { width: 40px; height: 40px; font-size: 1.2rem; }
-            .ctrl-btn.play-btn { width: 56px; height: 56px; font-size: 1.8rem; }
-            .controls { gap: 0.4rem; }
-            .mini-vinyl { padding: 0.4rem 0.8rem; }
-            .mini-disc { width: 40px; height: 40px; }
-            .mini-info .title { font-size: 0.8rem; }
+            .player {
+                padding: 0.6rem 0.6rem 0.4rem;
+                min-height: 100dvh;
+            }
+            .track-title {
+                font-size: 1.2rem;
+            }
+            .ctrl-btn {
+                width: 34px;
+                height: 34px;
+                font-size: 1rem;
+            }
+            .ctrl-btn.play-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 1.6rem;
+            }
+            .controls {
+                gap: 0.2rem;
+            }
+            .mini-vinyl {
+                padding: 0.3rem 0.6rem;
+                gap: 0.6rem;
+                margin-bottom: 0.4rem;
+            }
+            .mini-disc {
+                width: 34px;
+                height: 34px;
+            }
+            .mini-disc::before { inset: 5px; }
+            .mini-disc::after { inset: 9px; }
+            .mini-info .title {
+                font-size: 0.75rem;
+            }
+            .mini-info .artist {
+                font-size: 0.55rem;
+            }
+            .playlist-item {
+                padding: 0.4rem 0.4rem;
+            }
+            .pl-name {
+                font-size: 0.7rem;
+            }
+            .pl-index {
+                font-size: 0.55rem;
+                min-width: 16px;
+            }
+            .pl-type, .pl-duration {
+                font-size: 0.5rem;
+            }
+            .header span {
+                font-size: 0.65rem;
+                padding: 0.15rem 0.6rem 0.15rem 0.5rem;
+            }
+            .badge {
+                font-size: 0.55rem;
+                padding: 0.1rem 0.6rem;
+            }
+            .progress-area {
+                margin: 0.2rem 0 0.3rem;
+                gap: 0.4rem;
+            }
+            .time {
+                font-size: 0.6rem;
+                min-width: 30px;
+            }
+            .footer-meta {
+                font-size: 0.5rem;
+                margin-top: 0.3rem;
+                padding-top: 0.2rem;
+            }
+            .playlist-header {
+                font-size: 0.55rem;
+                padding-bottom: 0.2rem;
+            }
+            .now-playing-badge {
+                font-size: 0.45rem;
+                padding: 0.1rem 0.4rem;
+            }
+            .track-artist {
+                font-size: 0.65rem;
+            }
+            .track-artist .track-quality {
+                font-size: 0.5rem;
+                padding: 0.05rem 0.4rem;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .player {
+                padding: 0.4rem 0.4rem 0.2rem;
+            }
+            .track-title {
+                font-size: 1rem;
+            }
+            .ctrl-btn.play-btn {
+                width: 44px;
+                height: 44px;
+                font-size: 1.4rem;
+            }
+            .ctrl-btn {
+                width: 30px;
+                height: 30px;
+                font-size: 0.9rem;
+            }
+            .playlist-item {
+                padding: 0.3rem 0.3rem;
+            }
+            .pl-name {
+                font-size: 0.65rem;
+            }
+            .mini-disc {
+                width: 28px;
+                height: 28px;
+            }
+            .mini-disc::before { inset: 4px; }
+            .mini-disc::after { inset: 7px; }
+            .mini-info .title {
+                font-size: 0.65rem;
+            }
         }
     </style>
 </head>
@@ -682,6 +823,7 @@
         <button class="ctrl-btn" id="loopBtn" title="повтор">↺</button>
     </div>
 
+    <!-- Плейлист теперь занимает всё оставшееся пространство -->
     <div class="playlist" id="playlistContainer">
         <div class="playlist-header">
             <span>🎵 Плейлист</span>
@@ -1060,7 +1202,7 @@
     })();
 </script>
 
-<!-- ===== СЧЁТЧИК — ВСТАВЛЯЕМ СЮДА ===== -->
+<!-- Счётчик -->
 <script src="counter.js" async></script>
 
 </body>
