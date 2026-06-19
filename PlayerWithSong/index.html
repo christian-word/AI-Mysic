@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -881,22 +881,6 @@
         let loopMode = false;
         let isPlaying = false;
 
-        // восстановление позиции из localStorage
-        const LS_KEY = 'aeon_player_state';
-        function saveState() {
-            try {
-                localStorage.setItem(LS_KEY, JSON.stringify({
-                    index: curIndex,
-                    time: audioEl.currentTime || 0
-                }));
-            } catch(e) {}
-        }
-        function loadState() {
-            try {
-                return JSON.parse(localStorage.getItem(LS_KEY)) || {};
-            } catch(e) { return {}; }
-        }
-
         function formatTime(s) {
             if (!s || isNaN(s)) return '0:00';
             const m = Math.floor(s / 60);
@@ -1015,8 +999,6 @@
                     const pct = (audioEl.currentTime / audioEl.duration) * 100;
                     progressBar.value = pct;
                     currentTimeEl.textContent = formatTime(audioEl.currentTime);
-                    // сохраняем позицию каждые ~5 секунд
-                    if (Math.floor(audioEl.currentTime) % 5 === 0) saveState();
                 }
             };
         }
@@ -1053,16 +1035,11 @@
                 tracks = mediaFiles;
                 renderPlaylist();
 
-                const saved = loadState();
-                const startIndex = (saved.index >= 0 && saved.index < tracks.length) ? saved.index : 0;
-                curIndex = startIndex;
-                loadTrack(curIndex);
-
-                // восстанавливаем время после загрузки метаданных
-                if (saved.time > 0) {
-                    audioEl.addEventListener('loadedmetadata', () => {
-                        audioEl.currentTime = saved.time;
-                    }, { once: true });
+                if (curIndex === -1 || curIndex >= tracks.length) {
+                    curIndex = 0;
+                    loadTrack(curIndex);
+                } else {
+                    loadTrack(curIndex);
                 }
             } catch (err) {
                 console.error('Ошибка загрузки:', err);
@@ -1169,7 +1146,9 @@
             if (isPlaying) {
                 audioEl.play().catch(() => {});
             }
-            saveState(); {
+        }
+
+        function prevTrack() {
             if (!tracks.length || !audioEl.src) return;
             if (audioEl.currentTime > 3) {
                 audioEl.currentTime = 0;
@@ -1188,14 +1167,12 @@
             if (isPlaying) {
                 audioEl.play().catch(() => {});
             }
-            saveState();
         }
 
         progressBar.addEventListener('input', () => {
             if (audioEl && audioEl.duration) {
                 const val = parseFloat(progressBar.value);
                 audioEl.currentTime = (val / 100) * audioEl.duration;
-                saveState();
             }
         });
 
@@ -1246,5 +1223,8 @@
         }
     })();
 </script>
+
+</script>
+
 </body>
 </html>
