@@ -881,6 +881,22 @@
         let loopMode = false;
         let isPlaying = false;
 
+        const LAST_TRACK_KEY = `aimysic_last_track_${P}`;
+
+        function saveLastTrack(name) {
+            try {
+                localStorage.setItem(LAST_TRACK_KEY, name);
+            } catch (e) { /* localStorage недоступен — игнорируем */ }
+        }
+
+        function getLastTrack() {
+            try {
+                return localStorage.getItem(LAST_TRACK_KEY);
+            } catch (e) {
+                return null;
+            }
+        }
+
         function formatTime(s) {
             if (!s || isNaN(s)) return '0:00';
             const m = Math.floor(s / 60);
@@ -936,6 +952,8 @@
             const track = tracks[index];
             audioEl.src = track.url;
             audioEl.load();
+
+            saveLastTrack(track.name);
 
             const displayName = track.display;
             const ext = getExtension(track.name);
@@ -1036,7 +1054,13 @@
                 renderPlaylist();
 
                 if (curIndex === -1 || curIndex >= tracks.length) {
-                    curIndex = 0;
+                    const lastName = getLastTrack();
+                    let restoreIndex = 0;
+                    if (lastName) {
+                        const found = tracks.findIndex(t => t.name === lastName);
+                        if (found !== -1) restoreIndex = found;
+                    }
+                    curIndex = restoreIndex;
                     loadTrack(curIndex);
                 } else {
                     loadTrack(curIndex);
@@ -1222,8 +1246,6 @@
             navigator.mediaSession.setActionHandler('previoustrack', () => prevTrack());
         }
     })();
-</script>
-
 </script>
 
 </body>
