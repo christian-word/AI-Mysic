@@ -3,75 +3,91 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lyria Test</title>
-  <style>body {padding: 30px; font-family: Arial;}</style>
+  <title>Lyria 3 Pro — Християнська пісня</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; text-align: center; }
+    button { padding: 15px 40px; font-size: 18px; margin: 20px; }
+    #status { margin: 20px; font-weight: bold; }
+    #log { margin: 20px auto; max-width: 800px; text-align: left; background: #f4f4f4; padding: 15px; border-radius: 8px; max-height: 350px; overflow-y: auto; }
+  </style>
 </head>
 <body>
-  <h1>Тест Lyria 3 Pro</h1>
+  <h1>🎵 Lyria 3 Pro — Християнська пісня</h1>
   <button onclick="generateSong()">Створити пісню</button>
   
-  <div id="status" style="margin:20px 0; font-weight:bold;">Натисни кнопку</div>
-  <div id="log" style="background:#f0f0f0; padding:15px; height:300px; overflow:auto; white-space:pre-wrap;"></div>
+  <div id="status">Натисніть кнопку</div>
+  <div id="log"></div>
+  <audio id="audioPlayer" controls style="width:90%; max-width:800px; margin-top:20px;"></audio>
 
   <script>
-    const API_KEY = "AIzaSyABRwIKwkNgNYCeaU9T-e7qTRtkGpMoLMs";   // ← ОБОВ'ЯЗКОВО заміни
+    const API_KEY = "AIzaSyABRwIKwkNgNYCeaU9T-e7qTRtkGpMoLMs";   // ← новий ключ!
+
+    const prompt = `Create a beautiful, emotional 2.5 to 3-minute contemporary Christian worship song in proper Ukrainian language with a warm, anointed female soprano vocalist.
+
+Style: Modern worship like Hillsong, Bethel Music — piano-driven, cinematic.
+
+Theme: Gratitude to God for His love and grace.
+
+[Intro] Soft piano.
+[Verse 1] Ти підняв мене з пилу, з темряви ночі...
+[Chorus] Я дякую Тобі, Господь, за милість Твою...
+[Verse 2] Крізь бурі і вогонь, Ти ведеш мене...
+[Bridge] Я віддаю Тобі все, що маю...
+[Final Chorus] Я дякую Тобі, Господь...
+[Outro] Ти — моя надія...`;
 
     function log(msg) {
       const el = document.getElementById('log');
       el.innerHTML += msg + "\n";
       el.scrollTop = el.scrollHeight;
-      console.log(msg);
     }
 
     async function generateSong() {
       const status = document.getElementById('status');
-      status.textContent = "Кнопка натиснута...";
+      const player = document.getElementById('audioPlayer');
+      document.getElementById('log').innerHTML = "";
 
-      if (!API_KEY || API_KEY.includes("ВСТАВ")) {
-        status.textContent = "❌ Не вставлений API ключ!";
-        log("Помилка: API ключ не вставлений");
-        return;
-      }
-
-      log("🚀 Початок запиту...");
+      status.textContent = "Відправляємо запит...";
+      log("🚀 Запит запущено...");
 
       try {
-        log("Відправляємо запит до Google...");
-
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/lyria-3-pro-preview:generateContent?key=${API_KEY}`, {
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/lyria-3-pro-preview:generateContent?key=${API_KEY}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            contents: [{ 
-              parts: [{ 
-                text: "Create a short happy piano melody" 
-              }] 
-            }]
+            contents: [{ parts: [{ text: prompt }] }]
           })
         });
 
-        log(`Отримали відповідь. Статус: ${response.status}`);
+        log(`Статус відповіді: ${res.status}`);
 
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(`HTTP ${response.status}: ${errorText}`);
+        if (!res.ok) {
+          const errorText = await res.text();
+          throw new Error(`Помилка ${res.status}: ${errorText}`);
         }
 
-        const data = await response.json();
-        log("✅ Запит успішний! Але аудіо поки не обробляємо.");
-        status.textContent = "✅ Запит пройшов успішно (перевір консоль)";
+        const data = await res.json();
+        log("✅ Відповідь отримана");
 
+        const audioPart = data.candidates?.[0]?.content?.parts?.find(p => p.inlineData?.data);
+
+        if (audioPart) {
+          const base64 = audioPart.inlineData.data;
+          const mime = audioPart.inlineData.mimeType || "audio/mp3";
+          const audioUrl = `data:${mime};base64,${base64}`;
+          
+          player.src = audioUrl;
+          status.textContent = "✅ Пісня готова!";
+          log("🎉 Аудіо завантажено");
+        } else {
+          throw new Error("Аудіо не знайдено в відповіді");
+        }
       } catch (err) {
         console.error(err);
-        status.textContent = "❌ Помилка: " + err.message;
-        log("❌ ПОМИЛКА: " + err.message);
+        status.textContent = "❌ Помилка";
+        log("❌ " + err.message);
       }
     }
-
-    // Перевірка при завантаженні сторінки
-    window.onload = () => {
-      log("Сторінка завантажена. API_KEY присутній: " + (API_KEY && !API_KEY.includes("ВСТАВ")));
-    };
   </script>
 </body>
 </html>
