@@ -506,7 +506,7 @@
         .playlist-item {
             display: flex;
             align-items: center;
-            padding: 0.5rem 0.6rem;
+            padding: 0.55rem 0.6rem;
             border-radius: 0.8rem;
             margin-bottom: 2px;
             transition: all 0.2s ease;
@@ -515,6 +515,7 @@
             border: 1px solid transparent;
             gap: 8px;
             position: relative;
+            min-height: 40px;
         }
 
         .playlist-item::before {
@@ -560,7 +561,7 @@
 
         .pl-name {
             flex: 1;
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -695,10 +696,11 @@
                 font-size: 0.55rem;
             }
             .playlist-item {
-                padding: 0.4rem 0.4rem;
+                padding: 0.5rem 0.4rem;
+                min-height: 38px;
             }
             .pl-name {
-                font-size: 0.7rem;
+                font-size: 0.8rem;
             }
             .pl-index {
                 font-size: 0.55rem;
@@ -763,10 +765,11 @@
                 font-size: 0.9rem;
             }
             .playlist-item {
-                padding: 0.3rem 0.3rem;
+                padding: 0.45rem 0.3rem;
+                min-height: 36px;
             }
             .pl-name {
-                font-size: 0.65rem;
+                font-size: 0.72rem;
             }
             .mini-disc {
                 width: 28px;
@@ -878,6 +881,22 @@
         let loopMode = false;
         let isPlaying = false;
 
+        // восстановление позиции из localStorage
+        const LS_KEY = 'aeon_player_state';
+        function saveState() {
+            try {
+                localStorage.setItem(LS_KEY, JSON.stringify({
+                    index: curIndex,
+                    time: audioEl.currentTime || 0
+                }));
+            } catch(e) {}
+        }
+        function loadState() {
+            try {
+                return JSON.parse(localStorage.getItem(LS_KEY)) || {};
+            } catch(e) { return {}; }
+        }
+
         function formatTime(s) {
             if (!s || isNaN(s)) return '0:00';
             const m = Math.floor(s / 60);
@@ -952,6 +971,7 @@
             currentTimeEl.textContent = '0:00';
             totalTimeEl.textContent = '0:00';
 
+            // Media Session: обновляем метаданные на шторке уведомлений
             if ('mediaSession' in navigator) {
                 navigator.mediaSession.metadata = new MediaMetadata({
                     title: displayName,
@@ -985,6 +1005,7 @@
                     return;
                 }
                 if (tracks.length) {
+                    // небольшой таймаут — iOS иногда не успевает разблокировать аудио-контекст
                     setTimeout(() => nextTrack(), 300);
                 }
             });
@@ -994,6 +1015,8 @@
                     const pct = (audioEl.currentTime / audioEl.duration) * 100;
                     progressBar.value = pct;
                     currentTimeEl.textContent = formatTime(audioEl.currentTime);
+                    // сохраняем позицию каждые ~5 секунд
+                    if (Math.floor(audioEl.currentTime) % 5 === 0) saveState();
                 }
             };
         }
@@ -1025,15 +1048,21 @@
                     return;
                 }
 
-                mediaFiles.sort((a, b) => a.display.localeCompare(b.display));
+                mediaFiles.sort((a, b) =>
+                    a.display.localeCompare(b.display, undefined, { numeric: true, sensitivity: 'base' }));
                 tracks = mediaFiles;
                 renderPlaylist();
 
-                if (curIndex === -1 || curIndex >= tracks.length) {
-                    curIndex = 0;
-                    loadTrack(curIndex);
-                } else {
-                    loadTrack(curIndex);
+                const saved = loadState();
+                const startIndex = (saved.index >= 0 && saved.index < tracks.length) ? saved.index : 0;
+                curIndex = startIndex;
+                loadTrack(curIndex);
+
+                // восстанавливаем время после загрузки метаданных
+                if (saved.time > 0) {
+                    audioEl.addEventListener('loadedmetadata', () => {
+                        audioEl.currentTime = saved.time;
+                    }, { once: true });
                 }
             } catch (err) {
                 console.error('Ошибка загрузки:', err);
@@ -1140,9 +1169,7 @@
             if (isPlaying) {
                 audioEl.play().catch(() => {});
             }
-        }
-
-        function prevTrack() {
+            saveState(); {
             if (!tracks.length || !audioEl.src) return;
             if (audioEl.currentTime > 3) {
                 audioEl.currentTime = 0;
@@ -1161,12 +1188,14 @@
             if (isPlaying) {
                 audioEl.play().catch(() => {});
             }
+            saveState();
         }
 
         progressBar.addEventListener('input', () => {
             if (audioEl && audioEl.duration) {
                 const val = parseFloat(progressBar.value);
                 audioEl.currentTime = (val / 100) * audioEl.duration;
+                saveState();
             }
         });
 
@@ -1206,15 +1235,20 @@
             }
         });
 
+        fetchTracks();
+
+        // Media Session API — кнопки на шторке и при замёрзшем экране
         if ('mediaSession' in navigator) {
             navigator.mediaSession.setActionHandler('play', () => play());
             navigator.mediaSession.setActionHandler('pause', () => pause());
             navigator.mediaSession.setActionHandler('nexttrack', () => nextTrack());
             navigator.mediaSession.setActionHandler('previoustrack', () => prevTrack());
         }
-
-        fetchTracks();
     })();
 </script>
+
+<!-- Счётчик -->
+<script src="counter.js" async></script>
+
 </body>
 </html>
