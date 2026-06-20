@@ -2,46 +2,143 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Тест Lyria 3 Pro (Статический)</title>
+    <title>Lyria SoundForge — Музыкальная ИИ-Лаборатория</title>
     <style>
-        body { font-family: sans-serif; background: #1e1e1e; color: #fff; padding: 30px; }
-        .container { max-width: 600px; margin: 0 auto; background: #2d2d2d; padding: 20px; border-radius: 8px; }
-        textarea { width: 100%; height: 120px; background: #3a3a3a; color: #fff; border: 1px solid #555; padding: 10px; box-sizing: border-box; border-radius: 4px; margin-bottom: 15px; }
-        input[type="password"] { width: 100%; padding: 10px; background: #3a3a3a; color: #fff; border: 1px solid #555; box-sizing: border-box; border-radius: 4px; margin-bottom: 15px; }
-        button { background: #1a73e8; color: white; border: none; padding: 12px 20px; cursor: pointer; border-radius: 4px; font-weight: bold; width: 100%; margin-top: 5px; }
-        button:hover { background: #155cb4; }
-        #status { margin-top: 20px; color: #aaedf9; font-weight: bold; word-break: break-word; }
-        audio { width: 100%; margin-top: 20px; display: none; }
-        label { display: block; margin-bottom: 5px; font-size: 0.9em; color: #ccc; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0c0f12; color: #e0e6ed; padding: 20px; margin: 0; }
+        .container { max-width: 750px; margin: 30px auto; background: #14181c; padding: 30px; border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); border: 1px solid #232d38; }
+        
+        h2 { margin-top: 0; background: linear-gradient(45deg, #4f46e5, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 700; font-size: 26px; letter-spacing: 0.5px; }
+        label { display: block; margin-top: 18px; margin-bottom: 6px; color: #94a3b8; font-size: 14px; font-weight: 600; }
+        
+        /* Улучшенная читаемость полей ввода — контрастный темный фон и четкие границы */
+        input[type="text"], input[type="password"], textarea, select { 
+            width: 100%; 
+            background: #1a1f26; 
+            color: #ffffff; 
+            border: 1px solid #334155; 
+            padding: 12px 14px; 
+            box-sizing: border-box; 
+            border-radius: 8px; 
+            font-size: 15px; 
+            transition: all 0.25s ease; 
+        }
+        input[type="text"]:focus, input[type="password"]:focus, textarea:focus, select:focus { 
+            border-color: #6366f1; 
+            outline: none; 
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+            background: #1e252f;
+        }
+        
+        .row { display: flex; gap: 15px; margin-top: 5px; }
+        .col { flex: 1; }
+        
+        textarea { height: 95px; resize: none; }
+        
+        /* Акцентная кнопка генерации */
+        button { background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%); color: white; border: none; padding: 15px 20px; cursor: pointer; border-radius: 8px; font-weight: bold; width: 100%; margin-top: 25px; font-size: 16px; letter-spacing: 0.5px; box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4); transition: all 0.2s ease; }
+        button:hover { background: linear-gradient(135deg, #5a52e9 0%, #4338ca 100%); box-shadow: 0 6px 20px rgba(79, 70, 229, 0.5); }
+        button:active { transform: scale(0.99); }
+        
+        #status { margin-top: 20px; color: #38bdf8; font-weight: bold; padding: 12px; background: rgba(56, 189, 248, 0.1); border-radius: 8px; border-left: 4px solid #38bdf8; display: none; word-break: break-word; }
+        audio { width: 100%; margin-top: 25px; border-radius: 8px; background: #1a1f26; display: none; }
+        
+        .debug-panel { margin-top: 25px; background: #090d10; border: 1px solid #1e293b; padding: 18px; border-radius: 10px; }
+        .debug-title { font-size: 12px; color: #6366f1; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; font-weight: bold; }
+        .debug-content { font-family: 'Consolas', 'Courier New', monospace; font-size: 13px; color: #34d399; white-space: pre-wrap; word-break: break-all; background: #050709; padding: 12px; border-radius: 6px; border: 1px solid #111827; max-height: 250px; overflow-y: auto; }
+
+        .loader-container { display: none; align-items: center; justify-content: center; gap: 15px; margin-top: 25px; background: #1e252f; padding: 20px; border-radius: 8px; border: 1px solid #334155; }
+        .audio-wave { display: flex; align-items: center; justify-content: center; gap: 4px; height: 40px; }
+        .audio-wave span { display: block; width: 4px; height: 10px; background-color: #6366f1; border-radius: 2px; animation: bounce 1.2s ease-in-out infinite; }
+        
+        .audio-wave span:nth-child(1) { animation-delay: 0.1s; }
+        .audio-wave span:nth-child(2) { animation-delay: 0.4s; }
+        .audio-wave span:nth-child(3) { animation-delay: 0.2s; }
+        .audio-wave span:nth-child(4) { animation-delay: 0.6s; }
+        .audio-wave span:nth-child(5) { animation-delay: 0.3s; }
+        .audio-wave span:nth-child(6) { animation-delay: 0.5s; }
+        .audio-wave span:nth-child(7) { animation-delay: 0.1s; }
+
+        @keyframes bounce {
+            0%, 100% { height: 8px; background-color: #6366f1; }
+            50% { height: 40px; background-color: #38bdf8; }
+        }
+        .loader-text { font-size: 15px; color: #38bdf8; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Генерация музыки через Lyria 3 Pro</h2>
+    <h2>🧬 Lyria SoundForge</h2>
     
-    <label for="apiKey">Ваш Google API Key:</label>
-    <input type="password" id="apiKey" placeholder="Введите API ключ (сохраняется локально в браузере)">
+    <label for="apiKey">🔑 Google AI Studio API Key</label>
+    <input type="password" id="apiKey" placeholder="Вставьте ваш API-ключ (сохранится в памяти браузера)">
 
-    <label for="prompt">Промпт с разметкой по времени:</label>
-    <textarea id="prompt">Pure instrumental, no vocals, 100% no voices, Cinematic christian instrumental, ethereal atmosphere, warm autumn vibes, peaceful and inspiring, sounds of a flowing stream, gentle piano and soaring strings, nature soundscape, pure instrumental, no vocals, 72 bpm
+    <label for="templateSelect">📋 Быстрый выбор базового шаблона</label>
+    <select id="templateSelect">
+        <option value="christian" selected>Христианский Инструментал</option>
+        <option value="folk">Атмосферный Фолк</option>
+        <option value="mediterranean">Средиземноморская гитара (Испания + Италия)</option>
+        <option value="guitarsolo">Чистая соло-гитара (Acoustic Solo)</option>
+        <option value="relax">Релакс / Лаунж (Deep Relax Lounge)</option>
+        <option value="ambient">Эмбиент (Deep Space Ambient)</option>
+        <option value="neoclassical">Кинематографичная Классика</option>
+        <option value="jazz">Глубокий Джаз / Блюз</option>
+    </select>
 
-[Intro: Soft ethereal texture, smooth atmosphere entry]
-[Section 1: Gentle lead melody enters softly, establishing the focus]
-[Section 2: Secondary atmospheric layers begin to blend in, adding depth]
-[Climax: Full beautiful arrangement rise, high emotional harmony]
-[Section 3: Heavy elements recede, returning to gentle quiet instrumentation]
-[Outro: Final warm notes fading out slowly into complete quiet space]
-[End - 3:00]</textarea>
+    <div class="row">
+        <div class="col">
+            <label for="antiVocalTags">🛡️ Защитные теги (Анти-вокал)</label>
+            <input type="text" id="antiVocalTags" value="Pure instrumental, no vocals, 100% no voices" placeholder="Например: Pure instrumental, no vocals">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <label for="genre">🎸 Жанр музыки</label>
+            <input type="text" id="genre" value="Cinematic christian instrumental">
+        </div>
+        <div class="col">
+            <label for="bpm">⏱️ Темп (BPM)</label>
+            <input type="text" id="bpm" value="72" placeholder="Например: 80, 120">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <label for="mood">✨ Настроение / Атмосфера</label>
+            <input type="text" id="mood" value="ethereal atmosphere, warm autumn vibes, peaceful and inspiring">
+        </div>
+        <div class="col">
+            <label for="engineMode">⚙️ Режим структуры</label>
+            <select id="engineMode">
+                <option value="structured">Со структурой (Длинный трек до 3 мин)</option>
+                <option value="sterile">Стерильный Инструментал (100% БЕЗ структуры)</option>
+            </select>
+        </div>
+    </div>
+
+    <label for="description">🎻 Инструменты и звуковые эффекты</label>
+    <textarea id="description" placeholder="Пример: Сначала соло акустической гитары...">sounds of a flowing stream, gentle piano and soaring strings, nature soundscape, pure instrumental, no vocals</textarea>
     
-    <button id="generateBtn">Запустить генерацию</button>
+    <button id="generateBtn">🚀 Сгенерировать аудио-трек</button>
     
-    <div id="status">Ожидание запуска...</div>
+    <div id="loader" class="loader-container">
+        <div class="audio-wave">
+            <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <div class="loader-text">Синтез звука Lyria... Сведение дорожек...</div>
+    </div>
+
+    <div id="status"></div>
     <audio id="player" controls></audio>
+
+    <div class="debug-panel">
+        <div class="debug-title">Полная картина отправляемого промпта (Debug Log):</div>
+        <div id="debugPrompt" class="debug-content">Измените любое поле...</div>
+    </div>
 </div>
 
 <script>
-    // При загрузке страницы проверяем, есть ли сохраненный ключ в LocalStorage
     document.addEventListener('DOMContentLoaded', () => {
         const savedKey = localStorage.getItem('lyria_api_key');
         if (savedKey) {
@@ -49,21 +146,84 @@
         }
     });
 
+    function buildTechnicalPrompt() {
+        const antiVocal = document.getElementById('antiVocalTags').value;
+        const genre = document.getElementById('genre').value;
+        const bpm = document.getElementById('bpm').value;
+        const mood = document.getElementById('mood').value;
+        const userDesc = document.getElementById('description').value;
+        const mode = document.getElementById('engineMode').value;
+
+        const cleanBpm = bpm.replace(/[^0-9]/g, '') || '80';
+        
+        let finalGenre = genre;
+        if (mode === "sterile" && genre.toLowerCase().includes("christian")) {
+            finalGenre = genre.replace(/christian/i, "sacred solemn and reverent");
+        }
+        
+        let soundPrompt = `${antiVocal}, ${finalGenre}, ${mood}, ${userDesc}, ${cleanBpm} bpm`;
+        soundPrompt = soundPrompt.replace(/,\s*,/g, ',').trim();
+
+        if (mode === "sterile") {
+            return soundPrompt;
+        }
+        
+        let structure = `
+[Intro: Main instrument introducing the melody]
+[Verse 1: Developing arrangement with secondary instruments]
+[Chorus: Main theme dynamic climax, full rich harmony]
+[Bridge: Atmospheric transition, solo performance or instrumentation shift]
+[Chorus 2: Full arrangement interplay, high emotional intensity]
+[Outro: Gradual fading of all instruments to complete silence]
+[End - 3:00]`;
+
+        const lowGenre = genre.toLowerCase();
+        const lowMood = mood.toLowerCase();
+        if (lowGenre.includes("christian") || lowMood.includes("autumn") || lowGenre.includes("ambient") || lowGenre.includes("flamenco") || lowGenre.includes("italian")) {
+            structure = `
+[Intro: Soft ethereal texture, smooth atmosphere entry]
+[Section 1: Gentle lead melody enters softly, establishing the focus]
+[Section 2: Secondary atmospheric layers begin to blend in, adding depth]
+[Climax: Full beautiful arrangement rise, high emotional harmony]
+[Section 3: Heavy elements recede, returning to gentle quiet instrumentation]
+[Outro: Final warm notes fading out slowly into complete quiet space]
+[End - 3:00]`;
+        }
+
+        return `${soundPrompt}\n\n${structure.trim()}`;
+    }
+
+    function updateDebugLog() {
+        document.getElementById('debugPrompt').innerText = buildTechnicalPrompt();
+    }
+
+    document.getElementById('antiVocalTags').addEventListener('input', updateDebugLog);
+    document.getElementById('genre').addEventListener('input', updateDebugLog);
+    document.getElementById('bpm').addEventListener('input', updateDebugLog);
+    document.getElementById('mood').addEventListener('input', updateDebugLog);
+    document.getElementById('description').addEventListener('input', updateDebugLog);
+    document.getElementById('engineMode').addEventListener('change', updateDebugLog);
+
+    updateDebugLog();
+
     document.getElementById('generateBtn').addEventListener('click', async () => {
         const statusDiv = document.getElementById('status');
         const player = document.getElementById('player');
-        const promptText = document.getElementById('prompt').value;
+        const loader = document.getElementById('loader');
         const apiKey = document.getElementById('apiKey').value.trim();
         
         if (!apiKey) {
-            statusDiv.innerText = "Ошибка: Пожалуйста, введите ваш API-ключ!";
+            statusDiv.style.display = 'block';
+            statusDiv.innerText = "Ошибка: Сначала введите рабочий Google API Key!";
             return;
         }
 
-        // Сохраняем ключ в локальное хранилище браузера, чтобы не вводить каждый раз
         localStorage.setItem('lyria_api_key', apiKey);
         
-        statusDiv.innerText = "Отправка запроса напрямую в Google API...";
+        const finalPrompt = buildTechnicalPrompt();
+        
+        loader.style.display = 'flex';
+        statusDiv.style.display = 'none';
         player.style.display = 'none';
 
         const googleUrl = `https://generativelanguage.googleapis.com/v1beta/models/lyria-3-pro-preview:generateContent?key=${apiKey}`;
@@ -72,7 +232,7 @@
             contents: [
                 {
                     parts: [
-                        { text: promptText }
+                        { text: finalPrompt }
                     ]
                 }
             ]
@@ -92,6 +252,8 @@
             }
 
             const data = await response.json();
+            loader.style.display = 'none';
+            
             let audioUrl = "";
 
             if (data.candidates && data.candidates[0]?.content?.parts) {
@@ -107,18 +269,88 @@
             }
 
             if (audioUrl) {
-                statusDiv.innerText = "Готово! Слушаем:";
+                statusDiv.style.display = 'block';
+                statusDiv.innerText = "Композиция успешно сгенерирована!";
                 player.src = audioUrl;
                 player.style.display = 'block';
                 player.play();
             } else {
-                statusDiv.innerText = "Ошибка: Аудио не найдено в ответе от Google API.";
-                console.log("Ответ от API:", data);
+                statusDiv.style.display = 'block';
+                statusDiv.innerText = "Ошибка: Аудиоданные не найдены в ответе от Google.";
             }
         } catch (err) {
+            loader.style.display = 'none';
+            statusDiv.style.display = 'block';
             statusDiv.innerText = "Ошибка генерации: " + err.message;
-            console.error(err);
         }
+    });
+
+    document.getElementById('templateSelect').addEventListener('change', (e) => {
+        const antiVocal = document.getElementById('antiVocalTags');
+        const genreInput = document.getElementById('genre');
+        const moodInput = document.getElementById('mood');
+        const descText = document.getElementById('description');
+        const bpmInput = document.getElementById('bpm');
+        const modeSelect = document.getElementById('engineMode');
+        
+        if (e.target.value === "folk") {
+            antiVocal.value = "Pure instrumental, no vocals, 100% no voices";
+            genreInput.value = "Soulful atmospheric folk";
+            moodInput.value = "cinematic and deep, melancholic mood";
+            bpmInput.value = "80";
+            descText.value = "acoustic guitar fingerpicking solo as lead, soft ambient piano accompaniment, lush orchestral strings swell in the middle";
+            modeSelect.value = "structured";
+        } else if (e.target.value === "christian") {
+            antiVocal.value = "Pure instrumental, no vocals, 100% no voices";
+            genreInput.value = "Cinematic christian instrumental";
+            moodInput.value = "ethereal atmosphere, warm autumn vibes, peaceful and inspiring";
+            bpmInput.value = "72";
+            descText.value = "sounds of a flowing stream, gentle piano and soaring strings, nature soundscape, pure instrumental, no vocals";
+            modeSelect.value = "structured"; 
+        } else if (e.target.value === "mediterranean") {
+            antiVocal.value = "Pure instrumental, no vocals, high definition acoustic recording";
+            genreInput.value = "Spanish flamenco acoustic guitar instrumental";
+            moodInput.value = "warm, passionate, romantic and warm Italian vibes";
+            bpmInput.value = "95";
+            descText.value = "virtuoso spanish nylon guitar fingerpicking, authentic rhythmic percussive guitar body taps, soft acoustic backing, warm percussion";
+            modeSelect.value = "structured";
+        } else if (e.target.value === "guitarsolo") {
+            antiVocal.value = "Pure instrumental, 100% solo acoustic performance, no other instruments";
+            genreInput.value = "Solo acoustic guitar instrumental, intimate studio setup";
+            moodInput.value = "peaceful, calm, reflective, emotional and warm";
+            bpmInput.value = "78";
+            descText.value = "single steel string acoustic guitar performance, clear melodic picking, realistic finger sliding sounds, intimate airy mic spacing";
+            modeSelect.value = "structured";
+        } else if (e.target.value === "relax") {
+            antiVocal.value = "Pure instrumental, no vocals, smooth mix";
+            genreInput.value = "Deep relax acoustic lounge chillout";
+            moodInput.value = "calm, relaxing, smooth night cafe atmosphere, stress relief";
+            bpmInput.value = "68";
+            descText.value = "mellow electric piano chords, beautiful nylon guitar lead lines, very warm sub bass, slow lazy chillout percussion with soft shakers";
+            modeSelect.value = "structured";
+        } else if (e.target.value === "ambient") {
+            antiVocal.value = "Pure instrumental, no vocals, completely no rhythmic beats";
+            genreInput.value = "Deep space drone ambient electronic";
+            moodInput.value = "cosmic, timeless, floating, hyper-relaxation, infinite depth";
+            bpmInput.value = "60";
+            descText.value = "slowly moving majestic ambient synth pads, deep cosmic textures, glittering analog star echoes, beautiful ethereal background space";
+            modeSelect.value = "structured";
+        } else if (e.target.value === "neoclassical") {
+            antiVocal.value = "Pure instrumental, no vocals, 100% no voices";
+            genreInput.value = "Cinematic melodic neoclassical";
+            moodInput.value = "emotional, dramatic, majestic orchestral rise";
+            bpmInput.value = "75";
+            descText.value = "grand piano arpeggios, solo melancholic violin melody, cinematic cello backings, slow orchestral build up";
+            modeSelect.value = "structured";
+        } else if (e.target.value === "jazz") {
+            antiVocal.value = "Pure instrumental, no vocals";
+            genreInput.value = "Smooth jazz instrumental blues";
+            moodInput.value = "smoky, night cafe vibe, relaxing and smooth";
+            bpmInput.value = "65";
+            descText.value = "soft saxophone lead melody, slow jazz drum kit with brushes, warm electric guitar chords, double bass walking line";
+            modeSelect.value = "structured";
+        }
+        updateDebugLog();
     });
 </script>
 
