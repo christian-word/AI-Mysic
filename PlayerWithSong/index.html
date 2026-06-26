@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -18,7 +18,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 0; /* убрали отступы */
+            padding: 0;
             margin: 0;
         }
 
@@ -28,18 +28,17 @@
             background: linear-gradient(160deg, #141a24, #1a222e, #0f141c);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border-radius: 0; /* полностью убрали скругление, чтобы занять весь экран */
-            padding: 1.2rem 1.2rem 1rem; /* уменьшили внутренние отступы */
-            box-shadow: none; /* убрали тень, чтобы не было визуальных границ */
-            border: none; /* убрали рамку */
+            border-radius: 0;
+            padding: 1.2rem 1.2rem 1rem;
+            box-shadow: none;
+            border: none;
             position: relative;
             overflow: hidden;
-            min-height: 100vh; /* растягиваем на всю высоту */
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
 
-        /* на небольших экранах убираем все лишнее */
         @media (max-width: 620px) {
             .player {
                 padding: 0.8rem 0.8rem 0.6rem;
@@ -81,9 +80,10 @@
             position: relative;
             z-index: 1;
             flex-shrink: 0;
+            gap: 10px;
         }
 
-        .header span {
+        .header span.logo {
             display: flex;
             align-items: center;
             gap: 10px;
@@ -110,23 +110,36 @@
             50% { background-position: 100% 50%; }
         }
 
-        .badge {
+        /* Стильный кастомный селектор для альбомов */
+        .album-select {
             background: linear-gradient(135deg, rgba(255, 107, 107, 0.15), rgba(255, 215, 0, 0.15));
-            padding: 0.2rem 1rem;
+            padding: 0.25rem 1.5rem 0.25rem 0.8rem;
             border-radius: 30px;
-            font-size: 0.65rem;
+            font-size: 0.7rem;
             font-weight: 500;
             color: #ffd93d;
-            border: 1px solid rgba(255, 215, 0, 0.15);
+            border: 1px solid rgba(255, 215, 0, 0.2);
             transition: all 0.3s ease;
             cursor: pointer;
-            flex-shrink: 0;
+            outline: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffd93d' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            background-size: 10px;
         }
 
-        .badge:hover {
-            background: linear-gradient(135deg, rgba(255, 107, 107, 0.25), rgba(255, 215, 0, 0.25));
-            transform: scale(1.05);
-            box-shadow: 0 0 30px rgba(255, 215, 0, 0.05);
+        .album-select:hover {
+            background-color: rgba(255, 215, 0, 0.2);
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.05);
+        }
+
+        .album-select option {
+            background: #141a24;
+            color: #dae2ec;
         }
 
         .mini-vinyl {
@@ -454,16 +467,10 @@
             border-color: rgba(255, 107, 107, 0.15);
         }
 
-        .ctrl-btn .icon-bg {
-            position: relative;
-            z-index: 1;
-        }
-
-        /* ===== ПЛЕЙЛИСТ — МАКСИМУМ ПРОСТРАНСТВА ===== */
         .playlist {
             margin-top: 0.6rem;
-            flex: 1 1 auto;           /* занимает всё доступное место */
-            min-height: 0;            /* разрешаем сжатие */
+            flex: 1 1 auto;
+            min-height: 0;
             overflow-y: auto;
             padding-right: 4px;
             scrollbar-width: thin;
@@ -472,7 +479,6 @@
             z-index: 1;
             border-top: 1px solid rgba(255, 255, 255, 0.03);
             padding-top: 0.6rem;
-            /* убираем фиксированную высоту — теперь flex управляет */
         }
 
         .playlist::-webkit-scrollbar {
@@ -709,13 +715,15 @@
             .pl-type, .pl-duration {
                 font-size: 0.5rem;
             }
-            .header span {
+            .header span.logo {
                 font-size: 0.65rem;
                 padding: 0.15rem 0.6rem 0.15rem 0.5rem;
             }
-            .badge {
-                font-size: 0.55rem;
-                padding: 0.1rem 0.6rem;
+            .album-select {
+                font-size: 0.6rem;
+                padding: 0.15rem 1.2rem 0.15rem 0.5rem;
+                background-position: right 5px center;
+                background-size: 8px;
             }
             .progress-area {
                 margin: 0.2rem 0 0.3rem;
@@ -736,7 +744,7 @@
             }
             .now-playing-badge {
                 font-size: 0.45rem;
-                padding: 0.1rem 0.4rem;
+                padding: 0.1!rem 0.4rem;
             }
             .track-artist {
                 font-size: 0.65rem;
@@ -787,18 +795,22 @@
 
 <div class="player">
     <div class="header">
-        <span>
+        <span class="logo">
             <span class="logo-dot"></span>
             ÆON · аудио
         </span>
-        <span class="badge">✦ github</span>
+        <!-- Кнопку заменили на динамический выпадающий список -->
+        <select class="album-select" id="albumSelect">
+            <option value="PlayerWithSong/Album">Album 1</option>
+            <option value="PlayerWithSong/Album2">Album 2</option>
+        </select>
     </div>
 
     <div class="mini-vinyl" id="miniVinyl">
         <div class="mini-disc" id="miniDisc"></div>
         <div class="mini-info">
             <div class="title" id="miniTitle">Загрузка...</div>
-            <div class="artist" id="miniArtist">AI-Mysic · альбом</div>
+            <div class="artist" id="miniArtist">AI-Music · альбом</div>
         </div>
         <span class="now-playing-badge paused" id="nowPlayingBadge">● PAUSED</span>
     </div>
@@ -806,7 +818,7 @@
     <div class="track-info">
         <div class="track-title" id="trackTitle">Загрузка...</div>
         <div class="track-artist">
-            <span id="trackArtist">AI-Mysic · альбом</span>
+            <span id="trackArtist">AI-Music · альбом</span>
             <span class="artist-dot"></span>
             <span class="track-quality" id="trackQuality">FLAC</span>
         </div>
@@ -826,7 +838,6 @@
         <button class="ctrl-btn" id="loopBtn" title="повтор">↺</button>
     </div>
 
-    <!-- Плейлист теперь занимает всё оставшееся пространство -->
     <div class="playlist" id="playlistContainer">
         <div class="playlist-header">
             <span>🎵 Плейлист</span>
@@ -840,7 +851,7 @@
             <span class="dot" id="statusDot"></span>
             <span class="status-text" id="statusText">остановлен</span>
         </div>
-        <a href="https://github.com/christian-word/AI-Mysic/tree/main/PlayerWithSong/Album" target="_blank">christian-word/AI-Mysic</a>
+        <a id="githubLink" href="https://github.com/christian-word/AI-Mysic" target="_blank">christian-word/AI-Mysic</a>
     </div>
 </div>
 
@@ -848,11 +859,11 @@
 
 <script>
     (function() {
-        const O = 'christian-word', R = 'AI-Mysic', P = 'PlayerWithSong/Album', B = 'main';
-        const API = `https://api.github.com/repos/${O}/${R}/contents/${P}?ref=${B}`;
-        const RAW = `https://raw.githubusercontent.com/${O}/${R}/${B}/${P}/`;
-
+        const O = 'christian-word', R = 'AI-Mysic', B = 'main';
         const AUDIO_EXTS = ['mp3', 'opus', 'm4a', 'm4p', 'ogg', 'wav', 'flac', 'aac'];
+
+        // Динамический путь к текущему альбому
+        let currentPath = 'PlayerWithSong/Album';
 
         const audioEl = document.getElementById('audioElement');
         const playBtn = document.getElementById('playBtn');
@@ -874,6 +885,8 @@
         const statusDot = document.getElementById('statusDot');
         const statusText = document.getElementById('statusText');
         const nowPlayingBadge = document.getElementById('nowPlayingBadge');
+        const albumSelect = document.getElementById('albumSelect');
+        const githubLink = document.getElementById('githubLink');
 
         let tracks = [];
         let curIndex = -1;
@@ -881,17 +894,29 @@
         let loopMode = false;
         let isPlaying = false;
 
-        const LAST_TRACK_KEY = `aimysic_last_track_${P}`;
+        // Ключ сохранения теперь зависит от выбранного пути альбома
+        function getLastTrackKey() {
+            return `aimysic_last_track_${currentPath}`;
+        }
+
+        // Сохраняем и вытаскиваем имя выбранного альбома, чтобы восстанавливать сессию
+        try {
+            const savedPath = localStorage.getItem('aimysic_current_album_path');
+            if (savedPath) {
+                currentPath = savedPath;
+                albumSelect.value = savedPath;
+            }
+        } catch(e) {}
 
         function saveLastTrack(name) {
             try {
-                localStorage.setItem(LAST_TRACK_KEY, name);
-            } catch (e) { /* localStorage недоступен — игнорируем */ }
+                localStorage.setItem(getLastTrackKey(), name);
+            } catch (e) {}
         }
 
         function getLastTrack() {
             try {
-                return localStorage.getItem(LAST_TRACK_KEY);
+                return localStorage.getItem(getLastTrackKey());
             } catch (e) {
                 return null;
             }
@@ -918,14 +943,8 @@
 
         function getQuality(ext) {
             const map = {
-                'mp3': 'MP3',
-                'opus': 'Opus',
-                'm4a': 'AAC',
-                'm4p': 'AAC',
-                'ogg': 'OGG',
-                'wav': 'WAV',
-                'flac': 'FLAC',
-                'aac': 'AAC'
+                'mp3': 'MP3', 'opus': 'Opus', 'm4a': 'AAC', 'm4p': 'AAC',
+                'ogg': 'OGG', 'wav': 'WAV', 'flac': 'FLAC', 'aac': 'AAC'
             };
             return map[ext] || 'AUDIO';
         }
@@ -959,11 +978,13 @@
             const ext = getExtension(track.name);
             const quality = getQuality(ext);
 
+            const currentAlbumName = albumSelect.options[albumSelect.selectedIndex].text;
+
             trackTitle.textContent = displayName;
-            trackArtist.textContent = `AI-Mysic · трек ${index+1}`;
+            trackArtist.textContent = `${currentAlbumName} · трек ${index+1}`;
             trackQuality.textContent = quality.toUpperCase();
             miniTitle.textContent = displayName;
-            miniArtist.textContent = `AI-Mysic · трек ${index+1}`;
+            miniArtist.textContent = `${currentAlbumName} · трек ${index+1}`;
 
             document.querySelectorAll('.playlist-item').forEach((el, i) => {
                 el.classList.toggle('active', i === index);
@@ -973,12 +994,11 @@
             currentTimeEl.textContent = '0:00';
             totalTimeEl.textContent = '0:00';
 
-            // Media Session: обновляем метаданные на шторке уведомлений
             if ('mediaSession' in navigator) {
                 navigator.mediaSession.metadata = new MediaMetadata({
                     title: displayName,
-                    artist: 'AI-Mysic',
-                    album: `Трек ${index + 1}`
+                    artist: 'AI-Music',
+                    album: `${currentAlbumName} · Трек ${index + 1}`
                 });
             }
 
@@ -1000,17 +1020,16 @@
                 updateStatus(false);
             }
 
-            audioEl.addEventListener('ended', () => {
+            audioEl.onended = () => {
                 if (loopMode) {
                     audioEl.currentTime = 0;
                     audioEl.play().catch(() => {});
                     return;
                 }
                 if (tracks.length) {
-                    // небольшой таймаут — iOS иногда не успевает разблокировать аудио-контекст
                     setTimeout(() => nextTrack(), 300);
                 }
-            });
+            };
 
             audioEl.ontimeupdate = () => {
                 if (audioEl.duration) {
@@ -1022,6 +1041,21 @@
         }
 
         async function fetchTracks() {
+            // Динамические ссылки на основе выбранного пути альбома
+            const API = `https://api.github.com/repos/${O}/${R}/contents/${currentPath}?ref=${B}`;
+            const RAW = `https://raw.githubusercontent.com/${O}/${R}/${B}/${currentPath}/`;
+            
+            // Обновляем ссылку в футере на правильную папку репозитория
+            githubLink.href = `https://github.com/christian-word/AI-Mysic/tree/main/${currentPath}`;
+
+            playlistContainer.innerHTML = `
+                <div class="playlist-header">
+                    <span>🎵 Плейлист</span>
+                    <span class="count">...</span>
+                </div>
+                <div class="empty-playlist">⏳ загрузка альбома...</div>
+            `;
+
             try {
                 const resp = await fetch(API);
                 if (!resp.ok) throw new Error(`GitHub API error ${resp.status}`);
@@ -1053,18 +1087,15 @@
                 tracks = mediaFiles;
                 renderPlaylist();
 
-                if (curIndex === -1 || curIndex >= tracks.length) {
-                    const lastName = getLastTrack();
-                    let restoreIndex = 0;
-                    if (lastName) {
-                        const found = tracks.findIndex(t => t.name === lastName);
-                        if (found !== -1) restoreIndex = found;
-                    }
-                    curIndex = restoreIndex;
-                    loadTrack(curIndex);
-                } else {
-                    loadTrack(curIndex);
+                const lastName = getLastTrack();
+                let restoreIndex = 0;
+                if (lastName) {
+                    const found = tracks.findIndex(t => t.name === lastName);
+                    if (found !== -1) restoreIndex = found;
                 }
+                curIndex = restoreIndex;
+                loadTrack(curIndex);
+
             } catch (err) {
                 console.error('Ошибка загрузки:', err);
                 playlistContainer.innerHTML = `
@@ -1072,7 +1103,7 @@
                         <span>🎵 Плейлист</span>
                         <span class="count">ошибка</span>
                     </div>
-                    <div class="empty-playlist">⚠️ ошибка загрузки</div>
+                    <div class="empty-playlist">⚠️ ошибка загрузки альбома</div>
                 `;
             }
         }
@@ -1193,6 +1224,23 @@
             }
         }
 
+        // Слушатель изменения выпадающего списка альбомов
+        albumSelect.addEventListener('change', function() {
+            currentPath = this.value;
+            try {
+                localStorage.setItem('aimysic_current_album_path', currentPath);
+            } catch(e) {}
+            
+            // Сбрасываем индекс, чтобы загрузить первый трек нового альбома
+            curIndex = -1; 
+            fetchTracks().then(() => {
+                // Если в момент переключения играла музыка, запускаем воспроизведение нового альбома
+                if (isPlaying) {
+                    play();
+                }
+            });
+        });
+
         progressBar.addEventListener('input', () => {
             if (audioEl && audioEl.duration) {
                 const val = parseFloat(progressBar.value);
@@ -1201,14 +1249,8 @@
         });
 
         playBtn.addEventListener('click', togglePlay);
-
-        prevBtn.addEventListener('click', () => {
-            if (tracks.length) prevTrack();
-        });
-
-        nextBtn.addEventListener('click', () => {
-            if (tracks.length) nextTrack();
-        });
+        prevBtn.addEventListener('click', () => { if (tracks.length) prevTrack(); });
+        nextBtn.addEventListener('click', () => { if (tracks.length) nextTrack(); });
 
         shuffleBtn.addEventListener('click', () => {
             shuffled = !shuffled;
@@ -1221,7 +1263,7 @@
         });
 
         document.addEventListener('keydown', (e) => {
-            if (e.target.tagName === 'INPUT') return;
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
             if (e.code === 'Space') {
                 e.preventDefault();
                 togglePlay();
@@ -1238,7 +1280,6 @@
 
         fetchTracks();
 
-        // Media Session API — кнопки на шторке и при замёрзшем экране
         if ('mediaSession' in navigator) {
             navigator.mediaSession.setActionHandler('play', () => play());
             navigator.mediaSession.setActionHandler('pause', () => pause());
