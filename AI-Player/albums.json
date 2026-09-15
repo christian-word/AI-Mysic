@@ -1,1 +1,10 @@
-
+{
+  "albums": [
+    {
+      "name": "Варіанти пісні",
+      "tracks": [
+        { "title": "Варіант 1", "src": "tracks/variant1.mp3", "duration": 185 }
+      ]
+    }
+  ]
+}
