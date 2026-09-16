@@ -1,1 +1,26 @@
-
+{
+  "title": "AI Mysic",
+  "subtitle": "Каталог пісень. У кожної — свої версії: ремікси, акустика, альтернативні зведення.",
+  "playlist": "https://www.youtube.com/playlist?list=PLYqQcAuS9Q5M",
+  "songs": [
+    {
+      "id": "dzherelo-lyubovi",
+      "title": "Джерело любові",
+      "year": "2026",
+      "cover": "covers/dzherelo-lyubovi.jpg",
+      "note": "Тиха пісня про джерело, яке не пересихає.",
+      "versions": [
+        {
+          "name": "Remix",
+          "file": "audio/dzherelo-lyubovi-remix.m4a",
+          "youtube": "https://youtube.com/shorts/2Tv3OApxpaw"
+        },
+        {
+          "name": "Acoustic Solo",
+          "file": "audio/dzherelo-lyubovi-acoustic.m4a",
+          "youtube": "https://youtube.com/shorts/TdeO_GR-KfQ"
+        }
+      ]
+    }
+  ]
+}
