@@ -3,17 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Mysic — каталог пісень</title>
+<title>AI Mysic — каталог альбомів</title>
 
 <!-- Заміни ДОМЕН на адресу свого сайту після публікації -->
 <meta property="og:type" content="website">
-<meta property="og:title" content="AI Mysic — каталог пісень">
-<meta property="og:description" content="Пісні та їхні версії: ремікси, акустика, альтернативні зведення. З плеером і повними відео.">
+<meta property="og:title" content="AI Mysic — каталог альбомів">
+<meta property="og:description" content="Альбоми, треки та їхні версії. З плеером і повними відео.">
 <meta property="og:image" content="https://ДОМЕН/og-image.png">
 <meta property="og:url" content="https://ДОМЕН/">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="AI Mysic — каталог пісень">
-<meta name="twitter:description" content="Пісні та їхні версії: ремікси, акустика, альтернативні зведення.">
+<meta name="twitter:title" content="AI Mysic — каталог альбомів">
+<meta name="twitter:description" content="Альбоми, треки та їхні версії.">
 <meta name="twitter:image" content="https://ДОМЕН/og-image.png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -47,248 +47,137 @@
 
   .wrap{max-width:980px;margin:0 auto;padding:56px 24px 120px;}
 
-  /* ---------- шапка ---------- */
   header{
-    display:flex;
-    gap:40px;
-    align-items:flex-end;
-    padding-bottom:32px;
-    border-bottom:1px solid var(--line);
-    margin-bottom:8px;
+    display:flex;gap:40px;align-items:flex-end;
+    padding-bottom:32px;border-bottom:1px solid var(--line);margin-bottom:8px;
   }
   .mark{flex:0 0 auto;width:96px;height:96px;}
   .head-text{flex:1;min-width:0;}
   h1{
-    font-family:'Fraunces',Georgia,serif;
-    font-weight:500;
-    font-size:clamp(32px,5vw,48px);
-    line-height:1.05;
-    margin:0 0 12px;
+    font-family:'Fraunces',Georgia,serif;font-weight:500;
+    font-size:clamp(32px,5vw,48px);line-height:1.05;margin:0 0 12px;
   }
-  .lede{
-    color:var(--cream-dim);
-    font-size:16px;
-    line-height:1.55;
-    max-width:56ch;
-    margin:0;
-  }
+  .lede{color:var(--cream-dim);font-size:16px;line-height:1.55;max-width:56ch;margin:0;}
 
-  /* ---------- панель керування ---------- */
   .controls{
-    display:flex;
-    gap:16px;
-    align-items:center;
-    flex-wrap:wrap;
-    padding:20px 0 28px;
-    border-bottom:1px solid var(--line);
-    margin-bottom:36px;
+    display:flex;gap:16px;align-items:center;flex-wrap:wrap;
+    padding:20px 0 28px;border-bottom:1px solid var(--line);margin-bottom:36px;
   }
   .search{
-    flex:1;
-    min-width:200px;
-    background:transparent;
-    border:1px solid var(--line);
-    color:var(--cream);
-    font-family:inherit;
-    font-size:15px;
-    padding:11px 16px;
+    flex:1;min-width:200px;background:transparent;border:1px solid var(--line);color:var(--cream);
+    font-family:inherit;font-size:15px;padding:11px 16px;
   }
   .search::placeholder{color:var(--cream-dim);opacity:.7;}
   .search:focus{outline:none;border-color:var(--gold);}
-  .count{
-    color:var(--cream-dim);
-    font-size:14px;
-    font-variant-numeric:tabular-nums;
-    white-space:nowrap;
-  }
+  .count{color:var(--cream-dim);font-size:14px;font-variant-numeric:tabular-nums;white-space:nowrap;}
 
-  /* ---------- картка пісні ---------- */
-  .song{
-    border-bottom:1px solid var(--line-soft);
-    padding:28px 0;
-  }
-  .song:first-of-type{padding-top:0;}
+  /* ---------- альбом (рівень 1) ---------- */
+  .album{border-bottom:1px solid var(--line-soft);padding:28px 0;}
+  .album:first-of-type{padding-top:0;}
 
-  .song-head{
-    display:flex;
-    gap:22px;
-    align-items:center;
-    width:100%;
-    background:none;
-    border:none;
-    padding:0;
-    color:inherit;
-    font:inherit;
-    text-align:left;
-    cursor:pointer;
+  .album-head{
+    display:flex;gap:22px;align-items:center;width:100%;
+    background:none;border:none;padding:0;color:inherit;font:inherit;
+    text-align:left;cursor:pointer;
   }
-  .song-head:focus-visible{outline:2px solid var(--gold);outline-offset:6px;}
+  .album-head:focus-visible{outline:2px solid var(--gold);outline-offset:6px;}
 
-  .cover{
-    flex:0 0 auto;
-    width:84px;height:84px;
-    object-fit:cover;
-    background:var(--panel-hi);
-    border:1px solid var(--line-soft);
-  }
-  .cover-ph{
-    flex:0 0 auto;
-    width:84px;height:84px;
-    background:var(--panel-hi);
-    border:1px solid var(--line-soft);
-    display:flex;align-items:center;justify-content:center;
-  }
+  .cover{flex:0 0 auto;width:84px;height:84px;object-fit:cover;background:var(--panel-hi);border:1px solid var(--line-soft);}
+  .cover-ph{flex:0 0 auto;width:84px;height:84px;background:var(--panel-hi);border:1px solid var(--line-soft);display:flex;align-items:center;justify-content:center;}
   .cover-ph svg{width:34px;height:34px;opacity:.55;}
 
-  .song-info{flex:1;min-width:0;}
-  .song-title{
-    font-family:'Fraunces',Georgia,serif;
-    font-size:24px;
-    font-weight:500;
-    margin:0 0 6px;
-    line-height:1.2;
-  }
-  .song-meta{
-    color:var(--cream-dim);
-    font-size:14px;
-    margin:0;
-  }
-  .song-note{
-    color:var(--cream-dim);
-    font-size:14px;
-    margin:6px 0 0;
-    line-height:1.5;
-    max-width:58ch;
-  }
+  .album-info{flex:1;min-width:0;}
+  .album-title{font-family:'Fraunces',Georgia,serif;font-size:24px;font-weight:500;margin:0 0 6px;line-height:1.2;}
+  .album-meta{color:var(--cream-dim);font-size:14px;margin:0;}
 
-  .chev{
-    flex:0 0 auto;
-    width:22px;height:22px;
-    color:var(--gold-dim);
-    transition:transform .2s ease;
-  }
-  .song.open .chev{transform:rotate(180deg);}
+  .chev{flex:0 0 auto;width:22px;height:22px;color:var(--gold-dim);transition:transform .2s ease;}
+  .album.open > .album-head .chev{transform:rotate(180deg);}
 
-  /* ---------- версії ---------- */
-  .versions{
-    display:none;
-    margin:22px 0 0 106px;
-    border-left:1px solid var(--line-soft);
-    padding-left:26px;
+  /* ---------- треки (рівень 2) ---------- */
+  .tracks{
+    display:none;margin:22px 0 0 106px;
+    border-left:1px solid var(--line-soft);padding-left:26px;
   }
-  .song.open .versions{display:block;}
-  .song.single .versions{display:block;margin-top:20px;}
-  .song.single .song-head{cursor:default;}
-  .song.single .chev{display:none;}
+  .album.open .tracks{display:block;}
 
-  .version{
-    display:grid;
-    grid-template-columns:auto 1fr auto;
-    gap:20px;
-    align-items:center;
-    padding:15px 0;
+  .track{padding:14px 0;}
+  .track + .track{border-top:1px solid var(--line-soft);}
+  .track-single .version{padding:0;}
+
+  .track-head{
+    display:flex;align-items:center;gap:14px;width:100%;
+    background:none;border:none;padding:0;color:inherit;font:inherit;
+    text-align:left;cursor:pointer;
   }
-  .version + .version{border-top:1px solid var(--line-soft);}
+  .track-head:focus-visible{outline:2px solid var(--gold);outline-offset:4px;}
+  .track-name{font-size:16px;font-weight:500;flex:1;}
+  .track-count{color:var(--cream-dim);font-size:13px;flex-shrink:0;}
+  .track-chev{flex-shrink:0;width:18px;height:18px;color:var(--gold-dim);transition:transform .2s ease;}
+  .track.open .track-chev{transform:rotate(180deg);}
+
+  .track-versions{
+    display:none;margin:14px 0 0 0;
+    border-left:1px solid var(--line-soft);padding-left:22px;
+  }
+  .track.open .track-versions{display:block;}
+
+  /* ---------- рядок версії / плеєра (спільний компонент) ---------- */
+  .version{display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center;padding:13px 0;}
+  .track-versions .version + .version{border-top:1px solid var(--line-soft);}
 
   .playbtn{
-    width:46px;height:46px;
-    border-radius:50%;
-    border:1.4px solid var(--gold);
-    background:transparent;
-    color:var(--gold);
-    display:flex;align-items:center;justify-content:center;
-    cursor:pointer;
-    flex-shrink:0;
+    width:44px;height:44px;border-radius:50%;
+    border:1.4px solid var(--gold);background:transparent;color:var(--gold);
+    display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;
     transition:background .15s ease,color .15s ease;
   }
   .playbtn:hover,.playbtn.playing{background:var(--gold);color:var(--bg);}
   .playbtn:focus-visible{outline:2px solid var(--cream);outline-offset:3px;}
-  .playbtn svg{width:16px;height:16px;}
+  .playbtn svg{width:15px;height:15px;}
 
   .v-body{min-width:0;}
-  .v-name{
-    font-size:16px;
-    font-weight:500;
-    margin:0 0 9px;
-  }
+  .v-name{font-size:15.5px;font-weight:500;margin:0 0 9px;}
   .scrub{display:flex;align-items:center;gap:11px;}
-  .t{
-    font-variant-numeric:tabular-nums;
-    font-size:12.5px;
-    color:var(--cream-dim);
-    width:36px;
-    flex-shrink:0;
-  }
+  .t{font-variant-numeric:tabular-nums;font-size:12.5px;color:var(--cream-dim);width:36px;flex-shrink:0;}
   .t.end{text-align:right;}
 
-  .bar{
-    position:relative;
-    flex:1;
-    height:20px;
-    display:flex;align-items:center;
-    cursor:pointer;
-  }
+  .bar{position:relative;flex:1;height:20px;display:flex;align-items:center;cursor:pointer;}
   .bar-bg,.bar-fill{position:absolute;left:0;height:2px;}
   .bar-bg{right:0;background:var(--line);}
   .bar-fill{width:0;background:var(--gold);}
-  .knob{
-    position:absolute;left:0;
-    width:8px;height:8px;border-radius:50%;
-    background:var(--gold);
-    transform:translateX(-50%);
-  }
+  .knob{position:absolute;left:0;width:8px;height:8px;border-radius:50%;background:var(--gold);transform:translateX(-50%);}
 
   .yt{
-    flex-shrink:0;
-    display:inline-flex;align-items:center;gap:7px;
-    text-decoration:none;
-    color:var(--cream-dim);
-    font-size:13.5px;
-    border:1px solid var(--line);
-    padding:9px 14px;
-    white-space:nowrap;
-    transition:border-color .15s ease,color .15s ease;
+    flex-shrink:0;display:inline-flex;align-items:center;gap:7px;text-decoration:none;
+    color:var(--cream-dim);font-size:13px;border:1px solid var(--line);padding:8px 13px;
+    white-space:nowrap;transition:border-color .15s ease,color .15s ease;
   }
   .yt:hover{border-color:var(--gold);color:var(--gold);}
   .yt:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
-  .yt svg{width:15px;height:15px;flex-shrink:0;}
+  .yt svg{width:14px;height:14px;flex-shrink:0;}
 
-  /* ---------- підвал ---------- */
   footer{
-    margin-top:48px;
-    padding-top:28px;
-    border-top:1px solid var(--line);
-    display:flex;align-items:center;justify-content:space-between;
-    gap:20px;flex-wrap:wrap;
+    margin-top:48px;padding-top:28px;border-top:1px solid var(--line);
+    display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;
   }
   footer p{margin:0;color:var(--cream-dim);font-size:14px;max-width:44ch;}
 
-  .state{
-    padding:48px 0;
-    color:var(--cream-dim);
-    font-size:15px;
-    line-height:1.6;
-  }
-  .state code{
-    background:var(--panel);
-    padding:2px 7px;
-    font-size:13.5px;
-  }
+  .state{padding:48px 0;color:var(--cream-dim);font-size:15px;line-height:1.6;}
+  .state code{background:var(--panel);padding:2px 7px;font-size:13.5px;}
 
   @media (max-width:680px){
     header{flex-direction:column;align-items:flex-start;gap:20px;}
     .mark{width:70px;height:70px;}
     .cover,.cover-ph{width:64px;height:64px;}
-    .song-head{gap:16px;}
-    .song-title{font-size:20px;}
-    .versions{margin-left:0;padding-left:16px;}
-    .version{grid-template-columns:auto 1fr;row-gap:14px;}
+    .album-head{gap:16px;}
+    .album-title{font-size:20px;}
+    .tracks{margin-left:0;padding-left:16px;}
+    .track-versions{padding-left:14px;}
+    .version{grid-template-columns:auto 1fr;row-gap:12px;}
     .yt{grid-column:1 / -1;justify-content:center;}
   }
 
-  @media (prefers-reduced-motion:reduce){
-    *{transition:none !important;}
-  }
+  @media (prefers-reduced-motion:reduce){ *{transition:none !important;} }
 </style>
 </head>
 <body>
@@ -308,7 +197,7 @@
   </header>
 
   <div class="controls">
-    <input class="search" id="search" type="search" placeholder="Знайти пісню за назвою" autocomplete="off" aria-label="Пошук пісні">
+    <input class="search" id="search" type="search" placeholder="Знайти альбом або трек" autocomplete="off" aria-label="Пошук">
     <span class="count" id="count"></span>
   </div>
 
@@ -336,7 +225,6 @@
   var ICON_NOTE  = '<svg viewBox="0 0 24 24" fill="none" stroke="var(--gold-dim)" stroke-width="1.4"><path d="M9 18V5l10-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="16" cy="16" r="3"/></svg>';
   var ICON_CHEV  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 9l6 6 6-6"/></svg>';
 
-  // єдиний аудіо-рушій: грає завжди тільки одна версія
   var audio = new Audio();
   audio.preload = 'none';
   var activeUI = null;
@@ -346,21 +234,18 @@
     var m = Math.floor(s/60), x = Math.floor(s%60);
     return m + ':' + (x<10?'0':'') + x;
   }
-
-  function plural(n){
+  function pluralUA(n, one, few, many){
     var d = n % 10, h = n % 100;
-    if(d === 1 && h !== 11) return n + ' версія';
-    if(d >= 2 && d <= 4 && (h < 12 || h > 14)) return n + ' версії';
-    return n + ' версій';
+    if(d === 1 && h !== 11) return n + ' ' + one;
+    if(d >= 2 && d <= 4 && (h < 12 || h > 14)) return n + ' ' + few;
+    return n + ' ' + many;
   }
-
   function el(tag, cls, html){
     var e = document.createElement(tag);
     if(cls) e.className = cls;
     if(html !== undefined) e.innerHTML = html;
     return e;
   }
-
   function stopActive(){
     if(activeUI){
       activeUI.btn.classList.remove('playing');
@@ -368,15 +253,15 @@
     }
   }
 
-  function buildVersion(v){
+  function buildPlayerRow(displayName, src, youtube){
     var row = el('div','version');
 
     var btn = el('button','playbtn',ICON_PLAY);
     btn.type = 'button';
-    btn.setAttribute('aria-label','Відтворити ' + (v.name || 'версію'));
+    btn.setAttribute('aria-label','Відтворити ' + displayName);
 
     var body = el('div','v-body');
-    var name = el('p','v-name', (v.name || 'Версія'));
+    var name = el('p','v-name', displayName);
     var scrub = el('div','scrub');
     var tCur = el('span','t cur','0:00');
     var bar  = el('div','bar','<div class="bar-bg"></div><div class="bar-fill"></div><div class="knob"></div>');
@@ -386,8 +271,7 @@
 
     var fill = bar.querySelector('.bar-fill');
     var knob = bar.querySelector('.knob');
-
-    var ui = { btn:btn, fill:fill, knob:knob, tCur:tCur, tEnd:tEnd, src:v.file };
+    var ui = { btn:btn, fill:fill, knob:knob, tCur:tCur, tEnd:tEnd };
 
     btn.addEventListener('click', function(){
       var isThis = activeUI === ui;
@@ -400,7 +284,7 @@
       if(!isThis){
         stopActive();
         activeUI = ui;
-        audio.src = v.file;
+        audio.src = src;
         audio.load();
       }
       audio.play().then(function(){
@@ -421,70 +305,92 @@
     row.appendChild(btn);
     row.appendChild(body);
 
-    if(v.youtube){
+    if(youtube){
       var a = el('a','yt', ICON_YT + ' Повне відео');
-      a.href = v.youtube;
-      a.target = '_blank';
-      a.rel = 'noopener';
+      a.href = youtube; a.target = '_blank'; a.rel = 'noopener';
       row.appendChild(a);
     } else {
       row.appendChild(el('span'));
     }
-
     return row;
   }
 
-  function buildSong(song){
-    var n = (song.versions || []).length;
-    var wrap = el('article','song' + (n <= 1 ? ' single' : ''));
+  function buildTrack(track){
+    var versions = track.versions || [];
+    var n = versions.length;
 
-    var head = el('button','song-head');
+    if(n <= 1){
+      var v = versions[0] || {};
+      var wrap = el('div','track track-single');
+      wrap.appendChild(buildPlayerRow(track.title || 'Без назви', v.file, v.youtube));
+      return wrap;
+    }
+
+    var wrap2 = el('div','track');
+    var head = el('button','track-head');
     head.type = 'button';
+    head.setAttribute('aria-expanded','false');
+    head.appendChild(el('span','track-name', track.title || 'Без назви'));
+    head.appendChild(el('span','track-count', pluralUA(n,'версія','версії','версій')));
+    head.appendChild(el('span','track-chev', ICON_CHEV));
 
-    if(song.cover){
+    var vList = el('div','track-versions');
+    versions.forEach(function(v){
+      vList.appendChild(buildPlayerRow(v.name || 'Версія', v.file, v.youtube));
+    });
+
+    head.addEventListener('click', function(){
+      var open = wrap2.classList.toggle('open');
+      head.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+
+    wrap2.appendChild(head);
+    wrap2.appendChild(vList);
+    return wrap2;
+  }
+
+  function buildAlbum(album){
+    var tracks = album.tracks || [];
+    var wrap = el('article','album');
+
+    var head = el('button','album-head');
+    head.type = 'button';
+    head.setAttribute('aria-expanded','false');
+
+    if(album.cover){
       var img = document.createElement('img');
-      img.className = 'cover';
-      img.src = song.cover;
-      img.alt = '';
-      img.loading = 'lazy';
+      img.className = 'cover'; img.src = album.cover; img.alt = ''; img.loading = 'lazy';
       img.addEventListener('error', function(){
-        var ph = el('div','cover-ph', ICON_NOTE);
-        img.replaceWith(ph);
+        img.replaceWith(el('div','cover-ph', ICON_NOTE));
       });
       head.appendChild(img);
     } else {
       head.appendChild(el('div','cover-ph', ICON_NOTE));
     }
 
-    var info = el('div','song-info');
-    info.appendChild(el('h2','song-title', song.title || 'Без назви'));
-    var metaBits = [];
-    if(song.year) metaBits.push(song.year);
-    metaBits.push(plural(n));
-    info.appendChild(el('p','song-meta', metaBits.join(' — ')));
-    if(song.note) info.appendChild(el('p','song-note', song.note));
+    var info = el('div','album-info');
+    info.appendChild(el('h2','album-title', album.title || 'Без назви'));
+    var bits = [];
+    if(album.year) bits.push(album.year);
+    bits.push(pluralUA(tracks.length,'трек','треки','треків'));
+    info.appendChild(el('p','album-meta', bits.join(' — ')));
     head.appendChild(info);
+    head.appendChild(el('span','chev', ICON_CHEV));
 
-    if(n > 1) head.appendChild(el('span','chev', ICON_CHEV));
+    var tList = el('div','tracks');
+    tracks.forEach(function(t){ tList.appendChild(buildTrack(t)); });
 
-    var versions = el('div','versions');
-    (song.versions || []).forEach(function(v){ versions.appendChild(buildVersion(v)); });
-
-    if(n > 1){
-      head.setAttribute('aria-expanded','false');
-      head.addEventListener('click', function(){
-        var open = wrap.classList.toggle('open');
-        head.setAttribute('aria-expanded', open ? 'true' : 'false');
-      });
-    }
+    head.addEventListener('click', function(){
+      var open = wrap.classList.toggle('open');
+      head.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
 
     wrap.appendChild(head);
-    wrap.appendChild(versions);
-    wrap._title = (song.title || '').toLowerCase();
+    wrap.appendChild(tList);
+    wrap._search = ((album.title||'') + ' ' + tracks.map(function(t){return t.title||'';}).join(' ')).toLowerCase();
     return wrap;
   }
 
-  // ---- прогрес єдиного аудіо ----
   audio.addEventListener('timeupdate', function(){
     if(!activeUI || !audio.duration) return;
     var pct = (audio.currentTime / audio.duration) * 100;
@@ -497,13 +403,9 @@
   });
   audio.addEventListener('ended', function(){ stopActive(); });
   audio.addEventListener('error', function(){
-    if(activeUI){
-      stopActive();
-      activeUI.tEnd.textContent = 'файл не знайдено';
-    }
+    if(activeUI){ stopActive(); activeUI.tEnd.textContent = 'файл не знайдено'; }
   });
 
-  // ---- завантаження каталогу ----
   var listEl = document.getElementById('list');
   var stateEl = document.getElementById('state');
   var countEl = document.getElementById('count');
@@ -513,55 +415,45 @@
   function updateCount(){
     var shown = cards.filter(function(c){ return c.style.display !== 'none'; }).length;
     countEl.textContent = shown === cards.length
-      ? plural2(cards.length)
+      ? pluralUA(cards.length,'альбом','альбоми','альбомів')
       : shown + ' з ' + cards.length;
-  }
-  function plural2(n){
-    var d = n % 10, h = n % 100;
-    if(d === 1 && h !== 11) return n + ' пісня';
-    if(d >= 2 && d <= 4 && (h < 12 || h > 14)) return n + ' пісні';
-    return n + ' пісень';
   }
 
   searchEl.addEventListener('input', function(){
     var q = searchEl.value.trim().toLowerCase();
     cards.forEach(function(c){
-      c.style.display = (!q || c._title.indexOf(q) !== -1) ? '' : 'none';
+      c.style.display = (!q || c._search.indexOf(q) !== -1) ? '' : 'none';
     });
     updateCount();
   });
 
-  fetch('songs.json', {cache:'no-cache'})
-    .then(function(r){
-      if(!r.ok) throw new Error('HTTP ' + r.status);
-      return r.json();
-    })
+  fetch('albums.json', {cache:'no-cache'})
+    .then(function(r){ if(!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
     .then(function(data){
       if(data.title) document.getElementById('cat-title').textContent = data.title;
       if(data.subtitle) document.getElementById('cat-sub').textContent = data.subtitle;
       if(data.playlist){
         var pl = document.getElementById('playlist-link');
-        pl.href = data.playlist;
-        pl.hidden = false;
+        pl.href = data.playlist; pl.hidden = false;
       }
 
-      var songs = data.songs || [];
+      var albums = data.albums || [];
       stateEl.remove();
 
-      if(!songs.length){
-        listEl.appendChild(el('div','state','У каталозі поки немає пісень. Додай першу в <code>songs.json</code>.'));
+      if(!albums.length){
+        listEl.appendChild(el('div','state','У каталозі поки немає альбомів. Додай перший в <code>albums.json</code>.'));
         return;
       }
 
-      songs.forEach(function(s){
-        var card = buildSong(s);
+      albums.forEach(function(a){
+        var card = buildAlbum(a);
         cards.push(card);
         listEl.appendChild(card);
       });
       updateCount();
     })
     .catch(function(err){
-      stateEl.innerHTML = 'Не вдалося прочитати <code>songs.json</code>.<br>' +
+      stateEl.innerHTML = 'Не вдалося прочитати <code>albums.json</code>.<br>' +
         'Якщо сторінка відкрита як файл з диска — браузер блокує читання. ' +
         'Запусти локальний сервер або відкрий сторінку через GitHub Pages.<br><br>' +
         '<span style="opacity:.6">' + err.message + '</span>';

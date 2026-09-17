@@ -1,0 +1,30 @@
+{
+  "title": "AI Mysic",
+  "subtitle": "Каталог альбомів. У кожного альбому — треки, у деяких треків — кілька версій.",
+  "playlist": "https://www.youtube.com/playlist?list=PLYqQcAuS9Q5M",
+  "albums": [
+    {
+      "id": "album-1",
+      "title": "Альбом 1",
+      "year": "2026",
+      "cover": "covers/album-1.jpg",
+      "tracks": [
+        {
+          "title": "Джерело любові",
+          "versions": [
+            {
+              "name": "Remix",
+              "file": "audio/dzherelo-lyubovi-remix.m4a",
+              "youtube": "https://youtube.com/shorts/2Tv3OApxpaw"
+            },
+            {
+              "name": "Acoustic Solo",
+              "file": "audio/dzherelo-lyubovi-acoustic.m4a",
+              "youtube": "https://youtube.com/shorts/TdeO_GR-KfQ"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
